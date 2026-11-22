@@ -1,0 +1,1804 @@
+<!doctype html>
+<!--[if lt IE 7 ]> <html lang="fr" class="no-js ie6 lt-ie9 lt-ie8 lt-ie7 oldie"> <![endif]-->
+<!--[if IE 7 ]>    <html lang="fr" class="no-js ie7 lt-ie9 lt-ie8 oldie"> <![endif]-->
+<!--[if IE 8 ]>    <html lang="fr" class="no-js ie8 lt-ie9 oldie"> <![endif]-->
+<!--[if IE 9 ]>    <html lang="fr" class="no-js ie9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html lang="fr" class="no-js"> <!--<![endif]-->
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# journaldesfemmes: http://ogp.me/ns/fb/journaldesfemmes#">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Crumble à la courgette et à la tomate : la recette facile</title>
+        <script>var Asl=function(i){this.conf=i,this.init()};Asl.prototype={conf:{},writers:{},isZen:!1,positionsToWrite:[],positionsLoaded:[],init:function(){var i=this.getScreenName();for(var t in this.conf.positions){var n=this.getParametersForPosition(t,i);n!==!1&&this.positionsToWrite.push(t)}return this.initZen()},initZen:function(){for(var i=document.cookie.split("; "),t=null,n=0;n<i.length;n++)if(t=i[n].split("="),"asl_zen"===t[0])return this.isZen=!0,this;if(window.location.search.search(/utm_medium=(e)?mail/gi)>0){var e=new Date;e.setTime(e.getTime()+5*6e4),document.cookie="asl_zen=1; expires="+e.toUTCString()+"; path=/",this.isZen=!0}return this},getScreenWidth:function(){var i=document.documentElement;return"undefined"!=typeof i&&"undefined"!=typeof i.clientWidth&&0!=i.clientWidth?i.clientWidth:window.screen.width},getScreenName:function(){var i,t=this.getScreenWidth();for(i in this.conf.screens){var n=this.conf.screens[i];if(!n.min&&!n.max)return i;if(n.min&&n.max){if(t>=n.min&&t<=n.max)return i}else{if(n.min&&t>n.min)return i;if(n.max&&t<n.max)return i}}},getClientByScreen:function(i){return this.conf.screens[i].client},isInsvePosition:function(i){return this.isZen&&this.conf.positions[i].insve===!0},getParametersForPosition:function(i,t){return this.isInsvePosition(i)?!1:this.conf.positions[i].mapping&&this.conf.positions[i].mapping[t]?this.conf.positions[i].mapping[t]:!1},setLoadedPosition:function(i){return this.positionsLoaded.indexOf(i)!==-1?this:(this.positionsLoaded.push(i),this)},isLoaded:function(){return this.positionsToWrite.length===this.positionsLoaded.length},initPositionsLoaded:function(){return this.positionsLoaded=[],this},write:function(i){if(this.conf.positions[i]){var t=this.getScreenName(),n=this.getParametersForPosition(i,t);if(n!==!1)return this.notice&&this.notice(i),this.writers[this.getClientByScreen(t)](i,n)}}};Asl.prototype.inject=function(from){var match=from.match(/<!--\[(([^ ]+)=(.*))\]-->/);null!==match&&("undefined"!=typeof JSON&&"undefined"!=typeof JSON.parse?window[match[2]]=JSON.parse(match[3]):eval(""+match[2]+"="+match[3]+";"))};Asl.prototype.fallback=function(t){if(t){var e=[],r=0,i=function(){return"undefined"==typeof jQuery?void setTimeout(i,50):void jQuery.ajax({type:"get",url:t,data:{p:e.join(",")},success:function(t){for(var e in t)switch(typeof t[e]){case"string":jQuery("#ba_"+e).html(t[e]);break;case"object":if(t[e].html&&jQuery("#ba_"+e).html(t[e].html),t[e].scripts)if("string"==typeof t[e].scripts)jQuery.ajax({url:t[e].scripts,dataType:"script",cache:!0});else if(jQuery.isArray(t[e].scripts))for(var r=0,i=t[e].scripts.length;i>r;++r)jQuery.ajax({url:t[e].scripts[r],dataType:"script",cache:!0})}}})};OAS_RICH=function(t){e.push(t),clearTimeout(r),r=setTimeout(i,250)}}};Asl.prototype.writers.oas = function (pos, params) {if(typeof OAS_RICH !== 'undefined') { OAS_RICH(params); }};asl = new Asl({screens: {"mobile":{"max":768,"client":"oas"},"tablet":{"min":768,"max":1024,"client":"oas"},"desktop":{"min":1024,"client":"oas"}},positions: {"Top":{"insve":false,"mapping":{"mobile":"x14","tablet":"x19","desktop":"Top"}},"Right":{"insve":false,"mapping":{"tablet":"x29","desktop":"Right"}},"x24":{"insve":false,"mapping":{"mobile":"x24"}},"Right2":{"insve":false,"mapping":{"desktop":"Right2"}},"Position1":{"insve":false,"mapping":{"desktop":"Position1"}},"Position2":{"insve":false,"mapping":{"mobile":"x34","tablet":"x39","desktop":"Position2"}},"Position4":{"insve":false,"mapping":{"desktop":"Position4"}},"TopLeft":{"insve":true,"mapping":{"tablet":"x49","desktop":"TopLeft"}},"x01":{"insve":false,"mapping":{"mobile":"x01","tablet":"x01","desktop":"x01"}},"x02":{"insve":true,"mapping":{"mobile":"x44","tablet":"x59","desktop":"x02"}},"Top1":{"insve":false,"mapping":{"desktop":"Top1"}},"Middle":{"insve":false,"mapping":{"desktop":"Middle"}},"Middle1":{"insve":false,"mapping":{"desktop":"Middle1"}}},clients: {"oas":{"url":"http:\/\/ba.commentcamarche.net\/","query":["fil_cuisiner=legume-gratin","keyword=@legume-gratin@tomate@oignon@thym@beurre@gratin@crumble@parmesan@huile@farine@poivre@france@"],"sitepage":"fr_journaldesfemmes_cuisiner","sameOriginHostname":"ba.journaldesfemmes.com","loaded":2}}});OAS_AD = function (pos) {asl.write(pos);};!function(e){var n,a=e.conf.clients.oas,i=[];"object"==typeof a.query&&(i=a.query);var t=[],r=e.conf.positions,o=e.getScreenName();if("oas"===e.getClientByScreen(o)){for(var s in r){var c=e.getParametersForPosition(s,o);c!==!1&&t.push(c)}if(0!==t.length){n=t.join(",");var g=a.url,f=navigator.userAgent.indexOf("Safari")>-1&&navigator.userAgent.indexOf("Chrome")==-1;f&&a.sameOriginHostname&&(g="//"+a.sameOriginHostname+"/"),e.isZen&&i.push("noinsve"),a.loaded=0,document.write("<scr"+'ipt type="text/javascript" onload="javascript:asl.conf.clients.oas.loaded=1;" src="'+g+"4/"+a.sitepage+"/1"+new String(Math.random()).substring(2,11)+"@"+n+"?"+i.join("&")+'"></scr'+"ipt>")}}}(asl);</script><script>if (typeof OAS_RICH != 'undefined') { asl.inject(OAS_RICH.toString()); } if (typeof OAS_RICH == 'undefined') { asl.fallback('/api/layout/ads'); }</script>    <meta name="keywords" content="crumble,courgette,tomate,recette,recettes,cuisine" />
+<meta name="og:title" content="Crumble à la courgette et à la tomate : la recette facile" />
+<meta name="og:image" content="http://icu.linter.fr/195/10007307/1716232953/crumble-a-la-courgette-et-a-la-tomate.jpg" />
+<meta name="og:description" content="Recette crumble à la courgette et à la tomate par Contes et Délices." />
+<meta name="og:type" content="food" />
+<meta name="og:url" content="http://cuisine.journaldesfemmes.com/recette/1007626-crumble-a-la-courgette-et-a-la-tomate" />
+<meta name="og:site_name" content="Journal des Femmes Cuisiner" />
+<meta name="og:app_id" content="322020029818" />
+<meta name="description" content="Recette crumble à la courgette et à la tomate par Contes et Délices." />
+<meta http-equiv="Content-Language" content="fr" />
+<meta name="apple-itunes-app" content="app-id=344095161, affiliate-data=at=1l3v7Mj&ct=JDF" /><link rel="canonical" href="http://cuisine.journaldesfemmes.com/recette/1007626-crumble-a-la-courgette-et-a-la-tomate" /><link href="http://static.ccmbg.com/www.journaldesfemmes.com/css/print.css?201508280935" rel="stylesheet" type="text/css" media="print" />
+<link href="http://fonts.googleapis.com/css?family=Lato:300,400,700,900|Libre+Baskerville:400,400italic" rel="stylesheet" type="text/css" media="screen" />
+<link href="http://static.ccmbg.com/fc/css.php?m=components&v=201507061214" rel="stylesheet" type="text/css" media="" />
+<link href="http://static.ccmbg.com/www.journaldesfemmes.com/asset/css?m=*|recipe|forum&amp;v=201508280935" rel="stylesheet" type="text/css" media="screen" /><link rel="alternate" media="print" href="http://cuisine.journaldesfemmes.com/recette/1007626-crumble-a-la-courgette-et-a-la-tomate?print">
+<link rel="alternate" href="android-app://com.cuisiner/http/cuisine.journaldesfemmes.com/recette/1007626-crumble-a-la-courgette-et-a-la-tomate">
+<link rel="shortcut icon" href="http://static.ccmbg.com/www.journaldesfemmes.com/favicon.ico?201508280935" />
+<link rel="apple-touch-icon" href="http://static.ccmbg.com/www.journaldesfemmes.com/img/icons/iconiphone.png?201508280935"/>
+<link rel="apple-touch-icon-precomposed" href="http://static.ccmbg.com/www.journaldesfemmes.com/img/icons/iconiphone.png?201508280935"/>
+<meta itemprop="image" content="http://static.ccmbg.com/www.journaldesfemmes.com/img/icons/iconiphone.png?201508280935" />
+<link rel="search" type="application/opensearchdescription+xml" href="/litesearch.xml" /><script type="text/javascript">
+    var _gaq = _gaq || [],
+        _custom_var_tech = _custom_var_tech || [];
+        _custom_var_tech.push(typeof crtg_rnd == 'number' ? 'oas1' : 'oas0');
+    
+            _gaq.push(['_setAccount', 'UA-314706-7']);
+                    _gaq.push(['_setCustomVar', 1, 'app\/ccmcms', 'cuisine', 3]);
+            _gaq.push(['_setCustomVar', 2, 'cat\/cuisine', 'Crumble à la courgette et à la tomate', 3]);
+            _gaq.push(['_setCustomVar', 3, 'format\/recipe', 'Crumble à la courgette et à la tomate', 3]);
+            _gaq.push(['_setCustomVar', 4, 'tech\/all', _custom_var_tech.join('|'), 3]);
+            _gaq.push(['_setCustomVar', 5, 'author', 'contesetdelices', 3]);
+        _gaq.push(['_trackPageview']);
+
+    if ((typeof ua_supp) != 'undefined') {
+        for (var key in ua_supp) {
+            if (ua_supp.hasOwnProperty(key)) {
+                _gaq.push([key+'._setAccount', ua_supp[key]]);
+                _gaq.push([key+'._setCustomVar', 1, 'app\/ccmcms', 'cuisine', 3]);
+                _gaq.push([key+'._setCustomVar', 2, 'cat\/cuisine', 'Crumble à la courgette et à la tomate', 3]);
+                _gaq.push([key+'._setCustomVar', 3, 'format\/recipe', 'Crumble à la courgette et à la tomate', 3]);
+                _gaq.push([key+'._setCustomVar', 4, 'tech\/all', _custom_var_tech.join('|'), 3]);
+                _gaq.push([key+'._setCustomVar', 5, 'author', 'contesetdelices', 3]);
+                _gaq.push([key+'._trackPageview']);
+            }
+        }
+    }
+    (function () {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+                var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+
+<script type="text/javascript">
+    (function(i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r;
+        i[r] = i[r] ||
+        function() {
+        	(i[r].q = i[r].q || []).push(arguments)
+        }, i[r].l = 1 * new Date();
+        a = s.createElement(o), m = s.getElementsByTagName(o)[0];
+        a.async = 1;
+        a.src = g;
+        m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'gaCCMBG');
+    gaCCMBG('create', 'UA-53157678-3');
+        gaCCMBG('set','dimension1','cuisine');
+    gaCCMBG('set','dimension2','Crumble à la courgette et à la tomate');
+    gaCCMBG('set','dimension3','Crumble à la courgette et à la tomate');
+    gaCCMBG('set','dimension4','_custom_var_tech.join('|')');
+    gaCCMBG('set','dimension5','contesetdelices');
+    gaCCMBG('send', 'pageview');
+</script>        <script type="application/ld+json">
+        {
+            "@context": "http://schema.org",
+            "@type": "WebSite",
+            "url": "http://cuisine.journaldesfemmes.com/",
+            "potentialAction": {
+                "@type": "SearchAction",
+                "target": "http://cuisine.journaldesfemmes.com/recherche/?f_libelle={query}&valide=trouver",
+                "query-input": "required"
+            }
+        }
+    </script>
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+</head>
+<body class="journaldesfemmes ctrl-recipe act-show channel-cuisine ccmcss-doc app--rwd">
+
+    <div id="fb-root"></div>
+    <div class="ccmcss_offcanvas_1">
+        <div class="ccmcss_offcanvas_2">
+
+            <!-- headerdebbloc -->
+
+
+
+<header   role="banner">
+
+    <div class="header_top">
+        <div class="layout">
+
+                        <div class="header_top__logo">
+                <a href="http://www.journaldesfemmes.com/" class="logo" ></a>
+            </div>
+
+                        <div class="header_top__ad header_top_oas"></div>
+
+            <div class="header_top__last">
+                <div class="grid_row gutter">
+                    <div class="grid_col grid_col--middle">
+                        <ul class="header_social">
+                            <li><a class="header_social__fb" href="https://www.facebook.com/pages/Journal-des-Femmes/162484097109285?v=wall" aria-hidden="true" data-icomoon="&#59242;"></a></li>
+                            <li><a class="header_social__pt" href="http://www.pinterest.com/journaldfemmes/" aria-hidden="true" data-icomoon="&#59303;"></a></li>
+                            <li><a class="header_social__tw" href="http://twitter.com/#!/journalDfemmes" aria-hidden="true" data-icomoon="&#59246;"></a></li>
+                            <li><a class="header_social__gg" href="https://plus.google.com/102595839239473007498/posts" aria-hidden="true" data-icomoon="&#59238;"></a></li>
+                        </ul>
+                    </div>
+                    <div class="grid_col grid_col--middle">
+
+                        
+                        <div class="header_log jHeaderDisconnected">
+                            <ul>
+                                <li><a id="subscribe" href="http://journaldesfemmes.com/register/" rel="nofollow">S'inscrire</a></li>
+                                <li><a class="login" href="http://www.journaldesfemmes.com/account/login" data-login-action="https://www.journaldesfemmes.com/journaldesfemmes.com/profile/https_login/" data-password-url="http://journaldesfemmes.com/profile/forgot_password" data-register-url="http://journaldesfemmes.com/register/" rel="nofollow">Connexion</a></li>
+                            </ul>
+                        </div>
+
+                        
+                    </div>
+                </div>
+
+                
+                <form role="search" method="get" action="http://cuisine.journaldesfemmes.com/s/">
+                    <fieldset>
+                        <legend>Moteur de recherche</legend>
+                        <input type="search" name="f_libelle" placeholder="Recherche" />
+                        <button aria-hidden="true" data-icon="&#x21;"></button>
+                    </fieldset>
+                </form>
+
+            </div>
+
+        </div>
+    </div>  
+    
+    <div class="header_nav">
+        <nav role="navigation">
+            <div class="layout">
+                <ul class="nav_main">
+                                            <li class="jHeaderContent nav_home">
+                                                        <a href="http://www.journaldesfemmes.com/"
+                               aria-hidden=true                               data-icon="&#x2d;"                            >&nbsp;</a>
+                        </li>
+                        
+                                            <li class="jHeaderContent nav_mode">
+                                                        <div class="sbnav ">
+                                <div class="ct">
+                                    <div class="fil">
+                                        <ul>
+                                                                                            <li><a aria-hidden="true" data-icon="&#x25;" href="http://mode.journaldesfemmes.com/forum/"><span class="icon_text">Forum</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/fashion-week/"><span class="icon_text">Fashion Week</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/defiles/"><span class="icon_text">Défilés</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/mode/tenue-mariage/"><span class="icon_text">Tenue de mariage</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/mode/robe-jupe/"><span class="icon_text">Robes et jupes</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/mode/chemise-femme/"><span class="icon_text">Tops, chemises</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/mode/chaussures-femme/"><span class="icon_text">Chaussures</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/mode/sacs-a-main/"><span class="icon_text">Sacs à main</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/mode/silhouette/"><span class="icon_text">Morpho</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/mode/conseil/"><span class="icon_text">Conseils</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://mailing.ccmbg.com/archive/list-78-1"><span class="icon_text">Newsletter</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/mode/" class="lighted"><span>Tous les articles</span></a></li>
+                                                                                        </ul>
+                                    </div>
+                                                                        <div class="last_posts" data-channelId="128">
+                                    </div>
+                                                                    </div>
+                            </div>
+                                                        <a href="http://www.journaldesfemmes.com/mode/"
+                                                                                          >Mode</a>
+                        </li>
+                        
+                                            <li class="jHeaderContent nav_beaute">
+                                                        <div class="sbnav ">
+                                <div class="ct">
+                                    <div class="fil">
+                                        <ul>
+                                                                                            <li><a aria-hidden="true" data-icon="&#x25;" href="http://beaute.journaldesfemmes.com/forum/"><span class="icon_text">Forum</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/beaute/coiffure/"><span class="icon_text">Coiffure</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/beaute/maquillage/"><span class="icon_text">Maquillage</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/beaute/minceur/"><span class="icon_text">Minceur</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/beaute/soin-visage/"><span class="icon_text">Soins visage</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/beaute/soin-corps/"><span class="icon_text">Soins corps</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/beaute/soin-anti-age/"><span class="icon_text">Anti-âge</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/beaute/parfum/"><span class="icon_text">Parfum</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/beaute/changez-de-coiffure/"><span class="icon_text">Studio de coiffure</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://mailing.ccmbg.com/archive/list-80-1?originesiteccm=jdf"><span class="icon_text">Newsletter</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/beaute/beaute-ethnique/"><span class="icon_text">Beauté éthnique</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/beaute/" class="lighted"><span>Tous les articles</span></a></li>
+                                                                                        </ul>
+                                    </div>
+                                                                        <div class="last_posts" data-channelId="188">
+                                    </div>
+                                                                    </div>
+                            </div>
+                                                        <a href="http://www.journaldesfemmes.com/beaute/"
+                                                                                          >Beauté</a>
+                        </li>
+                        
+                                            <li class="jHeaderContent nav_luxe">
+                                                        <div class="sbnav ">
+                                <div class="ct">
+                                    <div class="fil">
+                                        <ul>
+                                                                                            <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/defiles/"><span class="icon_text">Défilés</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/luxe/bijoux-joaillerie/"><span class="icon_text">Joaillerie</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/luxe/horlogerie-montre/"><span class="icon_text">Horlogerie</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/luxe/accessoires-luxe/"><span class="icon_text">Accessoires de luxe</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/luxe/sacs-de-luxe/"><span class="icon_text">It bags</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/luxe/detours/"><span class="icon_text">Détours</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://mailing.ccmbg.com/archive/list-74-1?originesiteccm=jdf"><span class="icon_text">Newsletter</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/luxe/" class="lighted"><span>Tous les articles</span></a></li>
+                                                                                        </ul>
+                                    </div>
+                                                                        <div class="last_posts" data-channelId="145">
+                                    </div>
+                                                                    </div>
+                            </div>
+                                                        <a href="http://www.journaldesfemmes.com/luxe/"
+                                                                                          >Luxe</a>
+                        </li>
+                        
+                                            <li class="jHeaderContent nav_deco">
+                                                        <div class="sbnav ">
+                                <div class="ct">
+                                    <div class="fil">
+                                        <ul>
+                                                                                            <li><a aria-hidden="true" data-icon="&#x25;" href="http://decoration.journaldesfemmes.com/forum/"><span class="icon_text">Forum déco</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://deco-jardin.journaldesfemmes.com/forum/"><span class="icon_text">Forum jardin</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://deco.journaldesfemmes.com/salon/"><span class="icon_text">Séjour</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://deco.journaldesfemmes.com/cuisine/"><span class="icon_text">Cuisine</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://deco.journaldesfemmes.com/salle-de-bains/"><span class="icon_text">Salle de bains</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://deco.journaldesfemmes.com/chambre/"><span class="icon_text">Chambre</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://deco.journaldesfemmes.com/petit-espace/"><span class="icon_text">Petits espaces</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://deco.journaldesfemmes.com/couleur/"><span class="icon_text">Couleur et déco</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/jardin/"><span class="icon_text">Jardin & balcon</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://deco.journaldesfemmes.com/loisirs-creatifs/"><span class="icon_text">Loisirs créatifs</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://deco.journaldesfemmes.com/art-de-la-table/"><span class="icon_text">Déco de table</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://deco.journaldesfemmes.com/temoignage/"><span class="icon_text">Témoignages</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://deco.journaldesfemmes.com/pratique/"><span class="icon_text">Fiches pratiques</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://mailing.ccmbg.com/archive/list-76-1?originesiteccm=jdf"><span class="icon_text">Newsletter</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://deco.journaldesfemmes.com" class="lighted"><span>Tous les articles</span></a></li>
+                                                                                        </ul>
+                                    </div>
+                                                                        <div class="last_posts" data-channelId="13">
+                                    </div>
+                                                                    </div>
+                            </div>
+                                                        <a href="http://deco.journaldesfemmes.com"
+                                                                                          >Déco</a>
+                        </li>
+                        
+                                            <li class="jHeaderContent nav_famille">
+                                                        <div class="sbnav ">
+                                <div class="ct">
+                                    <div class="fil">
+                                        <ul>
+                                                                                            <li><a aria-hidden="true" data-icon="&#x25;" href="http://maman.journaldesfemmes.com/forum/"><span class="icon_text">Forum</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/maman/grossesse/"><span class="icon_text">Grossesse</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/maman/bebe/"><span class="icon_text">Bébé</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/maman/enfant/"><span class="icon_text">Enfant</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/maman/ado/"><span class="icon_text">Ados</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/maman/pere/"><span class="icon_text">Papa</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/prenoms/"><span class="icon_text">Prénoms</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/maman/pratique/mailing/maternite/toutes/"><span class="icon_text">Calendrier de grossesse</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/maman/ecole"><span class="icon_text">Annuaire des écoles</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/maman/creches"><span class="icon_text">Annuaire des crèches</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/maman/pratique/"><span class="icon_text">Conseils pratiques</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/maman/maternite"><span class="icon_text">Guide des maternités</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/maman/questionnaire/test/"><span class="icon_text">Psychos-tests</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/nom-de-famille/"><span class="icon_text">Noms de famille</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://mailing.ccmbg.com/archive/list-81-1?originesiteccm=jdf"><span class="icon_text">Newsletter</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/maman/" class="lighted"><span>Tous les articles</span></a></li>
+                                                                                        </ul>
+                                    </div>
+                                                                        <div class="last_posts" data-channelId="65">
+                                    </div>
+                                                                    </div>
+                            </div>
+                                                        <a href="http://www.journaldesfemmes.com/maman/"
+                                                                                          >Maman</a>
+                        </li>
+                        
+                                            <li class="jHeaderContent nav_mariage">
+                                                        <div class="sbnav ">
+                                <div class="ct">
+                                    <div class="fil">
+                                        <ul>
+                                                                                            <li><a aria-hidden="true" data-icon="&#x25;" href="http://mariage.journaldesfemmes.com/forum/"><span class="icon_text">Forum</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/mariage/robe-mariee/"><span class="icon_text">Robe de mariée</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/mariage/alliance-bague/"><span class="icon_text">Alliance</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/mariage/coiffure-mariage/"><span class="icon_text">Coiffure</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/mariage/decoration-mariage/"><span class="icon_text">Déco de mariage</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/mariage/faire-part/"><span class="icon_text">Faire-part</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/mariage/vos-mariages/"><span class="icon_text">Vos mariages</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/mariage/salon-du-mariage/"><span class="icon_text">Salons du mariage</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/mariage/photo/"><span class="icon_text">Photos</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/mariage/" class="lighted"><span>Tous les articles</span></a></li>
+                                                                                        </ul>
+                                    </div>
+                                                                        <div class="last_posts" data-channelId="51">
+                                    </div>
+                                                                    </div>
+                            </div>
+                                                        <a href="http://www.journaldesfemmes.com/mariage/"
+                                                                                          >Mariage</a>
+                        </li>
+                        
+                                            <li class="jHeaderContent nav_couple">
+                                                        <div class="sbnav ">
+                                <div class="ct">
+                                    <div class="fil">
+                                        <ul>
+                                                                                            <li><a aria-hidden="true" data-icon="&#x25;" href="http://couple.journaldesfemmes.com/forum/"><span class="icon_text">Forum couple</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://couple.journaldesfemmes.com/forum/sexo-112"><span class="icon_text">Forum sexo</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/couple/seduction/"><span class="icon_text">Séduction</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/couple/vie-a-deux/"><span class="icon_text">Vie à deux</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/couple/sexo/"><span class="icon_text">Sexo</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/couple/rupture/"><span class="icon_text">Rupture</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/couple/questionnaire/test/"><span class="icon_text">Tests amour</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/couple/questionnaire/quiz/"><span class="icon_text">Quiz sexo</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/couple/" class="lighted"><span>Tous les articles</span></a></li>
+                                                                                        </ul>
+                                    </div>
+                                                                        <div class="last_posts" data-channelId="2489684">
+                                    </div>
+                                                                    </div>
+                            </div>
+                                                        <a href="http://www.journaldesfemmes.com/couple/"
+                                                                                          >Couple</a>
+                        </li>
+                        
+                                            <li class="jHeaderContent nav_sante">
+                                                        <div class="sbnav back">
+                                <div class="ct">
+                                    <div class="fil">
+                                        <ul>
+                                                                                            <li><a aria-hidden="true" data-icon="&#x25;" href="http://sante-medecine.journaldesfemmes.com/forum/"><span class="icon_text">Forum Santé Médecine</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://sante-medecine.journaldesfemmes.com/contents/"><span class="icon_text">Encyclo</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://sante-medecine.journaldesfemmes.com/faq/"><span class="icon_text">Pratique</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://sante.journaldesfemmes.com/allergie/"><span class="icon_text">Allergies </span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://sante.journaldesfemmes.com/genital-urinaire/contraception/"><span class="icon_text">Contraception</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://sante.journaldesfemmes.com/genital-urinaire/"><span class="icon_text">Gynéco</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://sante.journaldesfemmes.com/dent-bouche/"><span class="icon_text">Dents</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://sante.journaldesfemmes.com/nutrition-digestion/"><span class="icon_text">Nutrition</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://sante.journaldesfemmes.com/coeur-cardiologie/"><span class="icon_text">Cardio</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://sante.journaldesfemmes.com/peau-dermatologie/"><span class="icon_text">Dermato</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://sante.journaldesfemmes.com/muscle-os/"><span class="icon_text">Rhumato</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://sante.journaldesfemmes.com/yeux/"><span class="icon_text">Ophtalmo</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://sante.journaldesfemmes.com/nerf-cerveau/"><span class="icon_text">Neuro</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://sante.journaldesfemmes.com/medicaments"><span class="icon_text">Médicaments</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://sante.journaldesfemmes.com/calories"><span class="icon_text">Calories</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://mailing.ccmbg.com/archive/list-79-1?originesiteccm=jdf"><span class="icon_text">Newsletter</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://sante.journaldesfemmes.com" class="lighted"><span>Tous les articles</span></a></li>
+                                                                                        </ul>
+                                    </div>
+                                                                        <div class="last_posts" data-channelId="30">
+                                    </div>
+                                                                    </div>
+                            </div>
+                                                        <a href="http://sante.journaldesfemmes.com"
+                                                                                          >Santé</a>
+                        </li>
+                        
+                                            <li class="jHeaderContent nav_selected  nav_cuisiner">
+                                                        <div class="sbnav back">
+                                <div class="ct">
+                                    <div class="fil">
+                                        <ul>
+                                                                                            <li><a aria-hidden="true" data-icon="&#x25;" href="http://cuisiner.journaldesfemmes.com/forum/"><span class="icon_text">Forum</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://cuisine.journaldesfemmes.com/toutes-les-recettes/"><span class="icon_text">Recettes</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://cuisine.journaldesfemmes.com/recette-entree"><span class="icon_text">Entrées</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://cuisine.journaldesfemmes.com/recette-plat-viande"><span class="icon_text">Viandes</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://cuisine.journaldesfemmes.com/recette-plat-poisson-fruit-de-mer"><span class="icon_text">Poissons</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://cuisine.journaldesfemmes.com/recette-dessert"><span class="icon_text">Desserts</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://cuisine.journaldesfemmes.com/recette-express"><span class="icon_text">Recettes express</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://cuisine.journaldesfemmes.com/recette-chef"><span class="icon_text">Recettes de chefs</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://cuisine.journaldesfemmes.com/recette-cuisine-du-monde"><span class="icon_text">Cuisine du monde</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://cuisine.journaldesfemmes.com/recette-cuisine-legere"><span class="icon_text">Recettes minceur</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://cuisine.journaldesfemmes.com/recette-facile"><span class="icon_text">Recettes facile</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://cuisine.journaldesfemmes.com/encyclopedie/"><span class="icon_text">Encyclopédie</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://mailing.ccmbg.com/archive/list-86-1?originesiteccm=jdf"><span class="icon_text">Newsletter</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://cuisine.journaldesfemmes.com" class="lighted"><span>Tous les articles</span></a></li>
+                                                                                        </ul>
+                                    </div>
+                                                                        <div class="last_posts" data-channelId="91">
+                                    </div>
+                                                                    </div>
+                            </div>
+                                                        <a href="http://cuisine.journaldesfemmes.com"
+                                                                                          >Cuisine</a>
+                        </li>
+                        
+                                            <li class="jHeaderContent nav_people">
+                                                        <div class="sbnav back">
+                                <div class="ct">
+                                    <div class="fil">
+                                        <ul>
+                                                                                            <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/people/actualite/"><span class="icon_text">Actus people</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/people/photo/"><span class="icon_text">Photos people</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/people/interview/"><span class="icon_text">Interview people</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/people/amour/couple-stars/"><span class="icon_text">Couples de stars</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/look-de-star/"><span class="icon_text">Look de stars</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/people/" class="lighted"><span>Tous les articles</span></a></li>
+                                                                                        </ul>
+                                    </div>
+                                                                        <div class="last_posts" data-channelId="111">
+                                    </div>
+                                                                    </div>
+                            </div>
+                                                        <a href="http://www.journaldesfemmes.com/people/"
+                                                                                          >People</a>
+                        </li>
+                        
+                                            <li class="jHeaderContent nav_societe">
+                                                        <div class="sbnav back">
+                                <div class="ct">
+                                    <div class="fil">
+                                        <ul>
+                                                                                            <li><a aria-hidden="true" data-icon="&#x25;" href="http://journaldesfemmes.com/forum/"><span class="icon_text">Forum</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/societe/combats-de-femmes/"><span class="icon_text">Combats de femmes</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/societe/culture/"><span class="icon_text">Culture</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/societe/environnement/"><span class="icon_text">Environnement</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/societe/phenomenes-criminels/"><span class="icon_text">Faits-divers</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/societe/phenomenes-de-societe/"><span class="icon_text">Phénomènes de société</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/art-vivre/"><span class="icon_text">Art de vivre</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/societe/magazine/"><span class="icon_text">Magazine</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/societe/" class="lighted"><span>Tous les articles</span></a></li>
+                                                                                        </ul>
+                                    </div>
+                                                                        <div class="last_posts" data-channelId="44">
+                                    </div>
+                                                                    </div>
+                            </div>
+                                                        <a href="http://www.journaldesfemmes.com/societe/"
+                                                                                          >Societe</a>
+                        </li>
+                        
+                                            <li class="jHeaderContent nav_plus">
+                                                        <div class="sbnav back">
+                                <div class="ct">
+                                    <div class="fil">
+                                        <ul>
+                                                                                            <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/art-vivre/"><span class="icon_text">Art de vivre</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://video.journaldesfemmes.com"><span class="icon_text">Vidéos</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://conceptstore.journaldesfemmes.com/"><span class="icon_text">Concept Store</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/carriere/"><span class="icon_text">Vie pro</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://sante.journaldesfemmes.com/psychologie/"><span class="icon_text">Psycho</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://www.journaldesfemmes.com/jardin/"><span class="icon_text">Jardin</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://boutique.linternaute.com"><span class="icon_text">Boutique cadeaux</span></a></li>
+                                                                                                <li><a aria-hidden="true" data-icon="&#x25;" href="http://jeux.journaldesfemmes.com/"><span class="icon_text">Jeux</span></a></li>
+                                                                                        </ul>
+                                    </div>
+                                                                    </div>
+                            </div>
+                                                        <a href="http://cuisine.journaldesfemmes.com/#"
+                               aria-hidden=true                               data-icon="*"                            >Plus</a>
+                        </li>
+                        
+                                                        </ul>
+                                    <div class="sbmenu">
+                        <ul>
+                                                        <li>
+                                    <a href="http://cuisiner.journaldesfemmes.com/forum/"
+                                                                        >Forum</a>
+                                </li>
+                                                        <li>
+                                    <a href="http://cuisine.journaldesfemmes.com/toutes-les-recettes/"
+                                                                        >Recettes</a>
+                                </li>
+                                                        <li>
+                                    <a href="http://cuisine.journaldesfemmes.com/recette-entree"
+                                                                        >Entrées</a>
+                                </li>
+                                                        <li>
+                                    <a href="http://cuisine.journaldesfemmes.com/recette-plat-viande"
+                                                                        >Viandes</a>
+                                </li>
+                                                        <li>
+                                    <a href="http://cuisine.journaldesfemmes.com/recette-plat-poisson-fruit-de-mer"
+                                                                        >Poissons</a>
+                                </li>
+                                                        <li>
+                                    <a href="http://cuisine.journaldesfemmes.com/recette-dessert"
+                                                                        >Desserts</a>
+                                </li>
+                                                        <li>
+                                    <a href="http://cuisine.journaldesfemmes.com/recette-express"
+                                                                        >Recettes express</a>
+                                </li>
+                                                        <li>
+                                    <a href="http://cuisine.journaldesfemmes.com/recette-chef"
+                                                                        >Recettes de chefs</a>
+                                </li>
+                                                        <li>
+                                    <a href="http://cuisine.journaldesfemmes.com/recette-cuisine-du-monde"
+                                                                        >Cuisine du monde</a>
+                                </li>
+                                                        <li>
+                                    <a href="http://cuisine.journaldesfemmes.com/recette-cuisine-legere"
+                                                                        >Recettes minceur</a>
+                                </li>
+                                                                        </ul>
+                    </div>
+                
+                            </div>
+        </nav>
+    </div>   
+
+</header>
+
+
+<header class="ccmcss_rwd_header">
+    <div class="ccmcss_rwd_header__top">
+        <a href="javascript:void(0)" onClick="_gaq.push(['_trackEvent', 'global', 'header/responsive', 'burger/click', 1]);" id="jMenuResp" class="ccmcss_rwd_header__burger" aria-hidden="true" data-icomoon="&#59064;"></a>                        
+        <a href="javascript:void(0)" onClick="_gaq.push(['_trackEvent', 'global', 'header/responsive', 'search/click', 1]);" id="jSearchResp" class="ccmcss_rwd_header__search" aria-hidden="true" data-icomoon="&#59007;"></a>
+        <a href="/"><img class="ccmcss_rwd_header__logo" src="http://static.ccmbg.com/www.journaldesfemmes.com/img/logo_rwd.png" alt=""></a>
+    </div>
+
+    <div class="ccmcss_rwd_search">
+        <div class="ccmcss_rwd_search__form ccmcss_form ccmcss_form--inline">
+            <form action="/recherche/" method="get" id="content_search_form">
+                <fieldset>
+                    <legend>Rechercher</legend>
+                    <div style="position: relative;" class="ccmcss_form__line grid_row grid--norwd">
+                        <div class="grid_col w100">
+                            <input placeholder="Recherche" name="f_libelle" value="" type="search">
+                        </div>                        
+                        <div class="grid_col">                                                
+                            <button>                
+                                <span class="ccmcss_btn ccmcss_btn--primary" aria-hidden="true" data-icomoon="&#59007;"></span>
+                            </button>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>        
+    </div>
+</header>
+
+<div id="alternative_sidebar_follower" class="ccmcms_social_bar ccmcms_social_bar--top" style="opacity:0;">
+    <div class="layout">
+        <p>Partager cet article</p>
+        <div class="placeholder"></div>        
+        <a class="icoShare rss" href="http://www.journaldesfemmes.com/rss.shtml">
+            <span></span>
+            RSS
+        </a>        
+                    
+                            <a class="icoShare print" href="http://cuisine.journaldesfemmes.com/recette/1007626-crumble-a-la-courgette-et-a-la-tomate?print" target="_blank" rel="nofollow">
+                    <span></span>
+                    Imprimer                </a>
+                        
+        
+                    
+            <a class="icoShare mail" href="http://sendinfo.linternaute.com/cgi/femmes/" rel="nofollow">
+                <span></span>
+                Envoyer            </a>            
+            </div>
+</div><div class="ccmcms_social_bar--left-ct">
+    <div class="ccmcms_social_bar ccmcms_social_bar--left" id="sidebar_follower" style="display: none">
+            
+            <a class="icoShare rss" href="http://www.journaldesfemmes.com/rss.shtml">
+                <span></span>
+                RSS
+            </a>        
+            
+                            <div class="btnTools">
+                            
+                                            <a class="icoShare print small" href="http://cuisine.journaldesfemmes.com/recette/1007626-crumble-a-la-courgette-et-a-la-tomate?print" target="_blank" rel="nofollow">
+                            <span>
+                                Imprimer                            </span>                        
+                        </a>
+                                
+                
+                            
+                    <a class="icoShare mail small" href="http://sendinfo.linternaute.com/cgi/femmes/" rel="nofollow">                
+                        <span>
+                            Envoyer                        </span>                
+                    </a>            
+                                </div> 
+                           
+    </div>
+</div><!-- headerfinbloc -->
+
+            <div class="layout layout--offcanvas   gutter">
+
+                                    <div class="ccmcss_oas_top">
+                        <div id="ba_top" class="ba top"><script>OAS_AD('Top');</script></div><div id="ba_top1" class="ba top1"><script>OAS_AD('Top1');</script></div>                    </div>
+                
+                                <div class="layout_ct">
+                            <nav class="ccmcss_breadcrumb">
+                            <div itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
+                                        <a href="http://www.journaldesfemmes.com" itemprop="url">
+                                                <span itemprop="title">
+                        Journal des Femmes                    </span>
+                                            </a>
+                                </div>
+                            <div itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
+                                        <a href="http://cuisine.journaldesfemmes.com/" itemprop="url">
+                                                <span itemprop="title">
+                        Cuisiner                    </span>
+                                            </a>
+                                </div>
+                            <div itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
+                                        <a href="http://cuisine.journaldesfemmes.com/recette-legume-gratin" itemprop="url">
+                                                <span itemprop="title">
+                        L&eacute;gumes &amp; gratins                    </span>
+                                            </a>
+                                </div>
+                            <div itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
+                                        <a href="http://cuisine.journaldesfemmes.com/recette-gratin" itemprop="url">
+                                                <span itemprop="title">
+                        Gratin                    </span>
+                                            </a>
+                                </div>
+                    </nav>
+    
+                    <div class="layout_ct__1">
+                        <div class="layout_ct__2">
+                                                        <div role="main" class="layout_main">
+                                <div class="hrecipe">
+
+        <a name="addToBook"></a>
+        <span class="item">
+            <h1 class="bu_cuisine_title_1">Recette <span class="fn">Crumble &agrave; la courgette et &agrave; la tomate</span></h1>
+        </span>
+
+                
+    <section class="app_box_1 bu_cuisine_box_1 bu_cuisine_box--actions">
+            <div class="grid_line gutter grid--norwd">
+                <div class="grid_left w50">
+                    <a href="/recette/1007626-crumble-a-la-courgette-et-a-la-tomate?print" aria-hidden="true" data-icon="&#x3a;" class="icon_ud jPrintTopBar" target="_blank">
+                        <span class="icon_text">Imprimer cette recette</span>
+                    </a>
+                    <style>
+                    .bu_cuisine_box_1.bu_cuisine_box--actions a.icomoon-pinterest:before {
+                        color: #cb2027;
+                    }
+                    .bu_cuisine_box_1.bu_cuisine_box--actions a.icomoon-pinterest {
+                        color: #cb2027;
+                    }
+                    .bu_cuisine_box_1.bu_cuisine_box--actions a.icomoon-pinterest:hover:before {
+                        color: #900;
+                    }
+                    </style>
+                    
+                                        
+                    <a href="http://pinterest.com/pin/create/link/?url=http%3A%2F%2Fcuisine.journaldesfemmes.com%2Frecette%2F1007626-crumble-a-la-courgette-et-a-la-tomate&media=http%3A%2F%2Ficu.linter.fr%2F425%2F10007307%2F1716232953%2Fcrumble-a-la-courgette-et-a-la-tomate.jpg&description=Crumble+%C3%A0+la+courgette+et+%C3%A0+la+tomate" aria-hidden="true" class="icon_ud icomoon-pinterest jShareTopBar" target="_blank">
+                        <span class="icon_text">Pin It</span>
+                   </a>
+                </div>
+                <div class="grid_left w50">
+                        
+    
+    <script type="application/x-microTemplate" id='jSelectionItemTpl'>
+        
+            <p class="bu_cuisine_carnets ${cssClass} jSelectionItemManage" data-selectionId="${selectionId}" data-selectionType="${selectionType}" data-action="${action}">
+                    ${selectionLabel}
+            </p>
+            </script>
+    <div class=" jSelectionButton" data-itemId="1007626" data-itemType="modules.recipe.model.content">
+        <div class="bu_cuisine_btns">
+                        <span class="bu_cuisine_recette_carnet_btn login jSelectionItemManageDefaultSelection" data-login-action="https://www.journaldesfemmes.com/journaldesfemmes.com/profile/https_login/" data-password-url="http://journaldesfemmes.com/profile/forgot_password" data-register-url="http://journaldesfemmes.com/register/" data-redirection-url = "http://cuisine.journaldesfemmes.com/recette/1007626-crumble-a-la-courgette-et-a-la-tomate#addToBook" data-selectionId="" data-selectionType="recipe_book">Ajouter à mon carnet</span>
+            <div class="bu_cuisine_carnets_btn jSelectionGroup" style="display:none;">
+                <p class="bu_cuisine_carnets bu_cuisine_carnets--noclic bu_cuisine_carnets--italicnoclic jSelectionNote">
+                                    </p>
+
+                <div class="jSelectionUserCreated" >
+                        <p class="bu_cuisine_carnets bu_cuisine_carnets--noclic">Ajouter aussi dans mes sélections :</p>
+                        <div class="jSelectionUserCreatedItems" data-loaded = 'false'>
+                            
+                        </div>
+                </div>
+                <p class="bu_cuisine_carnets bu_cuisine_carnets--last jSelectionAdd">
+                    Créer une nouvelle selection                </p>
+             </div>
+            <form class="bu_cuisine_carnets_btn bu_cuisine_carnets_btn--padR10 jSelectionAddForm" style="display:none;">
+                <input type="text" name="name" id="name" placeholder="Selection name">
+                <input id="jSubmitMode" class="bu_cuisine_fullscreen_btn bu_cuisine_fullscreen_btn--carnet" type="submit" name="submitMode" value="Enregistrer">
+                <button class="bu_cuisine_legende_3 bu_cuisine_legende_3--carnet jSelectionAddFormCancel" type="button">Annuler</button>
+            </form>
+        </div>
+    </div>
+
+                    <div class="bu_cuisine_btns">
+                        <a href="#avis" class="bu_cuisine_recette_avis_btn jCommentTopBar">Donner mon avis</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+                
+        <article class="grid_line gutter grid--norwd bu_cuisine_main_recipe">
+            <div class="grid_left w50">
+                <div class="bu_cuisine_recette_img">
+                    <figure>
+                        <a href="http://icu.linter.fr/750/10007307/1716232953/crumble-a-la-courgette-et-a-la-tomate.jpg" class="fancy">
+                            <img class="bu_cuisine_img_noborder photo" src="http://icu.linter.fr/425/10007307/1716232953/crumble-a-la-courgette-et-a-la-tomate.jpg" alt="Crumble à la courgette et à la tomate">
+                            <!--<span class="bu_cuisine_img_noborder photo" style="background: url(http://icu.linter.fr/425/10007307/1716232953/crumble-a-la-courgette-et-a-la-tomate.jpg) no-repeat 50% 50%;background-size:cover;"></span>-->
+                        </a>
+                    </figure>
+                    <a href="http://icu.linter.fr/750/10007307/1716232953/crumble-a-la-courgette-et-a-la-tomate.jpg" class="fancy">
+                        <span class="bu_cuisine_loupe_btn"></span>
+                    </a>
+                    <!--<a href="">
+                        <span class="bu_cuisine_photos_btn">&#9658;&nbsp;0 autres photos</span>
+                    </a>/-->
+                </div>
+                                    <p class="bu_cuisine_legende_1">Recette proposée par <a class="author" href="/recette-auteur/8152725-contesetdelices">contesetdelices</a></p>
+                                                    <p class="bu_cuisine_legende_italic summary">Un incontournable dans ma cuisine, peut être bientôt dans la vôtre !</p>
+                            </div>
+            <div class="grid_left w50">
+                                    <div class="bu_cuisine_recette_notes">
+                        <span class="jStar">
+                            <span class="bu_cuisine_ystar"></span><span class="bu_cuisine_ystar"></span><span class="bu_cuisine_ystar"></span><span class="bu_cuisine_ystar"></span><span class="bu_cuisine_ystar"></span>                                                    </span>
+                        <span class="review hreview-aggregate">
+                            <p class="bu_cuisine_title_notes rating">
+                                <span class="average">
+                                    <span class="jAverage">
+                                        5                                    </span>
+                                </span>
+                                /
+                                <span class="best">5</span>
+                                <span class="count">&nbsp;(<span class="jNbNote">8</span> avis)</span>
+                            </p>
+                        </span>
+                    </div>
+                                    <p class="bu_cuisine_title_3">Ingrédients / pour <span class="yield">4</span> personnes</p>                <ul class="bu_cuisine_ingredients">
+                                            <li class="ingredient">2 belles courgettes</li>
+
+                                            <li class="ingredient">2 petites tomates</li>
+
+                                            <li class="ingredient">1 gros <a href="/encyclopedie/fiche_composant/34/oignon.shtml" class="bu_cuisine_pointille_vert name" alt="Oignon">oignon</a></li>
+
+                                            <li class="ingredient">Huile d'olive</li>
+
+                                            <li class="ingredient"><a href="/encyclopedie/fiche_composant/174/thym.shtml" class="bu_cuisine_pointille_vert name" alt="Thym">thym</a></li>
+
+                                            <li class="ingredient">Sel, <a href="/encyclopedie/fiche_composant/129/poivre.shtml" class="bu_cuisine_pointille_vert name" alt="Poivre">poivre</a></li>
+
+                                            <li class="ingredient">90 g de <a href="/encyclopedie/fiche_composant/289/farine.shtml" class="bu_cuisine_pointille_vert name" alt="Farine">farine</a></li>
+
+                                            <li class="ingredient">75 g de <a href="/encyclopedie/fiche_composant/287/beurre.shtml" class="bu_cuisine_pointille_vert name" alt="Beurre">beurre</a></li>
+
+                                            <li class="ingredient">70 g de <a href="/encyclopedie/fiche_composant/261/parmesan.shtml" class="bu_cuisine_pointille_vert name" alt="Parmesan">parmesan</a></li>
+
+                    
+                </ul>
+                <div id="ba_x24" class="ba x24"><script>OAS_AD('x24');</script></div>                <p class="bu_cuisine_title_3">Réalisation</span></p>
+                <div class="grid_left" style="min-width:110px;">
+                    <ul class="bu_cuisine_carnet">
+                        <li class="bu_cuisine_picto1">Difficulté</li>
+                                                    <li class="bu_cuisine_picto2">Préparation</li>
+                                                    <li class="bu_cuisine_picto3">Cuisson</li>
+                                                    <li class="bu_cuisine_picto5">Temps Total</li>
+                                            </ul>
+                </div>
+                <div class="grid_last">
+                    <ul class="bu_cuisine_carnet_2">
+                        <li>Facile</li>
+                                                    <li>
+                                <span class="duration">20&nbsp;mn<span class="value-title" title="PT20M"></span></span>
+                            </li>
+                                                    <li>
+                                <span>45&nbsp;mn</span>
+                            </li>
+                                                    <li>
+                                                                <span>1&nbsp;h&nbsp;05&nbsp;mn</span>
+                                                            </li>
+                                            </ul>
+                </div>
+
+
+            </div>
+        </article>
+
+        <article class="grid_line">
+                            <h2 class="bu_cuisine_title_2">
+                    Préparation <span>Crumble &agrave; la courgette et &agrave; la tomate</span>
+                </h2>
+                <div class="grid_left w100 instructions">
+                                            <div class="bu_cuisine_recette_prepa ">
+                                                    <span>1</span>
+                        Émincer l'oignon et le faire revenir dans un poêle avec de l'huile d'olive. Une fois qu'il a bien sué, ajouter les courgettes coupées en petits morceaux, saler, poivrer et ajouter du thym pour parfumer et laisser cuire à feu moyen environ 20 min. Une fois que les courgettes ont bien réduit, ajouter les tomates coupées également en petits morceaux. Laisser encore cuire à feu moyen pendant 7 min.                        </div>
+                                                <div class="bu_cuisine_recette_prepa ">
+                                                    <span>2</span>
+                        Mettre le beurre mou dans un saladier. Ajouter la farine et le parmesan et <a href="/definition/108/travailler.shtml" alt="Travailler">travailler</a> la pâte avec les mains jusqu'à obtenir une pâte friable.                        </div>
+                                                <div class="bu_cuisine_recette_prepa ">
+                                                    <em class="bu_cuisine_pourfinir"></em>
+                            <div class="bu_cuisine_pourfinir_title">Pour finir</div>
+                        Disposer le mélange courgettes - tomates dans un plat allant au four. Déposer de la pâte à crumble sur le dessus. Enfourner 20 à 25 min à 200°C.                        </div>
+                                            <p class="bu_cuisine_recette_prepa_fin ">
+                    Cuisinez, savourez… puis si vous le souhaitez, <a href="#avis">partagez</a> / <a href="#avis">déposez</a> (ci-dessous) votre avis sur cette recette.                    </p>
+                </div>
+                                </article>
+    </div>
+            <aside class="grid_line bu_cuisine_themes">
+            <div class="bu_cuisine_themes_title"></div>
+            <span class="bu_cuisine_themes_icon"></span>
+                            <a href = "/recette-tomate" >Tomate</a>
+                            <a href = "/recette-oignon" >Oignon</a>
+                            <a href = "/recette-thym" >Thym</a>
+                            <a href = "/recette-parmesan" >Parmesan</a>
+                        <div class="bu_cuisine_themes_title"></div>
+        </aside>
+    
+    <section class="app_box_1 bu_cuisine_box_1 bu_cuisine_box--actions">
+            <div class="grid_line gutter grid--norwd">
+                <div class="grid_left w50">
+                    <a href="/recette/1007626-crumble-a-la-courgette-et-a-la-tomate?print" aria-hidden="true" data-icon="&#x3a;" class="icon_ud jPrintTopBar" target="_blank">
+                        <span class="icon_text">Imprimer cette recette</span>
+                    </a>
+                    <style>
+                    .bu_cuisine_box_1.bu_cuisine_box--actions a.icomoon-pinterest:before {
+                        color: #cb2027;
+                    }
+                    .bu_cuisine_box_1.bu_cuisine_box--actions a.icomoon-pinterest {
+                        color: #cb2027;
+                    }
+                    .bu_cuisine_box_1.bu_cuisine_box--actions a.icomoon-pinterest:hover:before {
+                        color: #900;
+                    }
+                    </style>
+                    
+                                        
+                    <a href="http://pinterest.com/pin/create/link/?url=http%3A%2F%2Fcuisine.journaldesfemmes.com%2Frecette%2F1007626-crumble-a-la-courgette-et-a-la-tomate&media=http%3A%2F%2Ficu.linter.fr%2F425%2F10007307%2F1716232953%2Fcrumble-a-la-courgette-et-a-la-tomate.jpg&description=Crumble+%C3%A0+la+courgette+et+%C3%A0+la+tomate" aria-hidden="true" class="icon_ud icomoon-pinterest jShareTopBar" target="_blank">
+                        <span class="icon_text">Pin It</span>
+                   </a>
+                </div>
+                <div class="grid_left w50">
+                        
+    
+    <script type="application/x-microTemplate" id='jSelectionItemTpl'>
+        
+            <p class="bu_cuisine_carnets ${cssClass} jSelectionItemManage" data-selectionId="${selectionId}" data-selectionType="${selectionType}" data-action="${action}">
+                    ${selectionLabel}
+            </p>
+            </script>
+    <div class=" jSelectionButton" data-itemId="1007626" data-itemType="modules.recipe.model.content">
+        <div class="bu_cuisine_btns">
+                        <span class="bu_cuisine_recette_carnet_btn login jSelectionItemManageDefaultSelection" data-login-action="https://www.journaldesfemmes.com/journaldesfemmes.com/profile/https_login/" data-password-url="http://journaldesfemmes.com/profile/forgot_password" data-register-url="http://journaldesfemmes.com/register/" data-redirection-url = "http://cuisine.journaldesfemmes.com/recette/1007626-crumble-a-la-courgette-et-a-la-tomate#addToBook" data-selectionId="" data-selectionType="recipe_book">Ajouter à mon carnet</span>
+            <div class="bu_cuisine_carnets_btn jSelectionGroup" style="display:none;">
+                <p class="bu_cuisine_carnets bu_cuisine_carnets--noclic bu_cuisine_carnets--italicnoclic jSelectionNote">
+                                    </p>
+
+                <div class="jSelectionUserCreated" >
+                        <p class="bu_cuisine_carnets bu_cuisine_carnets--noclic">Ajouter aussi dans mes sélections :</p>
+                        <div class="jSelectionUserCreatedItems" data-loaded = 'false'>
+                            
+                        </div>
+                </div>
+                <p class="bu_cuisine_carnets bu_cuisine_carnets--last jSelectionAdd">
+                    Créer une nouvelle selection                </p>
+             </div>
+            <form class="bu_cuisine_carnets_btn bu_cuisine_carnets_btn--padR10 jSelectionAddForm" style="display:none;">
+                <input type="text" name="name" id="name" placeholder="Selection name">
+                <input id="jSubmitMode" class="bu_cuisine_fullscreen_btn bu_cuisine_fullscreen_btn--carnet" type="submit" name="submitMode" value="Enregistrer">
+                <button class="bu_cuisine_legende_3 bu_cuisine_legende_3--carnet jSelectionAddFormCancel" type="button">Annuler</button>
+            </form>
+        </div>
+    </div>
+
+                    <div class="bu_cuisine_btns">
+                        <a href="#avis" class="bu_cuisine_recette_avis_btn jCommentTopBar">Donner mon avis</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+                    <section class="bu_cuisine_slider_container2">
+        <h2 class="bu_cuisine_title_2">
+            Vous aimeriez peut-être ? 
+        </h2>
+        <div class="bu_cuisine_slider2 slider">
+            <ul>
+                                <li>
+                            <div class="grid_line grid--norwd gutter">            <div class="grid_left w50">
+                <article class="grid_line grid--norwd gutter">
+            <div class="grid_left w40">
+                <a class="bu_cuisine_recette_img bu_cuisine_explo_vignettes" href="/recette/320412-crumble-de-courgettes-au-pesto-et-au-parmesan">
+                    <div class="bu_cuisine_img_noborder4" style="background: url(http://icu.linter.fr/150/331650/1282172149/crumble-de-courgettes-au-pesto-et-au-parmesan.jpg) no-repeat 50% 50%;background-size:cover;"></div>
+                </a>
+            </div>
+            <div class="grid_last">
+                <span class="bu_cuisine_title_4">
+                    <a href="/recette/320412-crumble-de-courgettes-au-pesto-et-au-parmesan">
+                        Crumble de courgettes au pesto et au parmesan                    </a>
+                </span>
+                                            <p class="bu_cuisine_title_depose">Déposée le  3 décembre</p>
+                                        <p class="bu_cuisine_chapeau">
+                    Une autre id&eacute;e de pr&eacute;senter les l&eacute;gumes.                </p>
+            </div>
+
+            
+        </article>
+                                </div>
+                                <div class="grid_left w50">
+                <article class="grid_line grid--norwd gutter">
+            <div class="grid_left w40">
+                <a class="bu_cuisine_recette_img bu_cuisine_explo_vignettes" href="/recette/322132-crumble-de-courgette-avec-une-touche-de-saumon">
+                    <div class="bu_cuisine_img_noborder4" style="background: url(http://icu.linter.fr/150/334304/1204020409/crumble-de-courgette-avec-une-touche-de-saumon.jpg) no-repeat 50% 50%;background-size:cover;"></div>
+                </a>
+            </div>
+            <div class="grid_last">
+                <span class="bu_cuisine_title_4">
+                    <a href="/recette/322132-crumble-de-courgette-avec-une-touche-de-saumon">
+                        Crumble de courgette avec une touche de saumon                    </a>
+                </span>
+                                            <p class="bu_cuisine_title_depose">Déposée le  4 mars</p>
+                                        <p class="bu_cuisine_chapeau">
+                    Comment faire manger des courgettes aux personnes anti-l&eacute;gumes ?...                </p>
+            </div>
+
+            
+        </article>
+                    </div>            </div>
+                    <div class="grid_line grid--norwd gutter">            <div class="grid_left w50">
+                <article class="grid_line grid--norwd gutter">
+            <div class="grid_left w40">
+                <a class="bu_cuisine_recette_img bu_cuisine_explo_vignettes" href="/recette/311018-flan-de-courgettes">
+                    <div class="bu_cuisine_img_noborder4" style="background: url(http://icu.linter.fr/150/314971/1037457182/flan-de-courgettes-et-jambon.jpg) no-repeat 50% 50%;background-size:cover;"></div>
+                </a>
+            </div>
+            <div class="grid_last">
+                <span class="bu_cuisine_title_4">
+                    <a href="/recette/311018-flan-de-courgettes">
+                        Flan de courgettes et jambon                    </a>
+                </span>
+                                            <p class="bu_cuisine_title_depose">Déposée le 20 février</p>
+                                        <p class="bu_cuisine_chapeau">
+                    Ou comment faire manger des courgettes &agrave; mes enfants.                </p>
+            </div>
+
+            
+        </article>
+                                </div>
+                                <div class="grid_left w50">
+                <article class="grid_line grid--norwd gutter">
+            <div class="grid_left w40">
+                <a class="bu_cuisine_recette_img bu_cuisine_explo_vignettes" href="/recette/318282-gratin-de-courgettes">
+                    <div class="bu_cuisine_img_noborder4" style="background: url(http://icu.linter.fr/150/328019/1029327121/gratin-de-courgettes-au-parmesan.jpg) no-repeat 50% 50%;background-size:cover;"></div>
+                </a>
+            </div>
+            <div class="grid_last">
+                <span class="bu_cuisine_title_4">
+                    <a href="/recette/318282-gratin-de-courgettes">
+                        Gratin de courgettes au parmesan                    </a>
+                </span>
+                                            <p class="bu_cuisine_title_depose">Déposée le 20 mars</p>
+                                        <p class="bu_cuisine_chapeau">
+                    LE gratin de courgettes. Une merveille.                </p>
+            </div>
+
+            
+        </article>
+                    </div>            </div>
+                        </li>
+                                <li>
+                            <div class="grid_line grid--norwd gutter">            <div class="grid_left w50">
+                <article class="grid_line grid--norwd gutter">
+            <div class="grid_left w40">
+                <a class="bu_cuisine_recette_img bu_cuisine_explo_vignettes" href="/recette/222125-gratin-de-courgettes">
+                    <div class="bu_cuisine_img_noborder4" style="background: url(http://icu.linter.fr/150/222126/3116070033/gratin-de-courgettes.jpg) no-repeat 50% 50%;background-size:cover;"></div>
+                </a>
+            </div>
+            <div class="grid_last">
+                <span class="bu_cuisine_title_4">
+                    <a href="/recette/222125-gratin-de-courgettes">
+                        Gratin de courgettes                    </a>
+                </span>
+                                            <p class="bu_cuisine_title_depose">Déposée le 20 mars</p>
+                                        <p class="bu_cuisine_chapeau">
+                    La muscade est facultative mais fait toute l'originalit&eacute; de la...                </p>
+            </div>
+
+            
+        </article>
+                                </div>
+                                <div class="grid_left w50">
+                <article class="grid_line grid--norwd gutter">
+            <div class="grid_left w40">
+                <a class="bu_cuisine_recette_img bu_cuisine_explo_vignettes" href="/recette/131735-gratin-de-courgettes">
+                    <div class="bu_cuisine_img_noborder4" style="background: url(http://icu.linter.fr/150/131737/2973247767/gratin-de-courgettes-authentique.jpg) no-repeat 50% 50%;background-size:cover;"></div>
+                </a>
+            </div>
+            <div class="grid_last">
+                <span class="bu_cuisine_title_4">
+                    <a href="/recette/131735-gratin-de-courgettes">
+                        Gratin de courgettes authentique                    </a>
+                </span>
+                                            <p class="bu_cuisine_title_depose">Déposée le 20 mars</p>
+                                        <p class="bu_cuisine_chapeau">
+                    D&eacute;licieux pour ceux qui aiment les courgettes et enfin un plat...                </p>
+            </div>
+
+            
+        </article>
+                    </div>            </div>
+                    <div class="grid_line grid--norwd gutter">            <div class="grid_left w50">
+                <article class="grid_line grid--norwd gutter">
+            <div class="grid_left w40">
+                <a class="bu_cuisine_recette_img bu_cuisine_explo_vignettes" href="/recette/305500-gratin-de-courgettes-a-la-bolognaise">
+                    <div class="bu_cuisine_img_noborder4" style="background: url(http://icu.linter.fr/150/302863/1340526731/gratin-de-courgettes-a-la-bolognaise.jpg) no-repeat 50% 50%;background-size:cover;"></div>
+                </a>
+            </div>
+            <div class="grid_last">
+                <span class="bu_cuisine_title_4">
+                    <a href="/recette/305500-gratin-de-courgettes-a-la-bolognaise">
+                        Gratin de courgettes &agrave; la bolognaise                    </a>
+                </span>
+                                            <p class="bu_cuisine_title_depose">Déposée le 10 décembre</p>
+                                        <p class="bu_cuisine_chapeau">
+                    Une mani&egrave;re efficace de faire manger des courgettes aux enfants,...                </p>
+            </div>
+
+            
+        </article>
+                                </div>
+                                <div class="grid_left w50">
+                <article class="grid_line grid--norwd gutter">
+            <div class="grid_left w40">
+                <a class="bu_cuisine_recette_img bu_cuisine_explo_vignettes" href="/recette/316277-gratin-de-courgettes-au-thon">
+                    <div class="bu_cuisine_img_noborder4" style="background: url(http://icu.linter.fr/150/324690/1119214915/gratin-de-courgettes-au-thon.jpg) no-repeat 50% 50%;background-size:cover;"></div>
+                </a>
+            </div>
+            <div class="grid_last">
+                <span class="bu_cuisine_title_4">
+                    <a href="/recette/316277-gratin-de-courgettes-au-thon">
+                        Gratin de courgettes au thon                    </a>
+                </span>
+                                            <p class="bu_cuisine_title_depose">Déposée le 21 mars</p>
+                                        <p class="bu_cuisine_chapeau">
+                    Recette rapide, facile qui permet de faire manger des courgettes...                </p>
+            </div>
+
+            
+        </article>
+                    </div>            </div>
+                        </li>
+                                <li>
+                            <div class="grid_line grid--norwd gutter">            <div class="grid_left w50">
+                <article class="grid_line grid--norwd gutter">
+            <div class="grid_left w40">
+                <a class="bu_cuisine_recette_img bu_cuisine_explo_vignettes" href="/recette/300114-gratin-de-courgettes-aux-lardons">
+                    <div class="bu_cuisine_img_noborder4" style="background: url(http://icu.linter.fr/150/300144/1407794750/gratin-de-courgettes-aux-lardons.jpg) no-repeat 50% 50%;background-size:cover;"></div>
+                </a>
+            </div>
+            <div class="grid_last">
+                <span class="bu_cuisine_title_4">
+                    <a href="/recette/300114-gratin-de-courgettes-aux-lardons">
+                        Gratin de courgettes aux lardons                    </a>
+                </span>
+                                            <p class="bu_cuisine_title_depose">Déposée le 10 juillet</p>
+                                        <p class="bu_cuisine_chapeau">
+                                    </p>
+            </div>
+
+            
+        </article>
+                                </div>
+                                <div class="grid_left w50">
+                <article class="grid_line grid--norwd gutter">
+            <div class="grid_left w40">
+                <a class="bu_cuisine_recette_img bu_cuisine_explo_vignettes" href="/recette/318232-gratin-de-courgettes-a-la-mozzarella">
+                    <div class="bu_cuisine_img_noborder4" style="background: url(http://icu.linter.fr/150/327922/1168968264/gratin-de-courgettes-a-la-mozzarella.jpg) no-repeat 50% 50%;background-size:cover;"></div>
+                </a>
+            </div>
+            <div class="grid_last">
+                <span class="bu_cuisine_title_4">
+                    <a href="/recette/318232-gratin-de-courgettes-a-la-mozzarella">
+                        Gratin de courgettes &agrave; la Mozzarella                    </a>
+                </span>
+                                            <p class="bu_cuisine_title_depose">Déposée le 30 juillet</p>
+                                        <p class="bu_cuisine_chapeau">
+                    Un gratin de l&eacute;gumes fondant aux saveurs de Provence.                </p>
+            </div>
+
+            
+        </article>
+                    </div>            </div>
+                    <div class="grid_line grid--norwd gutter">            <div class="grid_left w50">
+                <article class="grid_line grid--norwd gutter">
+            <div class="grid_left w40">
+                <a class="bu_cuisine_recette_img bu_cuisine_explo_vignettes" href="/recette/338841-lasagnes-de-courgettes-sans-feuilles-de-lasagnes">
+                    <div class="bu_cuisine_img_noborder4" style="background: url(http://icu.linter.fr/150/357468/4090676410/lasagnes-de-courgettes-sans-feuilles-de-lasagnes.jpg) no-repeat 50% 50%;background-size:cover;"></div>
+                </a>
+            </div>
+            <div class="grid_last">
+                <span class="bu_cuisine_title_4">
+                    <a href="/recette/338841-lasagnes-de-courgettes-sans-feuilles-de-lasagnes">
+                        Lasagnes de courgettes sans feuilles de lasagnes                    </a>
+                </span>
+                                            <p class="bu_cuisine_title_depose">Déposée le 24 septembre</p>
+                                        <p class="bu_cuisine_chapeau">
+                    Une recette l&eacute;g&egrave;re qui a plu &agrave; toute la famille.                </p>
+            </div>
+
+            
+        </article>
+                                </div>
+                                <div class="grid_left w50">
+                <article class="grid_line grid--norwd gutter">
+            <div class="grid_left w40">
+                <a class="bu_cuisine_recette_img bu_cuisine_explo_vignettes" href="/recette/319782-gratin-de-courgettes-pommes-de-terre-et-mozzarella">
+                    <div class="bu_cuisine_img_noborder4" style="background: url(http://icu.linter.fr/150/330642/1090209723/gratin-de-courgettes-pommes-de-terre-et-mozzarella.jpg) no-repeat 50% 50%;background-size:cover;"></div>
+                </a>
+            </div>
+            <div class="grid_last">
+                <span class="bu_cuisine_title_4">
+                    <a href="/recette/319782-gratin-de-courgettes-pommes-de-terre-et-mozzarella">
+                        Gratin de courgettes, pommes de terre et mozzarella                    </a>
+                </span>
+                                            <p class="bu_cuisine_title_depose">Déposée le  2 novembre</p>
+                                        <p class="bu_cuisine_chapeau">
+                                    </p>
+            </div>
+
+            
+        </article>
+                    </div>            </div>
+                        </li>
+                                <li>
+                            <div class="grid_line grid--norwd gutter">            <div class="grid_left w50">
+                <article class="grid_line grid--norwd gutter">
+            <div class="grid_left w40">
+                <a class="bu_cuisine_recette_img bu_cuisine_explo_vignettes" href="/recette/307680-gratin-riz-courgettes">
+                    <div class="bu_cuisine_img_noborder4" style="background: url(http://icu.linter.fr/150/307145/1169828585/gratin-riz-courgettes.jpg) no-repeat 50% 50%;background-size:cover;"></div>
+                </a>
+            </div>
+            <div class="grid_last">
+                <span class="bu_cuisine_title_4">
+                    <a href="/recette/307680-gratin-riz-courgettes">
+                        Gratin riz courgettes                    </a>
+                </span>
+                                            <p class="bu_cuisine_title_depose">Déposée le 11 juillet</p>
+                                        <p class="bu_cuisine_chapeau">
+                    M&ecirc;me ceux qui n'aiment pas les courgettes en raffolent.                </p>
+            </div>
+
+            
+        </article>
+                                </div>
+                                <div class="grid_left w50">
+                <article class="grid_line grid--norwd gutter">
+            <div class="grid_left w40">
+                <a class="bu_cuisine_recette_img bu_cuisine_explo_vignettes" href="/recette/312238-gratin-de-courgettes-au-chevre">
+                    <div class="bu_cuisine_img_noborder4" style="background: url(http://icu.linter.fr/150/317533/1134858021/gratin-de-courgettes-au-chevre.jpg) no-repeat 50% 50%;background-size:cover;"></div>
+                </a>
+            </div>
+            <div class="grid_last">
+                <span class="bu_cuisine_title_4">
+                    <a href="/recette/312238-gratin-de-courgettes-au-chevre">
+                        Gratin de courgettes au ch&egrave;vre                    </a>
+                </span>
+                                            <p class="bu_cuisine_title_depose">Déposée le 16 juin</p>
+                                        <p class="bu_cuisine_chapeau">
+                    Un gratin l&eacute;ger et d&eacute;licieux qui peut aussi se manger froid en...                </p>
+            </div>
+
+            
+        </article>
+                    </div>            </div>
+                    <div class="grid_line grid--norwd gutter">            <div class="grid_left w50">
+                <article class="grid_line grid--norwd gutter">
+            <div class="grid_left w40">
+                <a class="bu_cuisine_recette_img bu_cuisine_explo_vignettes" href="/recette/336676-courgettes-rondes-farcies">
+                    <div class="bu_cuisine_img_noborder4" style="background: url(http://icu.linter.fr/150/354465/1202222751/courgettes-rondes-farcies.jpg) no-repeat 50% 50%;background-size:cover;"></div>
+                </a>
+            </div>
+            <div class="grid_last">
+                <span class="bu_cuisine_title_4">
+                    <a href="/recette/336676-courgettes-rondes-farcies">
+                        Courgettes rondes farcies                    </a>
+                </span>
+                                            <p class="bu_cuisine_title_depose">Déposée le 11 juin</p>
+                                        <p class="bu_cuisine_chapeau">
+                    Un plat complet pour le d&icirc;ner.                </p>
+            </div>
+
+            
+        </article>
+                                </div>
+                                <div class="grid_left w50">
+                <article class="grid_line grid--norwd gutter">
+            <div class="grid_left w40">
+                <a class="bu_cuisine_recette_img bu_cuisine_explo_vignettes" href="/recette/313550-tomates-et-mozzarella-en-crumble">
+                    <div class="bu_cuisine_img_noborder4" style="background: url(http://icu.linter.fr/150/319657/1245589914/tomates-et-mozzarella-en-crumble.jpg) no-repeat 50% 50%;background-size:cover;"></div>
+                </a>
+            </div>
+            <div class="grid_last">
+                <span class="bu_cuisine_title_4">
+                    <a href="/recette/313550-tomates-et-mozzarella-en-crumble">
+                        Tomates et mozzarella en crumble                    </a>
+                </span>
+                                            <p class="bu_cuisine_title_depose">Déposée le 20 septembre</p>
+                                        <p class="bu_cuisine_chapeau">
+                    Le classique revisit&eacute;.                </p>
+            </div>
+
+            
+        </article>
+                    </div>            </div>
+                        </li>
+                            </ul>
+        </div>
+    </section>    
+        
+<div id='divVideoStepAdBottom' class='divVideoStep'></div>
+                <div id='divVideoStepFallback'></div>
+                <input type='hidden' id='_videoStepMinifiedScript+16' value='1167' />
+                <input type='hidden' id='_videoStepScriptTypeV1' class='videoStepScriptType' value='19' />
+                <div id='divVideoStep+16' class='divVideoStep'> </div> 
+                <script type='text/javascript'> 
+                    ( function () {
+                        if(typeof _gaq != 'undefined'){
+                            _gaq.push(['_trackEvent','ccmcms/contents','advertising/videostep','show',1,true]);
+                        }
+                        var vs = document.createElement('script');
+                        vs.type = 'text/javascript';
+                        vs.async = true; vs.src = 'http://kweb.videostep.com/GetLink';
+                        var s = document.getElementsByTagName('script')[0];
+                        s.parentNode.insertBefore(vs, s);
+                    })(); 
+                </script>
+<div id="lig_benchmark_journaldesfemmes_smartbox_cuisine" style="margin-bottom:20px"></div>
+<script id="init_script_ligatus" data-urlligatus="//i.ligatus.com/fr-placements/containers/benchmark/2015/journaldesfemmes/tc-cuisine.js" src="http://r.ccmbg.com/js.php?m=ligatusvideostep&v=201506161800" async defer></script>
+
+
+    <h2 class="bu_cuisine_title_2 bu_cuisine_oneline_ellipsis">
+        Avis sur la recette <span>Crumble &agrave; la courgette et &agrave; la tomate</span>
+    </h2>
+    <div class="grid_line gutter grid--norwd">
+        <div class="grid_left w50">
+            <div class="bu_cuisine_bloc_greybg2 bu_cuisine_bloc_avis">
+                <p class="bu_cuisine_title_6 ">J'ai déjà fait cette recette</p>
+                <a class="bu_cuisine_avis_btn jCommentBar" href="#avis">Donner mon avis</a>
+            </div>
+        </div>
+        <div class="grid_last">
+            <div class="bu_cuisine_bloc_greybg2 bu_cuisine_bloc_avis--txtC">
+                <span class="bu_cuisine_moyenne">Note moyenne :</span>
+                <br>
+                    <p class="bu_cuisine_title_notes">
+                        <span class="jAverage">5</span>
+                    </p>
+                <br>
+                <div class="bu_cuisine_moyenne">
+                    <span class="jStar">
+                    <span class="bu_cuisine_ystar"></span><span class="bu_cuisine_ystar"></span><span class="bu_cuisine_ystar"></span><span class="bu_cuisine_ystar"></span><span class="bu_cuisine_ystar"></span>                                        </span>
+                </div>
+                <br>
+                    <p class="bu_cuisine_title_notes">
+                        <span class="count--italic"> (<span class="jNbNote">8</span> avis) </span>
+                    </p>
+            </div>
+        </div>
+    </div>
+
+    <section class="listContainer" id="jRecipeCommentList">
+                <div class="grid_line bu_cuisine_avis">
+                                <span class="bu_cuisine_avis_auteur reviewer">
+            Fabulous<em>&nbsp;-&nbsp;23 août 2015</em>
+                </span>
+                                <div class="grid_line">
+                    <div class="bu_cuisine_recette_notes">
+                            <span class="bu_cuisine_ystar"></span><span class="bu_cuisine_ystar"></span><span class="bu_cuisine_ystar"></span><span class="bu_cuisine_ystar"></span><span class="bu_cuisine_ystar"></span>                    </div>
+                    <span class="bu_cuisine_avis_enunmot">
+                        Excellent                    </span>
+                </div>
+                                <p>
+            5/5, rien à dire, sinon que cette recette très facile à faire est excellente, succulente, délicieuse avec très peu d'ingrédients. Pas besoin d'ajouter quoi que ce soit, surtout pas de concentré de tomates à cette recette qui n'a pas du tout besoin de sauce, c'est un crumble aux courgettes, pas aux tomates! Et franchement, c'est plus que pas mal, c'est super bon! Il faut critiquer les recettes à leur juste valeur, ici, c'est un plat simple, pas un plat de restaurant gastronomique, il faut savoir faire la différence!                </p>
+            </div>
+                        <div class="grid_line bu_cuisine_avis">
+                                <span class="bu_cuisine_avis_auteur reviewer">
+            Poutu<em>&nbsp;-&nbsp;20 août 2015</em>
+                </span>
+                                <div class="grid_line">
+                    <div class="bu_cuisine_recette_notes">
+                            <span class="bu_cuisine_ystar"></span><span class="bu_cuisine_ystar"></span><span class="bu_cuisine_ystar"></span><span class="bu_cuisine_ystar"></span><span class="bu_cuisine_ystar"></span>                    </div>
+                    <span class="bu_cuisine_avis_enunmot">
+                        Excellent                    </span>
+                </div>
+                                <p>
+            Excellent                </p>
+            </div>
+                        <div class="grid_line bu_cuisine_avis">
+                                <span class="bu_cuisine_avis_auteur reviewer">
+            Isabel<em>&nbsp;-&nbsp; 3 août 2015</em>
+                </span>
+                                <div class="grid_line">
+                    <div class="bu_cuisine_recette_notes">
+                            <span class="bu_cuisine_ystar"></span><span class="bu_cuisine_ystar"></span><span class="bu_cuisine_ystar"></span><span class="bu_cuisine_ystar"></span><span class="bu_cuisine_ystar"></span>                    </div>
+                    <span class="bu_cuisine_avis_enunmot">
+                        Excellent                    </span>
+                </div>
+                                <p>
+            Excellent.  Très flatteur . J'ai rajouté quelques tomates séchées . Ça donne un goût de soleil encore plus prononcé !                </p>
+            </div>
+                        <div class="grid_line bu_cuisine_avis">
+                                <span class="bu_cuisine_avis_auteur reviewer">
+            Isabel<em>&nbsp;-&nbsp; 3 août 2015</em>
+                </span>
+                                <p>
+            Excellent.  Très flatteur . J'ai rajouté quelques tomates séchées . Ça donne un goût de soleil encore plus prononcé !                </p>
+            </div>
+                        <div class="grid_line bu_cuisine_avis">
+                                <span class="bu_cuisine_avis_auteur reviewer">
+            jaynes77<em>&nbsp;-&nbsp; 1 août 2015</em>
+                </span>
+                                <div class="grid_line">
+                    <div class="bu_cuisine_recette_notes">
+                            <span class="bu_cuisine_ystar"></span><span class="bu_cuisine_ystar"></span><span class="bu_cuisine_ystar"></span><span class="bu_cuisine_ystar"></span><span class="bu_cuisine_ystar"></span>                    </div>
+                    <span class="bu_cuisine_avis_enunmot">
+                        Excellent                    </span>
+                </div>
+                                <p>
+            Un vrai régal et très facile à faire! J'ai juste rajouté deux petites gousses d'ail hachées avant d'y mettre les tomates. (La prochaine fois je rajouterai une petite poignée de pignons de pin dans le crumble). 
+<br />Nous l'avons dégusté avec une salade de roquette au féta et un petit verre de vin rosé bien frais. Parfait!                </p>
+            </div>
+                        <div class="grid_line bu_cuisine_avis">
+                                <span class="bu_cuisine_avis_auteur reviewer">
+            zepianiste<em>&nbsp;-&nbsp;27 juillet 2015</em>
+                </span>
+                                <div class="grid_line">
+                    <div class="bu_cuisine_recette_notes">
+                            <span class="bu_cuisine_ystar"></span><span class="bu_cuisine_ystar"></span><span class="bu_cuisine_ystar"></span><span class="bu_cuisine_ystar"></span><span class="bu_cuisine_ystar"></span>                    </div>
+                    <span class="bu_cuisine_avis_enunmot">
+                        Excellent                    </span>
+                </div>
+                                <p>
+            Une tuerie! Personne ne voulait en manger...mais quand le premier coup de fourchette à été donné, les assiettes se sont vidées en un clin d'oeil! Le crumble au parmesan donne tout son éclat à cette recette délicieuse. Mon mari qui n'est pas très légumes et moi pas très courgettes avons imprimé cette recette pour la faire et la refaire souvent.
+<br />Merci pour cette superbe recette facile à réaliser                </p>
+            </div>
+                        <div class="grid_line bu_cuisine_avis">
+                                <span class="bu_cuisine_avis_auteur reviewer">
+            Sylvie <em>&nbsp;-&nbsp;22 juillet 2015</em>
+                </span>
+                                <div class="grid_line">
+                    <div class="bu_cuisine_recette_notes">
+                            <span class="bu_cuisine_ystar"></span><span class="bu_cuisine_ystar"></span><span class="bu_cuisine_ystar"></span><span class="bu_cuisine_ystar"></span><span class="bu_cuisine_ystar"></span>                    </div>
+                    <span class="bu_cuisine_avis_enunmot">
+                        Excellent                    </span>
+                </div>
+                                <p>
+            Un régal !!!! Toute la famille à adoré! !! Fait avec les légumes du jardin une merveille! !!<br />                </p>
+            </div>
+                        <div class="grid_line bu_cuisine_avis">
+                                <span class="bu_cuisine_avis_auteur reviewer">
+            Mima<em>&nbsp;-&nbsp;20 juillet 2015</em>
+                </span>
+                                <div class="grid_line">
+                    <div class="bu_cuisine_recette_notes">
+                            <span class="bu_cuisine_ystar"></span><span class="bu_cuisine_ystar"></span><span class="bu_cuisine_ystar"></span><span class="bu_cuisine_ystar"></span><span class="bu_cuisine_ystar"></span>                    </div>
+                    <span class="bu_cuisine_avis_enunmot">
+                        Excellent                    </span>
+                </div>
+                                <p>
+            Délicieuse <br />                </p>
+            </div>
+                        <div class="grid_line bu_cuisine_avis">
+                                <span class="bu_cuisine_avis_auteur reviewer">
+            Marie<em>&nbsp;-&nbsp;20 juillet 2015</em>
+                </span>
+                                <div class="grid_line">
+                    <div class="bu_cuisine_recette_notes">
+                            <span class="bu_cuisine_ystar"></span><span class="bu_cuisine_ystar"></span><span class="bu_cuisine_ystar"></span><span class="bu_cuisine_gstar"></span><span class="bu_cuisine_gstar"></span>                    </div>
+                    <span class="bu_cuisine_avis_enunmot">
+                        Bien                    </span>
+                </div>
+                                <p>
+            Crumble de courgettes et tomates<br />pas mal<br />Ma suggestion : peut être un peu de concentré de tomates pour la sauce.                 </p>
+            </div>
+                        <div class="grid_line bu_cuisine_avis">
+                                <span class="bu_cuisine_avis_auteur reviewer">
+            Magali<em>&nbsp;-&nbsp;18 juillet 2015</em>
+                </span>
+                                <p>
+            Recette facile à réaliser et délicieuse!!!!!!<br />                </p>
+            </div>
+            
+    </section>
+
+    <section class="grid_line jFormPostComment" id="avis">
+        <div class="bu_cuisine_bloc_greybg2 bu_cuisine_avis_depose">
+            <input type="text" value="Ajouter un commentaire"><br><br>
+        </div>
+            </section>
+
+<div id="ba_middle1" class="ba middle1"><script>OAS_AD('Middle1');</script></div>                            </div>
+                                                    </div>
+                    </div>
+                                        <div class="layout_right">
+                                <!-- Mon carnet de Recette -->
+        <aside class="app_box_1 bu_cuisine_box_1 bu_cuisine_box--carnet">
+           <header>
+                <span class="app_title_2">Mon carnet de recette</span>
+            </header>
+            
+                            <a class="bu_cuisine_btn" href="/carnet-recette/">Accéder à mon carnet de recette</a>
+                    </aside>
+    <div id="ba_right" class="ba "><script>OAS_AD('Right');</script></div><!-- Trouver une recette -->
+<aside class="app_box_1 bu_cuisine_box_1 bu_cuisine_search_block">
+    <header>
+        <span class="app_title_2">Trouvez une recette</span>
+    </header>
+    <form action='/s/' role="search" class="app_form_lite bu_cuisine_form_lite">
+        <fieldset>
+            <legend>Moteur de recherche</legend>
+            <input type="search" name="f_libelle" placeholder="Rechercher une recette de cuisine">
+            <button data-icon="!" aria-hidden="true"></button>
+        </fieldset>
+    </form>
+</aside>
+<!-- /Trouver une recette -->
+<div class="app_insitu">
+    <div id="contest" class="bu_ccmeditor"><aside class="app_box_1 bu_cuisine_box_1">
+<span class="app_title_2"><a href="http://cuisine.journaldesfemmes.com/magazine/concours/gain.shtml" class="tooled"></a><span><span><span><span><span><span><span><span><span><span><span><a href="http://cuisine.journaldesfemmes.com/gastronomie/1334051-gagnez-4-combine-plancha-gril-riviera-et-bar/" class="tooled">Concours cuisine</a></span></span></span></span></span></span></span></span></span></span></span></span>
+<div class="bu_ccmeditor"><span style="font-size: 0.875rem; line-height: 1.3;">En août, déposez vos recettes et gagnez l'un des 4 combinés <b>Plancha &amp; Gril de Riviera &amp; Bar&nbsp;</b>d'une valeur unitaire de <b>139,99 €</b>.</span></div><a href="http://cuisine.journaldesfemmes.com/gastronomie/1334051-gagnez-4-combine-plancha-gril-riviera-et-bar/" class="tooled"><div class="bu_ccmeditor"><span style="font-size: 0.875rem; line-height: 1.3;"></span></div><div class="bu_ccmeditor"><figure style="width: 200px" class="component left image tooled" viewbox="true"><img class="img_preview_image tooled" viewbox="true" src="http://image-femmes.linter.fr/image/200/1054519406/2249.jpg" width="200" style="width: 200px;"></figure></div></a><div class="bu_ccmeditor"><figure style="width: 200px" class="component left image tooled" viewbox="true"></figure><span style="font-size: 0.875rem; line-height: 1.3;"><figure style="width: 200px" class="component center block image tooled" viewbox="true"><br></figure></span><span><span><span><span><span><a href="http://cuisine.journaldesfemmes.com/gastronomie/1334051-gagnez-4-combine-plancha-gril-riviera-et-bar/" class="bu_cuisine_btn tooled">PARTICIPEZ</a></span></span></span></span></span></div></aside></div></div>
+<div id="ba_position1" class="ba position1"><script>OAS_AD('Position1');</script></div>
+<aside class="app_box_newsletter">
+
+    <div class="content">
+
+        <div class="grid_row grid--norwd">
+            <div class="grid_col">
+                <span class="app_title_2">Newsletters</span>
+            </div>
+            <div class="grid_col grid_col--middle ccmcss_align_r">                
+                <a href=" http://mailing.ccmbg.com/archive/last-86" target="_blank" class="a_hover">Voir un exemple</a>
+            </div>
+        </div>  
+
+        <form method="post" action="http://ga.ccmbg.com/ss/form.php?form=15" id="frmSS7" class="app_form_lite" target="_blank">
+                            <input type="hidden" id="list_86" name="lists[]" value="86">
+                                <input type="hidden" id="list_75" name="lists[]" value="75">
+                            <input type="hidden" name="format" value="h">
+            <input type="hidden" name="CustomFields[2]" id="CustomFields_2_7" value="FO Journal des Femmes" size='15' maxlength='15'>
+            <fieldset>
+                <legend>Abonnement newsletters</legend>
+                <input type="email" name="email" placeholder="Entrer son email pour s'abonner" autocomplete="email" />
+                <input type="submit" value="OK" />
+            </fieldset>
+        </form>
+
+    </div>
+
+</aside>
+            <aside class="app_channel_box" id="forum">
+                    <h2 class="app_title_1 app_channel_section_title">
+                        <a href="http://cuisiner.journaldesfemmes.com/forum/">Forum<span aria-hidden="true" class="icon-arrow-r"></span></a>
+                    </h2>
+
+                <ul class="app_channel_list app_channel_list--dashed">
+                    
+                        
+                        <li>
+                            <a href="http://cuisiner.journaldesfemmes.com/forum/j-ai-rate-un-plat-18" class="app_channel_label">J'ai raté un plat !</a>
+                            <h3 class="app_channel_title"><a href="http://cuisiner.journaldesfemmes.com/forum/affich-6298419-confiture-rete-liquide">Confiture rete liquide</a></h3>
+                        </li>
+                    
+                        
+                        <li>
+                            <a href="http://cuisiner.journaldesfemmes.com/forum/cafe-des-gourmets-12" class="app_channel_label">Café des gourmets</a>
+                            <h3 class="app_channel_title"><a href="http://cuisiner.journaldesfemmes.com/forum/affich-13169-qui-a-une-recette-pour-faire-de-la-confiture-de-figues">Qui a une recette pour faire de la confiture de figues ?</a></h3>
+                        </li>
+                    
+                        
+                        <li>
+                            <a href="http://cuisiner.journaldesfemmes.com/forum/cuisine-minceur-7" class="app_channel_label">Cuisine minceur</a>
+                            <h3 class="app_channel_title"><a href="http://cuisiner.journaldesfemmes.com/forum/affich-6298074-que-faire-avec-du-vin-de-noix-de-2001">Que faire avec du vin de noix de 2001 ?</a></h3>
+                        </li>
+                                    </ul>
+                <footer>
+                    <a class="app_channel_btn" href="http://cuisiner.journaldesfemmes.com/forum/">Posez vos questions</a>
+                </footer>
+                
+            </aside>
+    <div id="ba_position2" class="ba position2"><script>OAS_AD('Position2');</script></div><aside id="jChroniclesColRight" class="app_box_1 bu_cuisine_box_1 app_box--lastchronicles">
+    <header>
+        <span class="app_title_2">
+            Tout frais tout chaud        </span>
+    </header>
+
+    <div class="app_box_1__ct bu_cuisine_list_posts">
+        <ul>
+        
+            <li class="grid_line gutter grid--norwd">
+                <div class="grid_left">
+                    <a class="bu_cuisine_list_posts__link" href="/recette/1008269-poelee-d-aubergines-aux-pommes">
+                        <span class="bu_cuisine_list_posts__image" style="background-image:url('http://icu.linter.fr/150/10008623/2026639348/poelee-d-aubergines-aux-pommes.jpg');"></span>
+                    </a>
+                </div>
+
+                <div class="grid_last">
+                    <span class="bu_cuisine_title_4">
+                        <a href="/recette/1008269-poelee-d-aubergines-aux-pommes">Po&ecirc;l&eacute;e d'aubergines aux pommes</a>
+                    </span>
+                    <span class="bu_cuisine_tag">Légumes & gratins</span>
+                    <a class="app_link_channel" title="Po&ecirc;l&eacute;e d'aubergines aux pommes" href="/recette/1008269-poelee-d-aubergines-aux-pommes">&raquo;&nbsp;Lire</a>
+                </div>
+            </li>
+
+        
+            <li class="grid_line gutter grid--norwd">
+                <div class="grid_left">
+                    <a class="bu_cuisine_list_posts__link" href="/recette/1008275-gateau-a-la-banane-et-cassonade">
+                        <span class="bu_cuisine_list_posts__image" style="background-image:url('http://icu.linter.fr/150/10008629/1815145207/gateau-a-la-banane-et-cassonade.jpg');"></span>
+                    </a>
+                </div>
+
+                <div class="grid_last">
+                    <span class="bu_cuisine_title_4">
+                        <a href="/recette/1008275-gateau-a-la-banane-et-cassonade">G&acirc;teau &agrave; la banane et cassonade</a>
+                    </span>
+                    <span class="bu_cuisine_tag">Dessert</span>
+                    <a class="app_link_channel" title="G&acirc;teau &agrave; la banane et cassonade" href="/recette/1008275-gateau-a-la-banane-et-cassonade">&raquo;&nbsp;Lire</a>
+                </div>
+            </li>
+
+        
+            <li class="grid_line gutter grid--norwd">
+                <div class="grid_left">
+                    <a class="bu_cuisine_list_posts__link" href="/recette/1008271-coulis-de-tomates">
+                        <span class="bu_cuisine_list_posts__image" style="background-image:url('http://icu.linter.fr/150/10008625/1452794499/coulis-de-tomates.jpg');"></span>
+                    </a>
+                </div>
+
+                <div class="grid_last">
+                    <span class="bu_cuisine_title_4">
+                        <a href="/recette/1008271-coulis-de-tomates">Coulis de tomates</a>
+                    </span>
+                    <span class="bu_cuisine_tag">Sauce</span>
+                    <a class="app_link_channel" title="Coulis de tomates" href="/recette/1008271-coulis-de-tomates">&raquo;&nbsp;Lire</a>
+                </div>
+            </li>
+
+        
+        </ul>
+    </div>
+    <footer>
+        <a href="/derniererecette/">Plus de recettes</a>
+    </footer>
+</aside>
+
+
+<div id="ba_right2" class="ba right2"><script>OAS_AD('Right2');</script></div>    <aside class="jExpander app_box_1 bu_cuisine_box_1 bu_cuisine_box--video">
+        <span class="app_title_2">Vidéos</span>
+        <div id="col_right_cuisine" class="bu_ccmeditor">    <div id="col_right_actualite"><strong>Simple comme des tomates farcies à la viande et pommes de terre</strong>
+        <div class="videoContainer icon_play" aria-hidden="true" data-icon="%">
+            <img data-ressourceid="304584" data-ressourcekey="8225445446" class="image" src="http://cf.c.ooyala.com/k0cHdvczr31Ik1PwVo5USbfEWB4BD-JM/promo249557474" width="268px" height="201px">
+        </div>
+                <footer><a href="Voir">La vidéo</a></footer>
+            </div>  
+    </div>    </aside>
+<div id="ba_position4" class="ba position4"><script>OAS_AD('Position4');</script></div><aside id="jChroniclesColRight" class="app_box_1 bu_cuisine_box_1 app_box--lastchronicles bu_cuisine_diaporama_selection">
+    <header>
+        <span class="app_title_2">
+            C'est de saison        </span>
+    </header>
+
+    <div class="app_box_1__ct bu_cuisine_list_posts">
+        <ul>
+        
+            <li class="grid_line gutter grid--norwd">
+                <div class="grid_left">
+                    <a class="bu_cuisine_list_posts__link" href="/gastronomie/1348341-top-50-recette-ete-estivale-2015/">
+                        <span class="bu_cuisine_list_posts__image" style="background-image:url('http://i-cms.journaldesfemmes.com/image_cms/100/10133683-top-50-des-recettes-estivales-2015.jpg');"></span>
+                    </a>
+                </div>
+
+                <div class="grid_last">
+                    <span class="bu_cuisine_title_4">
+                        <a href="/gastronomie/1348341-top-50-recette-ete-estivale-2015/">Top 50 des recettes estivales 2015</a>
+                    </span>
+                    <a class="app_link_channel" title="Top 50 des recettes estivales 2015" href="/gastronomie/1348341-top-50-recette-ete-estivale-2015/">&raquo;&nbsp;Lire</a>
+                </div>
+            </li>
+
+        
+            <li class="grid_line gutter grid--norwd">
+                <div class="grid_left">
+                    <a class="bu_cuisine_list_posts__link" href="/recette-dessert/1349134-top-5-desserts-mirabelles-preferes/">
+                        <span class="bu_cuisine_list_posts__image" style="background-image:url('http://i-cms.journaldesfemmes.com/image_cms/100/10128589-top-5-de-vos-desserts-aux-mirabelles-preferes.jpg');"></span>
+                    </a>
+                </div>
+
+                <div class="grid_last">
+                    <span class="bu_cuisine_title_4">
+                        <a href="/recette-dessert/1349134-top-5-desserts-mirabelles-preferes/">Top 5 de vos desserts aux mirabelles pr&eacute;f&eacute;r&eacute;s</a>
+                    </span>
+                    <a class="app_link_channel" title="Top 5 de vos desserts aux mirabelles pr&eacute;f&eacute;r&eacute;s" href="/recette-dessert/1349134-top-5-desserts-mirabelles-preferes/">&raquo;&nbsp;Lire</a>
+                </div>
+            </li>
+
+        
+            <li class="grid_line gutter grid--norwd">
+                <div class="grid_left">
+                    <a class="bu_cuisine_list_posts__link" href="/petit-dejeuner/recettes-de-confitures-d-ete/">
+                        <span class="bu_cuisine_list_posts__image" style="background-image:url('http://i-cms.journaldesfemmes.com/image_cms/100/1729028-35-recettes-de-confitures-d-ete.jpg');"></span>
+                    </a>
+                </div>
+
+                <div class="grid_last">
+                    <span class="bu_cuisine_title_4">
+                        <a href="/petit-dejeuner/recettes-de-confitures-d-ete/">35 recettes de confitures d'&eacute;t&eacute;</a>
+                    </span>
+                    <a class="app_link_channel" title="35 recettes de confitures d'&eacute;t&eacute;" href="/petit-dejeuner/recettes-de-confitures-d-ete/">&raquo;&nbsp;Lire</a>
+                </div>
+            </li>
+
+        
+        </ul>
+    </div>
+    <footer>
+        <a href="/selection/">Plus de diaporamas</a>
+    </footer>
+</aside>
+
+
+<aside>
+<div class="fb-page" data-href="https://www.facebook.com/pages/Journal-des-Femmes-Cuisine/127307003960903" data-hide-cover="false" data-show-facepile="true" data-show-posts="false"><div class="fb-xfbml-parse-ignore"><blockquote cite="https://www.facebook.com/pages/Journal-des-Femmes-Cuisine/127307003960903"><a href="https://www.facebook.com/pages/Journal-des-Femmes-Cuisine/127307003960903">Journal des Femmes Cuisine</a></blockquote></div></div>
+</aside>                    </div>
+                                    </div>
+
+                            </div>
+
+            <!-- footerdebbloc -->
+<footer role="contentinfo" class="ccmcss_footer">
+    <div class="layout">
+
+                <aside class="app_footer_linking">
+    <span class="app_footer_linking_title">Recettes à la une</span>
+    <ul>
+        <li><a href="http://cuisine.journaldesfemmes.com/recette-crepes" title="recette crepe">Recette crepe</a></li><!--
+        --><li><a href="http://cuisine.journaldesfemmes.com/recette-gateau-au-chocolat" title="Recette gateau au chocolat">Gateau au chocolat</a></li><!--
+        --><li><a href="http://cuisine.journaldesfemmes.com/recette/305406-fondant-au-chocolat" title="Recette fondant au chocolat">Fondant au chocolat</a></li><!--
+        --><li><a href="http://cuisine.journaldesfemmes.com/recette-tarte-aux-pommes" title="Recette tarte aux pommes">Tarte aux pommes</a></li><!--
+        --><li><a href="http://cuisine.journaldesfemmes.com/recette-cookie" title="Recette cookies">Cookies</a></li><!--
+        --><li><a href="http://cuisine.journaldesfemmes.com/recette/307467-mojito" title="Recette mojito">Mojito</a></li><!--
+        --><li><a href="http://cuisine.journaldesfemmes.com/recette-crumble" title="Recette crumble">Crumble</a></li><!--
+        --><li><a href="http://cuisine.journaldesfemmes.com/recette-macaron" title="Recette macarons">Macarons</a></li>
+    </ul>
+</aside>
+    
+
+<div class="marB20">
+    <ul class="toolLinks">
+        <li><a href="http://magazinedelledonne.it/">Magazine delle donne</a></li>
+        <li><a href="http://arevistadamulher.com.br/">A Revista Da Mulher</a></li>
+        <li><a href="http://hayatouki.com">Hayatouki</a></li>
+        <li><a href="http://www.journaldesfemmes.com/magazine/qui-sommes-nous.shtml">Qui sommes-nous ?</a></li>
+        <li><a href="http://www.journaldesfemmes.com/societe/magazine/1331952-contactez-le-journal-des-femmes/">Contact</a></li>
+        <li><a href="http://www.ccmbenchmark.com/advertising/fr/">Publicité</a></li>
+        <li><a href="http://emploi.journaldunet.com/entreprise/benchmark-group/offres-emploi/206/">Recrutement</a></li>
+        <li><a href="http://www.journaldesfemmes.com/magazine/donnees-personnelles.shtml">Données personnelles</a></li>
+        <li><a href="http://www.journaldesfemmes.com/magazine/mentions-legales.shtml">Mentions légales</a></li>
+            </ul>
+</div>
+            <div class="logo">
+                <a href="http://www.ccmbenchmark.com/">
+                    <hgroup>
+                        <span>CCM Benchmark Group</span>
+                    </hgroup>
+                </a>
+            </div>
+
+            <div class="brands">
+                <a href="http://www.commentcamarche.net/" class="group_ccm" original-title="commentçamarche.net"></a>
+                <a href="http://www.journaldunet.com/" class="group_jdn" original-title="Le Journal du Net"></a>
+                <a href="http://droit-finances.commentcamarche.net/" class="group_df" original-title="Droit-finances.net"></a>
+                <a href="http://www.journaldesfemmes.com/" class="group_jdf" original-title="Journal des femmes"></a>
+                <a href="http://www.linternaute.com/" class="group_linter" original-title="linternaute.com"></a>
+                <a href="http://copainsdavant.linternaute.com/" class="group_copains" original-title="Copains d'avant"></a>
+                <a href="http://sante-medecine.commentcamarche.net/" class="group_ms" original-title="Santé-médecine.net"></a>
+            </div>
+
+            <p class="foot_links">
+                <a href="http://www.linternaute.com/actualite/" title="Infos, news">Actualit&eacute;s</a>,
+                <a href="http://www.linternaute.com/argent/" title="Finances, immobilier, fiscalit&eacute;">Argent</a>,
+                <a href="http://www.linternaute.com/auto/" title="Actualit&eacute; autombile">Auto</a>,
+                <a href="http://www.linternaute.com/bricolage/" title="Bricolage maison">Bricolage</a>,
+                <a href="http://www.linternaute.com/cinema/" title="Films &agrave; l'affiche">Cin&eacute;ma</a>,
+                <a href="http://cuisine.journaldesfemmes.com" title="Recettes cuisine">Cuisine</a>,
+                <a href="http://deco.journaldesfemmes.com" title="D&eacute;coration">D&eacute;co</a>,
+                <a href="http://www.linternaute.com/dictionnaire/fr/" title="Dico fran&ccedil;ais">Dictionnaire</a>,
+                <a href="http://www.journaldunet.com" title="Business, management">Entreprise</a>,
+                <a href="http://www.commentcamarche.net" title="Forum informatique">High-tech</a>,
+                <a href="http://www.linternaute.com/homme/" title="Sport, mode">Homme</a>,
+                <a href="http://www.jeux-gratuits.com" title="Jeux gratuits">Jeux</a>,
+                <a href="http://www.linternaute.com/loisirs/" title="Sorties, bon plans">Loisirs</a>,
+                <a href="http://www.linternaute.com/television/" title="Programme TV">Programme TV</a>,
+                <a href="http://www.linternaute.com/restaurant/" title="Guide restaurants">Restos</a>,
+                <a href="http://sante.journaldesfemmes.com" title="Magazine sant&eacute;">Sant&eacute;</a>,
+                <a href="http://www.linternaute.com/voyage/" title="Guides voyages">Voyage</a>
+            </p>
+                </div>
+</footer>
+<div id="ba_x01" class="ba x01"><script>OAS_AD('x01');</script></div><div id="ba_x02" class="ba x02"><script>OAS_AD('x02');</script></div><div id="ba_topleft" class="ba topleft"><script>OAS_AD('TopLeft');</script></div><script>
+    _eStat_Whap_loaded=0;
+    _eStat_Loaded = typeof eStatWhap != "undefined";
+</script>
+<script src='http://w.estat.com/js/whap.js' type='text/javascript'></script>
+<script>
+    if(!_eStat_Loaded && _eStat_Whap_loaded === 1){
+		_eStat_Loaded = true;
+        eStatWhap.serial("800000206960");
+        eStatWhap.send();
+    }
+</script>
+
+<script>
+    if(typeof _comscore == "undefined"){
+        var _comscore = _comscore || [];
+        _comscore.push({ c1: "2", c2: "13184767" });
+        (function() {
+            var s = document.createElement("script"), el = document.getElementsByTagName("script")[0]; s.async = true;
+            s.src = (document.location.protocol == "https:" ? "https://sb" : "http://b") + ".scorecardresearch.com/beacon.js";
+            el.parentNode.insertBefore(s, el);
+        })();
+    }
+</script>
+
+
+<script type="text/javascript">
+if (new RegExp("iPad","i").test(navigator.userAgent) || (new RegExp("Android","i").test(navigator.userAgent) && !new RegExp("Mobile","i").test(navigator.userAgent))){
+    document.write('<!-- Liste des tags pour le site : CCM_JournalDesFemmes_Site-Tab, Format "Agence" -->');
+    document.write('<!-- Page : jdf_site-tab_interstitiel -->');
+    document.write('<!-- Format : Interstitiel 0x0 -->');
+    document.write('<scr'+'ipt type="text/javascript" src="http://mobile.smartadserver.com/call2/pubmj/58999/440650/12145/M/1440763915/[target]?[countgo]" ></scr'+'ipt>');
+}
+</script>
+
+<!-- temporary test for exploitation -->
+<script type="x-test" id="test_regexp1">
+    if(/linternaute\.com/.test(window.location.host)){}
+</script>
+<script type="x-test" id="test_regexp2">
+    if( /linternaute\.com/.test(window.location.host)){}
+</script>
+<script type="x-test" id="test_src1">
+    g.src ='//dpm.zebestof.com/675/tag.js';
+</script>
+<script type="x-test" id="test_src2">
+    g.src='//dpm.zebestof.com/675/tag.js';
+</script>
+<script type="x-test" id="test_src3">
+    g.src= '//dpm.zebestof.com/675/tag.js';
+</script>
+<script type="x-test" id="test_src4">
+    g.src = '//dpm.zebestof.com/675/tag.js';
+</script>
+<!-- temporary test for exploitation -->
+
+<!-- footerfinbloc -->
+        </div>
+    </div>
+
+    <div id="alternative_sidebar_follower" class="ccmcms_social_bar ccmcms_social_bar--top" style="opacity:0;">
+    <div class="layout">
+        <p>Partager cet article</p>
+        <div class="placeholder"></div>        
+        <a class="icoShare rss" href="http://www.journaldesfemmes.com/rss.shtml">
+            <span></span>
+            RSS
+        </a>        
+                    
+                            <a class="icoShare print" href="http://cuisine.journaldesfemmes.com/recette/1007626-crumble-a-la-courgette-et-a-la-tomate?print" target="_blank" rel="nofollow">
+                    <span></span>
+                    Imprimer                </a>
+                        
+        
+                    
+            <a class="icoShare mail" href="http://sendinfo.linternaute.com/cgi/femmes/" rel="nofollow">
+                <span></span>
+                Envoyer            </a>            
+            </div>
+</div><script type="text/javascript"> $data = {"common":{"lang":"FR","selfurl":"\/recette\/1007626-crumble-a-la-courgette-et-a-la-tomate","status_code":"200","baseUrl":"","connected":false,"staticDomain":"http:\/\/static.ccmbg.com\/www.journaldesfemmes.com","cookieDomain":"journaldesfemmes.com","api":{"facebook":{"uid":0,"app_id":"124793081026414","application":"journaldesfemmes","ga_name":"journaldesfemmes_facebook","ga_name_error":"journaldesfemmes_debug","ga_name_tmp":"journaldesfemmes_tmp","notifications":0,"version":"v2.3"}},"GAEvents":{"click":[{"target":".app_select_navigation a[rel=prev]","category":"ccmcms\/contents","action":"header\/prev","complete":":=>function(e){ window.location = $(this).attr(\"href\"); }","preventDefault":true},{"target":".app_select_navigation a[rel=next]","category":"ccmcms\/contents","action":"header\/next","complete":":=>function(e){ window.location = $(this).attr(\"href\") }","preventDefault":true},{"target":".app_customselect__items a","category":"ccmcms\/contents","action":"header\/menu","complete":":=>function(e){ window.location = $(this).attr(\"href\"); }","preventDefault":true},{"target":".ccmcss_paginator a[rel=next]","category":"ccmcms\/contents","action":"footer\/next","complete":":=>function(e){ window.location = $(this).attr(\"href\"); }","preventDefault":true},{"target":".ccmcss_paginator a[rel=prev]","category":"ccmcms\/contents","action":"footer\/prev","complete":":=>function(e){ window.location = $(this).attr(\"href\"); }","preventDefault":true},{"target":".app_box_1--summary a","category":"ccmcms\/contents","action":"footer\/summary","complete":":=>function(e){ window.location = $(this).attr(\"href\"); }","preventDefault":true}]},"weborama":{"options":{"host":"ccmbenchmarck.solution.weborama.fr","id":468316,"section":"cuisiner","subSection":"","idGroup":468397,"sectionGroup":"Journal des femmes","subSectionGroup":""}}},"ccmcms":{"services":{"config":{"start":false,"step":1,"selector":"#col_middle"},"odeditor":{"start":false},"mapstraction":{"start":false},"rating":{"start":false},"blocks":{"start":false},"facebook":{"start":true,"options":{"scopeList":"email, user_birthday, user_hometown, publish_actions, user_likes, user_actions.news"}},"socialbuttons":{"start":true,"options":{"selector":"#sidebar_follower","alternativeSelector":"#alternative_sidebar_follower","placeholder":".placeholder","resizeable":false,"minWidth":1148,"publisherId":"ra-506574dd5ff1389b","twitterVia":"CuisineJDF","socialList":["fbShare","fb","tweeter","gplus","pinterest"]}},"slider":false,"coverflow":{"start":false,"options":{"selector":".jCoverflow","maxImgWidth":150}},"contents":{"content":{"urlController":"\/c","common":{"view":{"start":false,"selector":"#col_middle"},"form":{"start":false,"selector":"#content"},"common":{"start":true,"selector":"#col_middle"}},"top":{"view":{"start":false,"selector":"#col_middle"},"form":{"start":false,"selector":"#col_middle"},"common":{"start":false,"selector":"#col_middle"}},"summary":{"start":{"start":false}}},"tag":{"common":{"start":false,"selector":"#groupDescForm"}},"embed":[]},"errors":{"controller":[]},"feeds":{"start":false,"sliderAuto":true},"header":{"start":true,"nav":{"sub":{"limit":2,"viewmode":"img","domain":"www.journaldesfemmes.com"}}},"account":{"start":false,"selector":"form[data-formaccount=\"1\"]"},"contentSlide":{"start":false},"linkedin":{"followButton":{"start":false}},"videoexpander":{"start":true,"options":{"host":"http:\/\/p.ccmbg.com\/media\/","adDomain":"jdf"}},"playlist":{"start":false,"options":{"host":"http:\/\/p.ccmbg.com\/media\/","adDomain":"jdf"}},"fileUpload":{"start":false},"croppable":{"start":false},"authorlayer":{"start":false},"fancybox":{"start":true},"newsletterdialog":{"start":false},"aprilfool":{"start":false},"thumbslider":{"start":false},"mosaiccover":{"start":false},"diaporama":{"start":false},"weborama":{"start":true},"cabestanRetargeting":{"start":true},"ciminternetgemius":{"start":true},"trackevent":{"start":true},"nativeAdsMoreDialog":{"start":false},"election":{"start":false},"ckeditor":{"start":false,"options":{"selector":".jCkEditorBlocks"}},"hammer":{"start":true}}},"uforum":{"topicId":"6294672","ufmodule":"recette","ufinfoid":"1007626","uftitle":"Crumble \u00e0 la courgette et \u00e0 la tomate","ufurl":"\/recette\/1007626-crumble-a-la-courgette-et-a-la-tomate"},"ccmUIEvent":[]}</script><script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script><script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js" type="text/javascript"></script><script src="http://r.ccmbg.com/js.php?m=core|lang.fr&v=201508281155" type="text/javascript"></script><script src="http://static.ccmbg.com/www.journaldesfemmes.com/asset/js?m=*|recipe|forum&amp;v=201508071405&amp;lang=fr" class="jAppPackager"></script><script src="http://connect.facebook.net/fr_FR/all.js" type="text/javascript"></script><!--[if lte IE 7]>    
+    <script src="http://static.ccmbg.com/www.journaldesfemmes.com/assets/js/3rd-party/polyfills/fontico.lte-ie7.js"></script>
+    <script src="http://static.ccmbg.com/www.journaldesfemmes.com/assets/js/3rd-party/polyfills/selectivizr-min.js"></script>
+<![endif]--></body>
+</html>
