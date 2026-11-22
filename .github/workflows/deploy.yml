@@ -1,24 +1,43 @@
 name: Deploy cookbook
+
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: write
 
+concurrency:
+  group: pages-deploy
+  cancel-in-progress: true
+
+env:
+  COOK_VERSION: v0.38.1
+  COOK_ASSET: cook-x86_64-unknown-linux-gnu.tar.gz
+
 jobs:
-  build:
+  build-deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Install CookCLI
+      - name: Install CookCLI ${{ env.COOK_VERSION }}
         run: |
-          curl -L https://github.com/cooklang/cookcli/releases/latest/download/cook-x86_64-unknown-linux-gnu.tar.gz | tar xz
-          sudo mv cook /usr/local/bin/
+          base="https://github.com/cooklang/cookcli/releases/download/${COOK_VERSION}"
+          curl -fsSL -O "${base}/${COOK_ASSET}"
+          curl -fsSL -O "${base}/${COOK_ASSET}.sha256"
+          echo "$(cat ${COOK_ASSET}.sha256)  ${COOK_ASSET}" | sha256sum -c -
+          tar xzf "${COOK_ASSET}"
+          sudo install -m 755 cook /usr/local/bin/cook
+          cook --version
 
-      - name: Build site
-        run: cook build web --base-url /${{ github.event.repository.name }}/ --repo-url "https://github.com/${{ github.repository }}"
+      - name: Build static site
+        run: |
+          cook build web \
+            --base-url "/${{ github.event.repository.name }}/" \
+            --repo-url "https://github.com/${{ github.repository }}"
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
