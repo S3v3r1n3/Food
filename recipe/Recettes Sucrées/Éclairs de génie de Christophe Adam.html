@@ -1,0 +1,1904 @@
+<!DOCTYPE html>
+<html lang="en-US" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Éclairs de génie de Christophe Adam - Cook</title>
+    <link rel="icon" type="image/x-icon" href="/Food/static/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/Food/static/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/Food/static/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/Food/static/apple-touch-icon.png">
+    <link rel="manifest" href="/Food/static/site.webmanifest">
+    
+    <link href="/Food/static/css/output.css" rel="stylesheet">
+    <script>
+        // Check for saved theme preference, or check for prefers-color-scheme, or default to light
+        const theme = localStorage.getItem('theme')
+            || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.classList.toggle('dark', theme === 'dark');
+        // False for a guest, or a role below shopper, on a server that requires signing in.
+        window.__CAN_EDIT_LISTS__ = true;
+        // `--recipes-only` and nobody signed in: no shopping list or pantry.
+        window.__RECIPES_ONLY__ = false;
+    </script>
+    <style>
+        .viewport {
+            width: 100%;
+            max-width: 72rem;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        /* Search result keyboard selection. --surface-sunk alone is barely
+           visible against --surface in dark mode, so the accent bar carries
+           the signal. */
+        #search-results a.search-selected {
+            background: var(--accent-soft);
+            box-shadow: inset 3px 0 0 var(--accent);
+        }
+
+        @media print {
+            /* Token values are reset to light in input.css; this resets the
+               browser's own defaults so unstyled text is dark too. */
+            html.dark, html {
+                color-scheme: light !important;
+            }
+
+            * {
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+
+            body {
+                background: white !important;
+                margin: 0;
+                padding: 0;
+            }
+
+            .viewport {
+                max-width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            /* Hide navigation and non-essential elements */
+            nav, #search-container, #search-input, #search-results, .print\:hidden, .breadcrumb {
+                display: none !important;
+            }
+
+            /* Hide all navigation links */
+            a[href="/Food/"] {
+                display: none !important;
+            }
+
+            /* Recipe layout for print: one column */
+            .grid {
+                display: block !important;
+            }
+
+            .md\:col-span-1, .md\:col-span-2 {
+                page-break-inside: avoid;
+                width: 100% !important;
+            }
+
+            /* Square corners on paper */
+            .card, .step-box, .ingredient-row, .recipe-note, .rounded-xl {
+                border-radius: 0 !important;
+            }
+
+            /* Step numbers */
+            .step-number {
+                background: #000 !important;
+                color: #fff !important;
+            }
+
+            /* Images */
+            img {
+                max-height: 300px !important;
+                max-width: 100% !important;
+                height: auto !important;
+                object-fit: contain !important;
+                page-break-inside: avoid;
+                page-break-after: avoid;
+            }
+
+            /* Recipe sections on same page if possible */
+            h2, h3 {
+                page-break-after: avoid;
+            }
+
+            ol, ul {
+                page-break-inside: avoid;
+            }
+
+            /* Compact spacing */
+            .mb-8, .mb-6, .mb-4 {
+                margin-bottom: 0.5rem !important;
+            }
+
+            .p-6 {
+                padding: 0.5rem !important;
+            }
+
+            /* Recipe header */
+            h1 {
+                color: #000 !important;
+                font-size: 1.5rem !important;
+                margin-bottom: 0 !important;
+            }
+
+            /* Shopping list print styles */
+            .lg\:w-2\/5, .xl\:w-1\/3 {
+                display: none !important;
+            }
+
+            #shopping-list-results {
+                font-size: 11pt !important;
+                line-height: 1.2 !important;
+            }
+
+            #shopping-list-results input[type="checkbox"] {
+                display: none !important;
+            }
+
+            #shopping-list-results li .flex-1 {
+                width: auto !important;
+                flex: 1 1 0% !important;
+            }
+
+            #shopping-list-results label {
+                cursor: default !important;
+            }
+
+            #shopping-list-results h2 {
+                font-size: 11pt !important;
+                color: #000 !important;
+                margin-bottom: 0 !important;
+            }
+
+            #shopping-list-results .space-y-2 > * + *,
+            #shopping-list-results ul > * + * {
+                margin-top: 0 !important;
+            }
+
+            #shopping-list-results li {
+                padding: 0 !important;
+                line-height: 1.3 !important;
+                border-bottom: 1px dotted #ccc;
+            }
+
+            #shopping-list-results .card {
+                margin-bottom: 0.15rem !important;
+                padding: 0 !important;
+                border: none !important;
+            }
+
+            /* Menu print styles */
+            #menu-content {
+                font-size: 10pt !important;
+                line-height: 1.4 !important;
+            }
+
+            #menu-content h1 {
+                font-size: 14pt !important;
+                margin-bottom: 0.25rem !important;
+                color: #000 !important;
+            }
+
+            #menu-content .space-y-6 > * + * {
+                margin-top: 0.3rem !important;
+            }
+
+            #menu-content .menu-section {
+                border: 1px solid #ccc !important;
+                border-radius: 0 !important;
+                page-break-inside: avoid;
+            }
+
+            #menu-content .menu-section-header {
+                background: #eee !important;
+                color: #000 !important;
+                padding: 0.15rem 0.5rem !important;
+            }
+
+            #menu-content .menu-section-header h2 {
+                font-size: 11pt !important;
+                color: #000 !important;
+            }
+
+            #menu-content .menu-section-body {
+                padding: 0.25rem 0.5rem !important;
+            }
+
+            #menu-content .menu-section-body .space-y-2 > * + *,
+            #menu-content .menu-section-body > * + * {
+                margin-top: 0.05rem !important;
+            }
+
+            #menu-content .menu-section-body h3 {
+                font-size: 10pt !important;
+                margin-top: 0.2rem !important;
+                margin-bottom: 0 !important;
+            }
+
+            #menu-content .menu-section-body .pl-6 {
+                padding-left: 1rem !important;
+            }
+
+            /* Preserve word spacing in flex lines */
+            #menu-content .menu-section-body .flex {
+                gap: 0.25em !important;
+            }
+
+            #menu-content .ingredient-badge {
+                font-weight: bold !important;
+                color: #000 !important;
+            }
+
+            #menu-content a {
+                color: #000 !important;
+                text-decoration: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-bg text-text">
+    <div class="viewport">
+        <nav class="nav-card relative">
+            <div class="px-3 lg:px-6 py-4 relative">
+                <div class="flex items-center justify-between flex-wrap gap-y-3">
+                    <a href="/Food/index.html" class="order-1 hidden md:flex items-center space-x-2">
+                        <img src="/Food/static/android-chrome-192x192.png" alt="Cook" class="brand-mark h-8 w-8 rounded-md" width="32" height="32">
+                    </a>
+
+                    <div class="relative z-50 order-2 flex-1 min-w-0 mr-2 md:ml-2 md:mr-4" id="search-container">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-faint" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        <input type="text"
+                               id="search-input"
+                               placeholder="Search recipes..."
+                               class="search-input">
+                        <div id="search-results"
+                             class="absolute top-full mt-2 w-full card shadow-[var(--shadow-overlay)] hidden max-h-96 overflow-y-auto"
+                             style="z-index: 9999;">
+                        </div>
+                    </div>
+
+                    <div class="order-3 flex items-center gap-1 lg:gap-2">
+                        
+                        <div class="hidden md:flex items-center gap-1 mr-2 lg:mr-4">
+                            <a href="/Food/index.html"
+                               class="nav-pill active">
+                                Recipes
+                            </a>
+                            
+                            
+                        </div>
+                        
+                        <!-- Inline buttons on md+ screens -->
+                        
+                        <button onclick="showShortcutsHelp()" class="icon-btn hidden md:inline-flex ml-2 print:hidden" aria-label="Keyboard shortcuts" title="Keyboard shortcuts (?)">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </button>
+                        <button onclick="toggleTheme()" class="icon-btn hidden md:inline-flex ml-2 print:hidden" aria-label="Toggle theme">
+                            <svg class="hidden dark:block" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
+                            </svg>
+                            <svg class="block dark:hidden" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                            </svg>
+                        </button>
+                        
+                        <!-- Overflow menu for small screens -->
+                        <div class="relative md:hidden ml-auto" id="more-menu-container">
+                            <button onclick="document.getElementById('more-dropdown').classList.toggle('hidden')" class="icon-btn" aria-label="More options">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+                                </svg>
+                            </button>
+                            <div id="more-dropdown" class="hidden absolute right-0 mt-2 w-56 card shadow-[var(--shadow-overlay)] z-50 py-1">
+                                
+                                <a href="/Food/index.html" class="menu-item active">
+                                    <span>🍳</span> <span>Recipes</span>
+                                </a>
+                                
+                                
+                                <div class="border-t border-line my-1"></div>
+                                
+                                
+                                
+                                <button onclick="showShortcutsHelp(); document.getElementById('more-dropdown').classList.add('hidden');" class="menu-item">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    <span>Keyboard Shortcuts</span>
+                                </button>
+                                <button onclick="toggleTheme(); document.getElementById('more-dropdown').classList.add('hidden');" class="menu-item">
+                                    <svg class="w-4 h-4 hidden dark:block" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path></svg>
+                                    <svg class="w-4 h-4 block dark:hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                                    <span>Toggle Theme</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main>
+            
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Recipe","keywords":"chef, dessert, recette, tester","name":"Éclairs de génie de Christophe Adam","recipeIngredient":[],"recipeInstructions":[{"@type":"HowToStep","text":"# Éclairs de génie de Christophe Adam"},{"@type":"HowToStep","text":"![](../_resources/IMG_1564.PNG)"},{"@type":"HowToStep","text":"![](../_resources/IMG_1565.PNG)"},{"@type":"HowToStep","text":"![](../_resources/IMG_1566.PNG)"},{"@type":"HowToStep","text":"Éclair au café"},{"@type":"HowToStep","text":"**RÉALISATION : Pour 10 individuels, 20 lunch et 30 carolines :**"},{"@type":"HowToStep","text":"**Matériel :**"},{"@type":"HowToStep","text":"* 1 poche pâtissière avec une douille à petits fours (ou une douille cannelée) : j'utilise une douille à petits fours de 15mm, appelée douille PF15."},{"@type":"HowToStep","text":"* 1 poche pâtissière avec une douille unie d'environ 4mm"},{"@type":"HowToStep","text":"**1) La pâte à choux de Christophe Adam (à faire idéalement la veille) :**"},{"@type":"HowToStep","text":"16 cl d'eau (160g)"},{"@type":"HowToStep","text":"70g de beurre"},{"@type":"HowToStep","text":"90g de farine **type 55**"},{"@type":"HowToStep","text":"15g de poudre de lait (demi-écrémé ou entier, le Régilait !)"},{"@type":"HowToStep","text":"160g d'oeuf (environ 3 oeufs)"},{"@type":"HowToStep","text":"3g de sucre en poudre"},{"@type":"HowToStep","text":"3g de fleur de sel"},{"@type":"HowToStep","text":"_Pour réduire les proportions, il suffit de peser les oeufs et de noter leur poids (par exemple si vous voulez n'en faire que deux), puis de faire une règle de 3 pour les autres ingrédients._"},{"@type":"HowToStep","text":"Pour réussir la pâte à choux il y a plusieurs choses à savoir :"},{"@type":"HowToStep","text":"- il faut bien mettre le sel, sinon la pâte ne lève pas"},{"@type":"HowToStep","text":"- les oeufs doivent être à température ambiance (car oeufs froids dans pâte chaude = cata !)"},{"@type":"HowToStep","text":"- le beurre doit être coupé en petits dés dans la casserole, c'est très important : ainsi il fondra plus vite avant que l'eau ne s'évapore."},{"@type":"HowToStep","text":"- Il faut bien dessécher la pâte dans la casserole, mais pas trop non plus !"},{"@type":"HowToStep","text":"- on n'ajoute pas les oeufs en laissant la pâte dans la casserole chaude, mais on transvase cette-dernière dans un récipient froid"},{"@type":"HowToStep","text":"- on bat les oeufs en omelette avant de les incorporer"},{"@type":"HowToStep","text":"- on remue énergiquement après l'incorporation de chaque oeuf"},{"@type":"HowToStep","text":"- on respecte scrupuleusement les consignes de cuisson"},{"@type":"HowToStep","text":"- on pèse tout au gramme près ! - on ne change rien à la recette, rien aux ingrédients !"},{"@type":"HowToStep","text":"Préchauffez le four à 250° chaleur statique, avec une grille sur le deuxième gradin en partant du bas."},{"@type":"HowToStep","text":"Dans une casserole, versez l'eau, puis ajoutez le sel, le sucre, et le beurre coupé en petits dés. Portez le tout à ébullition, puis, dès que le beurre est fondu, ajoutez la poudre de lait. Remuez bien tout en laissant bouillir quelques secondes, et retirez la casserole du feu."},{"@type":"HowToStep","text":"Ajoutez la farine en une fois, puis, à l'aide d'une cuillère en bois (ou pas) remuez énergiquement. Remettez la casserole sur feu moyen et desséchez la pâte en remuant sans arrêt pendant environ 30 secondes : elle doit parfaitement se détacher des bords."},{"@type":"HowToStep","text":"Transvasez la pâte dans un récipient froid ou mieux, dans la cuve de votre robot muni de la feuille (ou fouet plat, ou \"K\"), et ajoutez le premier oeuf. Remuez vivement pour l'incorporer si vous n'avez pas de robot. Lorsque l'oeuf est bien incorporé faites de même avec l'autre oeuf, et ainsi de suite. Avec ces proportions la consistance de la pâte sera parfaite."},{"@type":"HowToStep","text":"Transvasez-la dans une poche munie d'une douille cannelée ou mieux, une douille à petits fours (c'est celle que j'ai utilisée)."},{"@type":"HowToStep","text":"Couchez les éclairs en quinconce sur une plaque à pâtisserie recouverte de papier sulfurisé. Veillez à bien les espacer, car ils gonfleront à la cuisson. Plus on appuie sur la poche à douille, plus l'éclair sera large."},{"@type":"HowToStep","text":"Éteignez maintenant le four, et enfournez pour 10mn."},{"@type":"HowToStep","text":"Allumez ensuite le four à 160°chaleur statique, et prolongez la cuisson de 20 à 30mn suivant la taille des éclairs. ON N'OUVRE PAS LA PORTE DU FOUR AVANT AU MOINS 20MN !"},{"@type":"HowToStep","text":"Si les éclairs sont bien dorés, sortez-les et laissez-les refroidir sur une grille. L'idéal est de les laisser ainsi toute la nuit à température ambiante, pour qu'ils durcissent : ils seront plus faciles à garnir et à glacer le lendemain. Ils retrouveront bien sur leur moelleux une fois garnis."},{"@type":"HowToStep","text":"**2) La crème pâtissière au café :**"},{"@type":"HowToStep","text":"27cl de lait (270g) j'ai mis moitié lait/moitié crème liquide entière"},{"@type":"HowToStep","text":"2 oeufs entiers"},{"@type":"HowToStep","text":"50g de sucre en poudre"},{"@type":"HowToStep","text":"30g de poudre à flan (ou de maïzena)"},{"@type":"HowToStep","text":"30g de beurre"},{"@type":"HowToStep","text":"90g d'infusion (pas trop serrée) de café expresso (ou 20g de _Trablit_)"},{"@type":"HowToStep","text":"Comme je le disais en préambule, j'ai préféré remplacer une partie du lait par de la crème, mais vous n'êtes pas obligés."},{"@type":"HowToStep","text":"En revanche je ne me suis pas pris la tête avec le café, et j'ai préféré mettre du _Trablit_ (c'est un extrait de café). J'ai mis la dose, car je voulais des éclairs assez corsés. Vous pouvez mettre l'extrait de café Vahiné par exemple mais attention : il est beaucoup plus concentré que le Trablit, ne mettez surtout pas 20g ! Je pense que le mieux est d'ajouter le café à la fin puis de goûter et rectifier. Je n'ai pas ajouté les 90g de café comme la recette le préconisait, car j'ai eu peur de me retrouver avec une crème trop liquide. Ça me paraissait beaucoup 90g de liquide en plus, même si je me doute bien que Christophe Adam sait ce qu'il fait évidemment. Mais je ne sais pas pourquoi, ils m'ont fait peur ces 90g..."},{"@type":"HowToStep","text":"Dans une casserole, versez le lait (ou le lait et la crème), et faites tiédir. Dans un récipient, fouettez les oeufs avec le sucre et la poudre à flan. La poudre à flan est très souvent utilisée par les pros pour faire la crème pâtissière, vous en trouverez sur les sites spécialisés. Si vous n'en avez pas, vous pouvez la remplacer par de la maïzena. Versez le lait tiède sur le mélange oeufs/sucre/maïzena, remuez bien et reversez le tout dans la casserole. Portez à ébullition et faîtes cuire 2mn sur feu fort en mélangeant sans arrêt avec une cuillère magique ou un petit fouet. Il faut que la crème pâtissière soit assez épaisse."},{"@type":"HowToStep","text":"Ajoutez ensuite le beurre et le café."},{"@type":"HowToStep","text":"Déposez la crème sur un plat, filmez au contact et réservez au frais."},{"@type":"HowToStep","text":"**3) Le fondant :**"},{"@type":"HowToStep","text":"250g de fondant blanc"},{"@type":"HowToStep","text":"5g d'infusion de café expresso (ou extrait de café à ajuster selon votre goût)"},{"@type":"HowToStep","text":"45g de sucre et 4cl d'eau (je mets 50g de sucre de canne liquide, c'est bien plus pratique !)"},{"@type":"HowToStep","text":"Si vous n'avez pas de sucre de canne liquide, il faut préparer le sirop avec le sucre et l'eau. C'est ce qu'on appelle un sirop à 30° Baumé, ce qui n'a rien à voir avec les degrés Celcius. Il faut simplement porter l'eau et le sucre à ébullition quelques secondes, juste pour faire fondre le sucre. Attendez que ce sirop soit froid avant de l'utiliser."},{"@type":"HowToStep","text":"Faites fondre le fondant sur feu très doux : il ne doit pas dépasser 37°sinon il ne brillera pas; l'idéal c'est 30°. Ajoutez le café (j'ai mis 5g de trablit). Si le fondant n'est pas assez liquide, détendez-le avec le sirop ou le sucre de canne liquide, que vous ajouterez progressivement jusqu'à obtention de la texture souhaitée. Vous n'êtes pas obligés de tout mettre, cela dépend de la texture de votre fondant."},{"@type":"HowToStep","text":"**4) Montage :**"},{"@type":"HowToStep","text":"A l'aide d'une douille très fine ou de la sonde de votre thermomètre de cuisson, faites deux trous sur le dessous des éclairs."},{"@type":"HowToStep","text":"Sortez la crème pâtissière du frais, elle est alors figée. Il faut la détendre en la transvasant dans un récipient et en la fouettant un peu (à la main !) pour lui redonner de l'onctuosité. Versez-la dans une poche munie d'une douille unie de 3mm, et garnissez très généreusement les éclairs."},{"@type":"HowToStep","text":"Plongez ensuite chaque éclair dans le fondant, puis enlevez le surplus de glaçage avec le doigt."},{"@type":"HowToStep","text":"Christophe Adam décore ses éclairs avec de vrais grains de café, mais j'ai choisi ici des grains de café en chocolat, que j'ai trouvés au Franprix !"},{"@type":"HowToStep","text":"**Remarques :**"},{"@type":"HowToStep","text":"- J'ai pour habitude de ne jamais jamais rien faire cuire en mettant deux plaques dans le four. J'attends toujours que la première soit cuite avant d'en mettre une autre. Normalement la pâte à choux ne doit pas attendre, mais je l'ai quand même laissée dans la poche à douille le temps de la cuisson de la première plaque, et ma seconde plaque était tout aussi réussie."},{"@type":"HowToStep","text":"- Les éclairs garnis et glacés se conservent au frais. Sortez-les une demi-heure avant de les déguster"},{"@type":"HowToStep","text":"- La crème pâtissière est une crème QUI NE DOIT JAMAIS SE CONGELER. Pour vous organiser tranquillement, vous pourrez faire les éclairs la veille, et les garnir le lendemain."},{"@type":"HowToStep","text":"- Vous pouvez congeler les éclairs vides sans problème. Il vous suffira ensuite de les laisser quelques minutes dans un four à 180° pour qu'ils retrouvent la bonne texture."},{"@type":"HowToStep","text":"- Comme toutes les recettes à base de crème pâtissière, les éclairs une fois garnis doivent être consommés le jour même."},{"@type":"HowToStep","text":"![](../_resources/IMG_1910.JPG =413x)"}]}</script>
+<div>
+    <nav class="mb-4 breadcrumb print:hidden">
+        <ol class="flex items-center space-x-2 text-sm text-muted">
+            <li><a href="/Food/index.html" class="hover:text-text">Recipes</a></li>
+            
+            <li class="flex items-center">
+                <span class="mx-2 text-faint">/</span>
+                
+                    <a href="/Food/directory/Recettes Sucrées.html" class="hover:text-text">Recettes Sucrées</a>
+                
+            </li>
+            
+            <li class="flex items-center">
+                <span class="mx-2 text-faint">/</span>
+                
+                    <span class="text-text">Éclairs de génie de Christophe Adam</span>
+                
+            </li>
+            
+        </ol>
+    </nav>
+
+    <div class="mb-8">
+        <!-- Recipe image if available -->
+        
+        
+
+        <!-- Title bar with scale and shopping list button -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 print:flex-row print:items-center">
+            <h1 class="text-display font-bold text-text print:text-2xl">
+                Éclairs de génie de Christophe Adam
+            </h1>
+            
+            <div class="flex flex-wrap items-center gap-2 lg:gap-3 print:hidden">
+                
+                <button id="start-cooking-btn" onclick="startCookingMode()" class="btn btn-primary" title="Start Cooking">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span class="hidden lg:inline">Cook</span>
+                </button>
+                
+                <a href="/Food/recipe/Recettes Sucrées/Éclairs de génie de Christophe Adam.cook" download class="btn" title="Download .cook source">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"></path>
+                    </svg>
+                    <span class="hidden lg:inline">.cook</span>
+                </a>
+                
+            </div>
+        </div>
+
+        <!-- Recipe info section -->
+        <div class="space-y-4">
+            <!-- Tags row -->
+            
+            <div class="flex flex-wrap gap-2">
+                
+                <span class="tag">#chef</span>
+                
+                <span class="tag">#dessert</span>
+                
+                <span class="tag">#recette</span>
+                
+                <span class="tag">#tester</span>
+                
+            </div>
+            
+
+            
+
+            <!-- Description if present -->
+            
+            
+
+            <!-- Metadata row -->
+            <div id="metadata-container" class="flex flex-wrap gap-3">
+                
+                
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                <!-- Custom metadata -->
+                
+                
+                <span class="metadata-pill metadata-custom">Created at: 2017-07-23</span>
+                
+                
+                
+                <span class="metadata-pill metadata-custom">Last updated at: 2018-04-02</span>
+                
+                
+            </div>
+
+            
+        </div>
+    </div>
+
+    <div id="recipe-body" class="grid md:grid-cols-3 gap-8 mb-8">
+        <div class="md:col-span-1">
+            <div class="card p-6">
+                <h2 class="text-title font-bold mb-4 text-accent-text">🥘 Ingredients</h2>
+                
+                <!-- Fallback to original flat list for recipes without sections -->
+                <ul class="ingredient-list space-y-3">
+                    
+                </ul>
+                
+
+                
+            </div>
+        </div>
+
+        <div class="md:col-span-2">
+            <div class="card p-6" data-recipe-path="Recettes Sucrées/Éclairs de génie de Christophe Adam">
+                
+                
+                
+                <ol class="step-list space-y-4 ">
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">1</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        # Éclairs de génie de Christophe Adam
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">2</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        ![](../_resources/IMG_1564.PNG)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">3</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        ![](../_resources/IMG_1565.PNG)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">4</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        ![](../_resources/IMG_1566.PNG)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">5</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Éclair au café 
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">6</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **RÉALISATION : Pour 10 individuels, 20 lunch et 30 carolines :**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">7</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Matériel :**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">8</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 1 poche pâtissière avec une douille à petits fours (ou une douille cannelée) : j&#x27;utilise une douille à petits fours de 15mm, appelée douille PF15.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">9</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 1 poche pâtissière avec une douille unie d&#x27;environ 4mm
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">10</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **1) La pâte à choux de Christophe Adam (à faire idéalement la veille) :**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">11</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        16 cl d&#x27;eau (160g)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">12</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        70g de beurre
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">13</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        90g de farine **type 55**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">14</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        15g de poudre de lait (demi-écrémé ou entier, le Régilait !)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">15</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        160g d&#x27;oeuf (environ 3 oeufs)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">16</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        3g de sucre en poudre
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">17</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        3g de fleur de sel
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">18</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _Pour réduire les proportions, il suffit de peser les oeufs et de noter leur poids (par exemple si vous voulez n&#x27;en faire que deux), puis de faire une règle de 3 pour les autres ingrédients._ 
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">19</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Pour réussir la pâte à choux il y a plusieurs choses à savoir :
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">20</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        - il faut bien mettre le sel, sinon la pâte ne lève pas
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">21</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        - les oeufs doivent être à température ambiance (car oeufs froids dans pâte chaude = cata !)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">22</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        - le beurre doit être coupé en petits dés dans la casserole, c&#x27;est très important : ainsi il fondra plus vite avant que l&#x27;eau ne s&#x27;évapore.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">23</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        - Il faut bien dessécher la pâte dans la casserole, mais pas trop non plus !
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">24</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        - on n&#x27;ajoute pas les oeufs en laissant la pâte dans la casserole chaude, mais on transvase cette-dernière dans un récipient froid
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">25</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        - on bat les oeufs en omelette avant de les incorporer
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">26</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        - on remue énergiquement après l&#x27;incorporation de chaque oeuf
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">27</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        - on respecte scrupuleusement les consignes de cuisson
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">28</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        - on pèse tout au gramme près ! - on ne change rien à la recette, rien aux ingrédients !
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">29</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Préchauffez le four à 250° chaleur statique, avec une grille sur le deuxième gradin en partant du bas.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">30</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Dans une casserole, versez l&#x27;eau, puis ajoutez le sel, le sucre, et le beurre coupé en petits dés. Portez le tout à ébullition, puis, dès que le beurre est fondu, ajoutez la poudre de lait. Remuez bien tout en laissant bouillir quelques secondes, et retirez la casserole du feu. 
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">31</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Ajoutez la farine en une fois, puis, à l&#x27;aide d&#x27;une cuillère en bois (ou pas) remuez énergiquement. Remettez la casserole sur feu moyen et desséchez la pâte en remuant sans arrêt pendant environ 30 secondes : elle doit parfaitement se détacher des bords.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">32</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Transvasez la pâte dans un récipient froid ou mieux, dans la cuve de votre robot muni de la feuille (ou fouet plat, ou &quot;K&quot;), et ajoutez le premier oeuf. Remuez vivement pour l&#x27;incorporer si vous n&#x27;avez pas de robot. Lorsque l&#x27;oeuf est bien incorporé faites de même avec l&#x27;autre oeuf, et ainsi de suite. Avec ces proportions la consistance de la pâte sera parfaite. 
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">33</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Transvasez-la dans une poche munie d&#x27;une douille cannelée ou mieux, une douille à petits fours (c&#x27;est celle que j&#x27;ai utilisée). 
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">34</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Couchez les éclairs en quinconce sur une plaque à pâtisserie recouverte de papier sulfurisé. Veillez à bien les espacer, car ils gonfleront à la cuisson. Plus on appuie sur la poche à douille, plus l&#x27;éclair sera large.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">35</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Éteignez maintenant le four, et enfournez pour 10mn.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">36</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Allumez ensuite le four à 160°chaleur statique, et prolongez la cuisson de 20 à 30mn suivant la taille des éclairs. ON N&#x27;OUVRE PAS LA PORTE DU FOUR AVANT AU MOINS 20MN !
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">37</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Si les éclairs sont bien dorés, sortez-les et laissez-les refroidir sur une grille. L&#x27;idéal est de les laisser ainsi toute la nuit à température ambiante, pour qu&#x27;ils durcissent : ils seront plus faciles à garnir et à glacer le lendemain. Ils retrouveront bien sur leur moelleux une fois garnis.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">38</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **2) La crème pâtissière au café :**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">39</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        27cl de lait (270g) j&#x27;ai mis moitié lait/moitié crème liquide entière
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">40</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        2 oeufs entiers
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">41</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        50g de sucre en poudre
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">42</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        30g de poudre à flan (ou de maïzena)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">43</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        30g de beurre
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">44</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        90g d&#x27;infusion (pas trop serrée) de café expresso (ou 20g de _Trablit_)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">45</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Comme je le disais en préambule, j&#x27;ai préféré remplacer une partie du lait par de la crème, mais vous n&#x27;êtes pas obligés. 
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">46</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        En revanche je ne me suis pas pris la tête avec le café, et j&#x27;ai préféré mettre du _Trablit_ (c&#x27;est un extrait de café). J&#x27;ai mis la dose, car je voulais des éclairs assez corsés. Vous pouvez mettre l&#x27;extrait de café Vahiné par exemple mais attention : il est beaucoup plus concentré que le Trablit, ne mettez surtout pas 20g ! Je pense que le mieux est d&#x27;ajouter le café à la fin puis de goûter et rectifier. Je n&#x27;ai pas ajouté les 90g de café comme la recette le préconisait, car j&#x27;ai eu peur de me retrouver avec une crème trop liquide. Ça me paraissait beaucoup 90g de liquide en plus, même si je me doute bien que Christophe Adam sait ce qu&#x27;il fait évidemment. Mais je ne sais pas pourquoi, ils m&#x27;ont fait peur ces 90g...
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">47</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Dans une casserole, versez le lait (ou le lait et la crème), et faites tiédir. Dans un récipient, fouettez les oeufs avec le sucre et la poudre à flan. La poudre à flan est très souvent utilisée par les pros pour faire la crème pâtissière, vous en trouverez sur les sites spécialisés. Si vous n&#x27;en avez pas, vous pouvez la remplacer par de la maïzena. Versez le lait tiède sur le mélange oeufs/sucre/maïzena, remuez bien et reversez le tout dans la casserole. Portez à ébullition et faîtes cuire 2mn sur feu fort en mélangeant sans arrêt avec une cuillère magique ou un petit fouet. Il faut que la crème pâtissière soit assez épaisse. 
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">48</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Ajoutez ensuite le beurre et le café.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">49</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Déposez la crème sur un plat, filmez au contact et réservez au frais.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">50</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **3) Le fondant :**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">51</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        250g de fondant blanc
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">52</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        5g d&#x27;infusion de café expresso (ou extrait de café à ajuster selon votre goût)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">53</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        45g de sucre et 4cl d&#x27;eau (je mets 50g de sucre de canne liquide, c&#x27;est bien plus pratique !)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">54</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Si vous n&#x27;avez pas de sucre de canne liquide, il faut préparer le sirop avec le sucre et l&#x27;eau. C&#x27;est ce qu&#x27;on appelle un sirop à 30° Baumé, ce qui n&#x27;a rien à voir avec les degrés Celcius. Il faut simplement porter l&#x27;eau et le sucre à ébullition quelques secondes, juste pour faire fondre le sucre. Attendez que ce sirop soit froid avant de l&#x27;utiliser.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">55</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Faites fondre le fondant sur feu très doux : il ne doit pas dépasser 37°sinon il ne brillera pas; l&#x27;idéal c&#x27;est 30°. Ajoutez le café (j&#x27;ai mis 5g de trablit). Si le fondant n&#x27;est pas assez liquide, détendez-le avec le sirop ou le sucre de canne liquide, que vous ajouterez progressivement jusqu&#x27;à obtention de la texture souhaitée. Vous n&#x27;êtes pas obligés de tout mettre, cela dépend de la texture de votre fondant.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">56</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **4) Montage :**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">57</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        A l&#x27;aide d&#x27;une douille très fine ou de la sonde de votre thermomètre de cuisson, faites deux trous sur le dessous des éclairs. 
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">58</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Sortez la crème pâtissière du frais, elle est alors figée. Il faut la détendre en la transvasant dans un récipient et en la fouettant un peu (à la main !) pour lui redonner de l&#x27;onctuosité. Versez-la dans une poche munie d&#x27;une douille unie de 3mm, et garnissez très généreusement les éclairs.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">59</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Plongez ensuite chaque éclair dans le fondant, puis enlevez le surplus de glaçage avec le doigt.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">60</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Christophe Adam décore ses éclairs avec de vrais grains de café, mais j&#x27;ai choisi ici des grains de café en chocolat, que j&#x27;ai trouvés au Franprix !
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">61</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Remarques :**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">62</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        - J&#x27;ai pour habitude de ne jamais jamais rien faire cuire en mettant deux plaques dans le four. J&#x27;attends toujours que la première soit cuite avant d&#x27;en mettre une autre. Normalement la pâte à choux ne doit pas attendre, mais je l&#x27;ai quand même laissée dans la poche à douille le temps de la cuisson de la première plaque, et ma seconde plaque était tout aussi réussie. 
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">63</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        - Les éclairs garnis et glacés se conservent au frais. Sortez-les une demi-heure avant de les déguster
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">64</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        - La crème pâtissière est une crème QUI NE DOIT JAMAIS SE CONGELER. Pour vous organiser tranquillement, vous pourrez faire les éclairs la veille, et les garnir le lendemain.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">65</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        - Vous pouvez congeler les éclairs vides sans problème. Il vous suffira ensuite de les laisser quelques minutes dans un four à 180° pour qu&#x27;ils retrouvent la bonne texture.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">66</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        - Comme toutes les recettes à base de crème pâtissière, les éclairs une fois garnis doivent être consommés le jour même.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">67</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        ![](../_resources/IMG_1910.JPG =413x)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                </ol>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<script id="cooking-mode-data" type="application/json">
+{"image":null,"name":"Éclairs de génie de Christophe Adam","scale":1.0,"sections":[{"ingredients":[],"name":null,"stepOffset":0,"steps":[{"globalNumber":1,"image":null,"ingredients":[],"number":1,"type":"step"},{"globalNumber":2,"image":null,"ingredients":[],"number":2,"type":"step"},{"globalNumber":3,"image":null,"ingredients":[],"number":3,"type":"step"},{"globalNumber":4,"image":null,"ingredients":[],"number":4,"type":"step"},{"globalNumber":5,"image":null,"ingredients":[],"number":5,"type":"step"},{"globalNumber":6,"image":null,"ingredients":[],"number":6,"type":"step"},{"globalNumber":7,"image":null,"ingredients":[],"number":7,"type":"step"},{"globalNumber":8,"image":null,"ingredients":[],"number":8,"type":"step"},{"globalNumber":9,"image":null,"ingredients":[],"number":9,"type":"step"},{"globalNumber":10,"image":null,"ingredients":[],"number":10,"type":"step"},{"globalNumber":11,"image":null,"ingredients":[],"number":11,"type":"step"},{"globalNumber":12,"image":null,"ingredients":[],"number":12,"type":"step"},{"globalNumber":13,"image":null,"ingredients":[],"number":13,"type":"step"},{"globalNumber":14,"image":null,"ingredients":[],"number":14,"type":"step"},{"globalNumber":15,"image":null,"ingredients":[],"number":15,"type":"step"},{"globalNumber":16,"image":null,"ingredients":[],"number":16,"type":"step"},{"globalNumber":17,"image":null,"ingredients":[],"number":17,"type":"step"},{"globalNumber":18,"image":null,"ingredients":[],"number":18,"type":"step"},{"globalNumber":19,"image":null,"ingredients":[],"number":19,"type":"step"},{"globalNumber":20,"image":null,"ingredients":[],"number":20,"type":"step"},{"globalNumber":21,"image":null,"ingredients":[],"number":21,"type":"step"},{"globalNumber":22,"image":null,"ingredients":[],"number":22,"type":"step"},{"globalNumber":23,"image":null,"ingredients":[],"number":23,"type":"step"},{"globalNumber":24,"image":null,"ingredients":[],"number":24,"type":"step"},{"globalNumber":25,"image":null,"ingredients":[],"number":25,"type":"step"},{"globalNumber":26,"image":null,"ingredients":[],"number":26,"type":"step"},{"globalNumber":27,"image":null,"ingredients":[],"number":27,"type":"step"},{"globalNumber":28,"image":null,"ingredients":[],"number":28,"type":"step"},{"globalNumber":29,"image":null,"ingredients":[],"number":29,"type":"step"},{"globalNumber":30,"image":null,"ingredients":[],"number":30,"type":"step"},{"globalNumber":31,"image":null,"ingredients":[],"number":31,"type":"step"},{"globalNumber":32,"image":null,"ingredients":[],"number":32,"type":"step"},{"globalNumber":33,"image":null,"ingredients":[],"number":33,"type":"step"},{"globalNumber":34,"image":null,"ingredients":[],"number":34,"type":"step"},{"globalNumber":35,"image":null,"ingredients":[],"number":35,"type":"step"},{"globalNumber":36,"image":null,"ingredients":[],"number":36,"type":"step"},{"globalNumber":37,"image":null,"ingredients":[],"number":37,"type":"step"},{"globalNumber":38,"image":null,"ingredients":[],"number":38,"type":"step"},{"globalNumber":39,"image":null,"ingredients":[],"number":39,"type":"step"},{"globalNumber":40,"image":null,"ingredients":[],"number":40,"type":"step"},{"globalNumber":41,"image":null,"ingredients":[],"number":41,"type":"step"},{"globalNumber":42,"image":null,"ingredients":[],"number":42,"type":"step"},{"globalNumber":43,"image":null,"ingredients":[],"number":43,"type":"step"},{"globalNumber":44,"image":null,"ingredients":[],"number":44,"type":"step"},{"globalNumber":45,"image":null,"ingredients":[],"number":45,"type":"step"},{"globalNumber":46,"image":null,"ingredients":[],"number":46,"type":"step"},{"globalNumber":47,"image":null,"ingredients":[],"number":47,"type":"step"},{"globalNumber":48,"image":null,"ingredients":[],"number":48,"type":"step"},{"globalNumber":49,"image":null,"ingredients":[],"number":49,"type":"step"},{"globalNumber":50,"image":null,"ingredients":[],"number":50,"type":"step"},{"globalNumber":51,"image":null,"ingredients":[],"number":51,"type":"step"},{"globalNumber":52,"image":null,"ingredients":[],"number":52,"type":"step"},{"globalNumber":53,"image":null,"ingredients":[],"number":53,"type":"step"},{"globalNumber":54,"image":null,"ingredients":[],"number":54,"type":"step"},{"globalNumber":55,"image":null,"ingredients":[],"number":55,"type":"step"},{"globalNumber":56,"image":null,"ingredients":[],"number":56,"type":"step"},{"globalNumber":57,"image":null,"ingredients":[],"number":57,"type":"step"},{"globalNumber":58,"image":null,"ingredients":[],"number":58,"type":"step"},{"globalNumber":59,"image":null,"ingredients":[],"number":59,"type":"step"},{"globalNumber":60,"image":null,"ingredients":[],"number":60,"type":"step"},{"globalNumber":61,"image":null,"ingredients":[],"number":61,"type":"step"},{"globalNumber":62,"image":null,"ingredients":[],"number":62,"type":"step"},{"globalNumber":63,"image":null,"ingredients":[],"number":63,"type":"step"},{"globalNumber":64,"image":null,"ingredients":[],"number":64,"type":"step"},{"globalNumber":65,"image":null,"ingredients":[],"number":65,"type":"step"},{"globalNumber":66,"image":null,"ingredients":[],"number":66,"type":"step"},{"globalNumber":67,"image":null,"ingredients":[],"number":67,"type":"step"}]}]}
+</script>
+
+
+
+        </main>
+
+        
+        <footer class="mt-12 mb-6 text-center text-sm text-faint print:hidden">
+            Built with
+            <a href="https://cooklang.org/cli/" class="text-accent-text hover:underline" target="_blank" rel="noopener">CookCLI</a>
+            
+            &middot;
+            <a href="https://github.com/S3v3r1n3/Food" class="text-accent-text hover:underline" target="_blank" rel="noopener">View source</a>
+            
+        </footer>
+        
+    </div>
+
+    <script>
+        // Theme toggle function
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.classList.contains('dark') ? 'dark' : 'light';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+            html.classList.toggle('dark');
+            localStorage.setItem('theme', newTheme);
+        }
+    </script>
+
+    
+    <script>window.__PREFIX__ = "/Food";</script>
+    <script src="/Food/static/js/search.js"></script>
+    
+
+    <!-- URL prefix for JavaScript -->
+    <script>
+        window.__PREFIX__ = "/Food";
+        window.__STATIC_MODE__ = true;
+        window.__STRINGS__ = { close: "Close" };
+        // Bring the visitor back to this page after signing in.
+        document.querySelectorAll('[data-login-link]').forEach((link) => {
+            const prefix = window.__PREFIX__;
+            const path = location.pathname.startsWith(prefix)
+                ? location.pathname.slice(prefix.length)
+                : location.pathname;
+            if (path === '/login') return;
+            link.href = `${prefix}/login?next=${encodeURIComponent((path || '/') + location.search)}`;
+        });
+    </script>
+
+    <!-- Keyboard shortcuts -->
+    <script src="/Food/static/js/keyboard-shortcuts.js"></script>
+    <!-- Expose showShortcutsHelp globally for the help button -->
+    <script>
+        // showShortcutsHelp is defined in keyboard-shortcuts.js
+        // This ensures it's available for the onclick handler
+        if (typeof showShortcutsHelp === 'undefined') {
+            window.showShortcutsHelp = function() {
+                console.warn('Keyboard shortcuts not loaded');
+            };
+        }
+    </script>
+
+    
+<link rel="stylesheet" href="/Food/static/css/cooking-mode.css">
+<script src="/Food/static/js/cooking-mode.js"></script>
+<script src="/Food/static/js/timers.js"></script>
+
+</body>
+</html>

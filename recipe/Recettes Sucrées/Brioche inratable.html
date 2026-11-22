@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="en-US" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brioche inratable - Cook</title>
+    <link rel="icon" type="image/x-icon" href="/Food/static/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/Food/static/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/Food/static/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/Food/static/apple-touch-icon.png">
+    <link rel="manifest" href="/Food/static/site.webmanifest">
+    
+    <link href="/Food/static/css/output.css" rel="stylesheet">
+    <script>
+        // Check for saved theme preference, or check for prefers-color-scheme, or default to light
+        const theme = localStorage.getItem('theme')
+            || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.classList.toggle('dark', theme === 'dark');
+        // False for a guest, or a role below shopper, on a server that requires signing in.
+        window.__CAN_EDIT_LISTS__ = true;
+        // `--recipes-only` and nobody signed in: no shopping list or pantry.
+        window.__RECIPES_ONLY__ = false;
+    </script>
+    <style>
+        .viewport {
+            width: 100%;
+            max-width: 72rem;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        /* Search result keyboard selection. --surface-sunk alone is barely
+           visible against --surface in dark mode, so the accent bar carries
+           the signal. */
+        #search-results a.search-selected {
+            background: var(--accent-soft);
+            box-shadow: inset 3px 0 0 var(--accent);
+        }
+
+        @media print {
+            /* Token values are reset to light in input.css; this resets the
+               browser's own defaults so unstyled text is dark too. */
+            html.dark, html {
+                color-scheme: light !important;
+            }
+
+            * {
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+
+            body {
+                background: white !important;
+                margin: 0;
+                padding: 0;
+            }
+
+            .viewport {
+                max-width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            /* Hide navigation and non-essential elements */
+            nav, #search-container, #search-input, #search-results, .print\:hidden, .breadcrumb {
+                display: none !important;
+            }
+
+            /* Hide all navigation links */
+            a[href="/Food/"] {
+                display: none !important;
+            }
+
+            /* Recipe layout for print: one column */
+            .grid {
+                display: block !important;
+            }
+
+            .md\:col-span-1, .md\:col-span-2 {
+                page-break-inside: avoid;
+                width: 100% !important;
+            }
+
+            /* Square corners on paper */
+            .card, .step-box, .ingredient-row, .recipe-note, .rounded-xl {
+                border-radius: 0 !important;
+            }
+
+            /* Step numbers */
+            .step-number {
+                background: #000 !important;
+                color: #fff !important;
+            }
+
+            /* Images */
+            img {
+                max-height: 300px !important;
+                max-width: 100% !important;
+                height: auto !important;
+                object-fit: contain !important;
+                page-break-inside: avoid;
+                page-break-after: avoid;
+            }
+
+            /* Recipe sections on same page if possible */
+            h2, h3 {
+                page-break-after: avoid;
+            }
+
+            ol, ul {
+                page-break-inside: avoid;
+            }
+
+            /* Compact spacing */
+            .mb-8, .mb-6, .mb-4 {
+                margin-bottom: 0.5rem !important;
+            }
+
+            .p-6 {
+                padding: 0.5rem !important;
+            }
+
+            /* Recipe header */
+            h1 {
+                color: #000 !important;
+                font-size: 1.5rem !important;
+                margin-bottom: 0 !important;
+            }
+
+            /* Shopping list print styles */
+            .lg\:w-2\/5, .xl\:w-1\/3 {
+                display: none !important;
+            }
+
+            #shopping-list-results {
+                font-size: 11pt !important;
+                line-height: 1.2 !important;
+            }
+
+            #shopping-list-results input[type="checkbox"] {
+                display: none !important;
+            }
+
+            #shopping-list-results li .flex-1 {
+                width: auto !important;
+                flex: 1 1 0% !important;
+            }
+
+            #shopping-list-results label {
+                cursor: default !important;
+            }
+
+            #shopping-list-results h2 {
+                font-size: 11pt !important;
+                color: #000 !important;
+                margin-bottom: 0 !important;
+            }
+
+            #shopping-list-results .space-y-2 > * + *,
+            #shopping-list-results ul > * + * {
+                margin-top: 0 !important;
+            }
+
+            #shopping-list-results li {
+                padding: 0 !important;
+                line-height: 1.3 !important;
+                border-bottom: 1px dotted #ccc;
+            }
+
+            #shopping-list-results .card {
+                margin-bottom: 0.15rem !important;
+                padding: 0 !important;
+                border: none !important;
+            }
+
+            /* Menu print styles */
+            #menu-content {
+                font-size: 10pt !important;
+                line-height: 1.4 !important;
+            }
+
+            #menu-content h1 {
+                font-size: 14pt !important;
+                margin-bottom: 0.25rem !important;
+                color: #000 !important;
+            }
+
+            #menu-content .space-y-6 > * + * {
+                margin-top: 0.3rem !important;
+            }
+
+            #menu-content .menu-section {
+                border: 1px solid #ccc !important;
+                border-radius: 0 !important;
+                page-break-inside: avoid;
+            }
+
+            #menu-content .menu-section-header {
+                background: #eee !important;
+                color: #000 !important;
+                padding: 0.15rem 0.5rem !important;
+            }
+
+            #menu-content .menu-section-header h2 {
+                font-size: 11pt !important;
+                color: #000 !important;
+            }
+
+            #menu-content .menu-section-body {
+                padding: 0.25rem 0.5rem !important;
+            }
+
+            #menu-content .menu-section-body .space-y-2 > * + *,
+            #menu-content .menu-section-body > * + * {
+                margin-top: 0.05rem !important;
+            }
+
+            #menu-content .menu-section-body h3 {
+                font-size: 10pt !important;
+                margin-top: 0.2rem !important;
+                margin-bottom: 0 !important;
+            }
+
+            #menu-content .menu-section-body .pl-6 {
+                padding-left: 1rem !important;
+            }
+
+            /* Preserve word spacing in flex lines */
+            #menu-content .menu-section-body .flex {
+                gap: 0.25em !important;
+            }
+
+            #menu-content .ingredient-badge {
+                font-weight: bold !important;
+                color: #000 !important;
+            }
+
+            #menu-content a {
+                color: #000 !important;
+                text-decoration: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-bg text-text">
+    <div class="viewport">
+        <nav class="nav-card relative">
+            <div class="px-3 lg:px-6 py-4 relative">
+                <div class="flex items-center justify-between flex-wrap gap-y-3">
+                    <a href="/Food/index.html" class="order-1 hidden md:flex items-center space-x-2">
+                        <img src="/Food/static/android-chrome-192x192.png" alt="Cook" class="brand-mark h-8 w-8 rounded-md" width="32" height="32">
+                    </a>
+
+                    <div class="relative z-50 order-2 flex-1 min-w-0 mr-2 md:ml-2 md:mr-4" id="search-container">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-faint" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        <input type="text"
+                               id="search-input"
+                               placeholder="Search recipes..."
+                               class="search-input">
+                        <div id="search-results"
+                             class="absolute top-full mt-2 w-full card shadow-[var(--shadow-overlay)] hidden max-h-96 overflow-y-auto"
+                             style="z-index: 9999;">
+                        </div>
+                    </div>
+
+                    <div class="order-3 flex items-center gap-1 lg:gap-2">
+                        
+                        <div class="hidden md:flex items-center gap-1 mr-2 lg:mr-4">
+                            <a href="/Food/index.html"
+                               class="nav-pill active">
+                                Recipes
+                            </a>
+                            
+                            
+                        </div>
+                        
+                        <!-- Inline buttons on md+ screens -->
+                        
+                        <button onclick="showShortcutsHelp()" class="icon-btn hidden md:inline-flex ml-2 print:hidden" aria-label="Keyboard shortcuts" title="Keyboard shortcuts (?)">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </button>
+                        <button onclick="toggleTheme()" class="icon-btn hidden md:inline-flex ml-2 print:hidden" aria-label="Toggle theme">
+                            <svg class="hidden dark:block" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
+                            </svg>
+                            <svg class="block dark:hidden" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                            </svg>
+                        </button>
+                        
+                        <!-- Overflow menu for small screens -->
+                        <div class="relative md:hidden ml-auto" id="more-menu-container">
+                            <button onclick="document.getElementById('more-dropdown').classList.toggle('hidden')" class="icon-btn" aria-label="More options">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+                                </svg>
+                            </button>
+                            <div id="more-dropdown" class="hidden absolute right-0 mt-2 w-56 card shadow-[var(--shadow-overlay)] z-50 py-1">
+                                
+                                <a href="/Food/index.html" class="menu-item active">
+                                    <span>🍳</span> <span>Recipes</span>
+                                </a>
+                                
+                                
+                                <div class="border-t border-line my-1"></div>
+                                
+                                
+                                
+                                <button onclick="showShortcutsHelp(); document.getElementById('more-dropdown').classList.add('hidden');" class="menu-item">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    <span>Keyboard Shortcuts</span>
+                                </button>
+                                <button onclick="toggleTheme(); document.getElementById('more-dropdown').classList.add('hidden');" class="menu-item">
+                                    <svg class="w-4 h-4 hidden dark:block" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path></svg>
+                                    <svg class="w-4 h-4 block dark:hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                                    <span>Toggle Theme</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main>
+            
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Recipe","image":"/Food/api/static/Recettes%20Sucr%C3%A9es/Brioche%20inratable.png","keywords":"MAP, pains, recette","name":"Brioche inratable","recipeIngredient":[],"recipeInstructions":[{"@type":"HowToStep","text":"# Brioche inratable"},{"@type":"HowToStep","text":"4 personnes Préparation: 120 min + **1 nuit de repos** Cuisson: 30 min"},{"@type":"HowToStep","text":"**Ingrédients X2 pour 2 broche**"},{"@type":"HowToStep","text":"* 250 g de farine * 8 cl de lait tiède + 1 càc levure de boulanger diluée dedans (environ 1/2 sachet de levure de boulanger à réhydrater) ou 14g de levure fraîche de boulanger * 30 à 60 g de sucre, * 1 œuf à 2 œufs * 50 à 100 g de beurre mou ou mascarpone * Arôme : fleur d'oranger et rhum ambré voir les 2"},{"@type":"HowToStep","text":"**Préparation**"},{"@type":"HowToStep","text":"* Commencer par mélanger la farine, le lait + levure, le sucre et les œufs un à un. Pétrir pour obtenir une pâte assez homogène, et à vrai dire, assez collante. Puis ajouter le beurre en petits morceaux. Grâce au beurre la pâte sera plus facile à travailler. Pétrir jusqu'à entière répartition du beurre. * `Éviter de rajouter de la farine, sinon elle sera sèche !` * Laisser lever une 1ère fois dans un endroit tiède. Rompre la pâte et repétrir 1 min. * Puis laisser lever toute une nuit au frigo dans un récipient assez grand, car la pâte va gonfler, gonfler, gonfler .... Et surtout couvrir avec du film étirable ou une assiette pour que la pâte ne sèche pas. (minimum 3 heures) * Le lendemain, admirez ... La pâte a envahit (décidemment je suis envahie de tous les côtés !) le récipient. Laisser la pâte à l'air tempéré, pour qu'elle se ramollisse un peu. * Lui donner la forme souhaitée. Badigeonner d'œuf battu et enfourner à four chaud 200°C jusqu'à ce qu'elle soit dorée à souhait (environ 1/2 h, 3/4 d'h) !"},{"@type":"HowToStep","text":"**`Commentaires`**"},{"@type":"HowToStep","text":"![](../_resources/Image.2.png)"},{"@type":"HowToStep","text":"# Brioche de Stephane Lagorce"},{"@type":"HowToStep","text":"**Ingrédients** **pour 6 personnes :**"},{"@type":"HowToStep","text":"* 250 g de farine (type 00 à pizza si possible, riche en gluten) * 3 oeufs entiers * 15 g de sucre * 5 g de sel * 10 g de levure * 15 g de lait * 100g de beurre"},{"@type":"HowToStep","text":"**Préparation :** La veille, pétrissez assez sauvagement la farine avec les œufs, le sucre, le sel, la levure et le lait. Ajoutez ensuite le beurre et mélanger jusqu'à intégration complète. Oubliez une nuit dans le réfrigérateur. Le lendemain, formez votre brioche. Laissez fermenter 2 à 3 bonnes heures si possible à 28°C Enfournez à 165/170°C (surtout pas 180°C comme on le voit partout). Laissez cuire. Lorsque la pâte fait mine de colorer, passez à 150°C et laissez cuire encore un peu."},{"@type":"HowToStep","text":"**Pour 2 belles brioches de 450 g environ** (si vous n'en voulez qu'une, vous coupez les quantités en deux ! Je les fais deux par deux, tellement elles s'évaporent vite … Je fais cuire l'une un jour et l'autre le lendemain ou les deux ensembles si j'ai du monde)"},{"@type":"HowToStep","text":"- 600 gr + 40 g de farine T45 (ou 55 ou 65 ça va aussi) - 80 gr de sucre en poudre - 15g de sel - 240g de tangzhong (expliqué plus bas) - 6 oeufs (ou 2 oeufs et un yaourt nature) - 200 g de lait + 2CS - 250 gr de beurre - 20 g de levure de boulanger fraiche - 1 jus de citron"},{"@type":"HowToStep","text":"COMMENT FAIRE ? PLUSIEURS HEURES AVANT DE FAIRE LA PATE : - Sortir le beurre du frigo, le peser, et le couper en petits morceaux et le mettre dans un petit bol, laisser à l'air libre : il faut qu'il devienne mou (pas fondu, mou mou mou) ; en général, compter au moins 4h à 20° de température ambiante. (si vous oubliez de le sortir d'avance surtout ne pas le faire fondre dans une casserole - ça n'est pas top. Vous pouvez le mettre en lamelles sur une petite assiette en carton sur la box - attention, il mollit vite !!!)"},{"@type":"HowToStep","text":"30MN AVANT de faire la pâte : - Peser la farine, le sucre, le sel - mettre ensemble dans un grand saladier (attention ça double de volume ! prévoir grand) - Peser le lait - réserver - Peser la levure ; la mélanger avec 2 CS de lait, faire un puits dans le mélange farine sucre sel, verser le mélange, touiller avec un peu de farine (léger), recouvrir par de la farine prise sur les bords (que ça soit bien couvert) Laisser reposer sous un torchon mouillé, dans un endroit chaud sans courant d'air jusqu'à ce que la farine du dessus se craquèle (ça devrait prendre environ 30mn) - Sortir les oeufs du frigo - Faire le tangzhong : **Recette du tangzhong (simplissime !) :** Il est recommandé de le préparer la veille ou qques heures avant ; perso j'ai d'excellents résultats en le préparant 30mn avant - et je l'utilise tiède (pas chaud ça pourrait tuer la levure). Pour cette brioche, j'ai utilisé les 200 g de lait pour 40g de farine Mettre le lait à chauffer à feu moyen, et remuer tout en versant la farine en pluie ne va rien se passer durant un tit moment et soudain on sent que ça change de consistance attention de remuer en passant partout pour bien mélanger, ça va épaissir (vite) et devenir comme une \"purée\" gélatineuse. Retirer la casserole du feu en continuant à remuer S'il y a des grumeaux, pas d'inquiétude, ça va disparaitre au pétrissage. Laisser refroidir autour de 30mn (environ, il faut que ça soit tiède, pas chaud), et verser dans un tit bol (en raclant bien la casserole pour pas perdre !) VERIFIER ça a bien craquelé dans le saladier"},{"@type":"HowToStep","text":"**FAIRE LA PATE :** Dans le saladier : - Ajouter le tangzhong TIÈDE - Casser deux oeufs dans un petit bol, en récupérant le jaune dans un petit tupéroir, mettre les blancs dans le saladier, les jaunes au frigo - puis casser les autres oeufs"},{"@type":"HowToStep","text":"Tout mélanger à la main (et oui faut y mettre les mains :D !) et pétrir jusqu'à ce que la pâte soit homogène (ce que je fais : j'attrape une poignée de pâte sur le bord, j'étire, je rabats vers le centre, je tourne et je continue tout le tour autant de tours que besoin) Si tout va bien, on obtient une pâte collante - pas de panique, c'est normal ! Et SEULEMENT à ce moment là, prendre le beurre bien mou, et le rajouter petit à petit à la pâte en malaxant, ne pas en rajouter avant que ce qu'on a mit avant n'aie été bien incorporé à la pâte"},{"@type":"HowToStep","text":"Refaire un tour de pétrissage."},{"@type":"HowToStep","text":"Après cet ajout, la pâte est beaucoup moins collante et plus facile à travailler Couvrir le saladier d'un torchon mouillé d'eau chaude et essoré, et laisser reposer autant que nécessaire (en général, entre 2 et 5h voire plus) : faut que ça double de volume !"},{"@type":"HowToStep","text":"Une fois que la pâte a bien doublé, deux options : A/ soit vous faites les deux brioches à suivre B/ soit vous mettez la pâte au frigo une nuit pour cuire les brioches le lendemain"},{"@type":"HowToStep","text":"**Si option A :** - Mettre la pâte au moins deux heures au frigo - Préparer ses plats ; les chemiser avec du papier cuisson Puis nettoyer, sécher et fariner son plan de travail - Au bout de 2h minima, sortir la pâte, et la verser sur le plan de travail ; vous avez le choix pour la mise en forme, la tresse (mais difficile avec ce genre de pâte, et ça a tendance à \"s'effacer\" à la cuisson), ou les boules.J'ai opté pour quatre belles boules (vous pouvez peser la pâte et la diviser en 3 ... ou y aller au \"pifomètre\") - ou faire plus de boules aussi ! Travailler rapidement chaque boule (faire des rabats : étaler, aplatir, rabattre les côtés vers le centre, retourner, aplatir, recommencer - 3 fois au mois), les rouler dans la farine pour les poudrer, et les mettre dans le plat Torchon mouillé dessus, repos une à deux heures - environ - dans un endroit à l'abri des courants d'air et autour de 20° Quand ça a bien monté, mettre le four à chauffer à 180 Badigeonner le dessus avec du jaune d'oeuf (celui que vous avez mis au frigo en début de recette) Enfourner, laisser cuire 20mn à 180 Baisser à 160 et laisser cuire 20mn (attention je conseille au bout de 15mn de piquer la brioche voir si c'est cuit ou pas, ça peut aller plus ou moins vite selon les fours)"},{"@type":"HowToStep","text":"**Si option B : (celle que je trouve la plus simple)** Rabattre la pâte (se fariner les mains, mais faut pas rêver, ça colle à mort) en attrapant une poignée le long du saladier, la rabattre vers le milieu, et ainsi de suite jusqu'à avoir fait le tour Couvrir d'un film plastique de façon hermétique Mettre au frigo pour la nuit Au matin, reprendre au début de l'option A"},{"@type":"HowToStep","text":"LES TEMPS DE CUISSON DONNÉS SONT ESTIMATIFS ! Surveiller que : - ça ne va pas trop vite (surtout au dessus) et couvrir avec papier alu si besoin au dessus - attention, 5mn de trop peuvent faire la différence entre une brioche \"boof\" et une brioche à se taper le cul par terre ... - que ça soit cuit surtout au milieu ! ma dernière brioche a subi 4 ou 5 coups de couteau avant d'être \"parfaite\" Sortir du four, démouler (suffit de choper le papier cuisson :D ) et mettre sur une grille et couvrir DE SUITE avec un papier alu et un torchon mouillé (ça donne un moelleux ...)"},{"@type":"HowToStep","text":"Laisser refroidir et ... bon appétit !"},{"@type":"HowToStep","text":"# Brioche de boulanger type NANTERRE"},{"@type":"HowToStep","text":"Une brioche de boulanger pour 8 personnes (moule à cake de 26 cm)"},{"@type":"HowToStep","text":"Préparation : 30 min Repos : 4 h 10 Cuisson : 25 min Difficulté : Moyenne"},{"@type":"HowToStep","text":"Ingrédients pour une pâte à brioche :"},{"@type":"HowToStep","text":"* 250 g de farine type 45 * 3 g de sel * 40 g de sucre * 10 g de levure fraîche de boulanger * 150 g d’œufs (3 œufs) * 125 g de beurre (froid) * 1 œuf pour la dorure"},{"@type":"HowToStep","text":"La pâte à brioche :"},{"@type":"HowToStep","text":"* Mettez dans le bol du batteur avec le crochet, la farine, le sucre, le sel et la levure et les * 150 g d’œufs. Respectez bien le poids des œufs et retirez un peu de blancs si vous * dépassez les 150 g. * Prenez soin que la levure ne soit pas en contact avec le sel tant que le batteur n’est pas * en route, car il y a un risque que le sel brûle la levure et donc que votre brioche ne monte pas correctement. * Laissez pétrir à vitesse moyenne jusqu’à ce que le mélange soit homogène. * Ajoutez le beurre coupé en morceaux et laissez pétrir à vitesse moyenne pendant 20 minutes (vitesse 2 au début, puis 4 si la pâte n’est pas assez filante, sur un Kitchenaid). * La pâte va se décoller du bol (ce n’est pas systématique, ce n’est pas grave si ce n’est pas le cas), mais ne l’arrêtez pas si cela ne fait pas 20 minutes que le batteur tourne. * Plus la brioche va pétrir et plus la mie sera filante. * Raclez proprement le bol du batteur puis déposez un film au contact de la pâte. * J’entends souvent parler d’un torchon qu’on place sur la pâte pour la protéger des courants d’air. C’est bien mais le torchon doit être humide, sinon votre pâte va sécher et une croûte va se former (et il n’aura servi à rien). * Laissez la pâte lever pendant 2 heures, en évitant les courants d’air puis dégazez-la en la travaillant un petit peu à la main ou au batteur. Il s’agit de faire sortir le gaz qui s’est formé par l’action de la levure et a fait gonfler la pâte. * Placez la pâte à brioche dans un papier film 10 minutes au congélateur, pour stopper l’action de la levure et la rendre plus facile à travailler (si vous n’avez pas de congélateur placez-la au réfrigérateur, mais au minimum une heure)."},{"@type":"HowToStep","text":"Le façonnage :"},{"@type":"HowToStep","text":"* Sortez la pâte du congélateur (ou du réfrigérateur) et divisez-la en 8 morceaux d’environ 72 g. * Farinez votre plan de travail et boulez chaque morceau de pâte : rabattez la pâte pour former une petite boule (première image). * Retournez ensuite la boule, pour que la partie lisse soit sur le dessus. Placez la paume de votre main sur la pâte, sans l’écraser, simplement en contact, et faites un mouvement circulaire. Vos doigts doivent être écartés et rigides pour empêcher la boule de pâte de s’échapper de votre main. * Placez les boules en deux rangs de quatre dans un moule à cake de 26 cm de long (graissez-le avec de l’huile ou du beurre s’il n’est pas anti-adhésif). * Laissez monter la pâte pendant environ 2 heures, en évitant les courants d’air."},{"@type":"HowToStep","text":"La cuisson de la brioche :"},{"@type":"HowToStep","text":"* Préchauffez votre four à 170°C chaleur tournante. * Battez l’œuf pour la dorure et badigeonnez le dessus de la brioche à l’aide d’un pinceau sans l’écraser, pour ne pas la faire retomber. * Enfournez pendant 25 minutes en surveillant la cuisson. * Si la brioche fonce trop pendant la cuisson, vous pouvez placer une feuille de papier aluminium pour éviter qu’elle ne brûle sur le dessus. * Laissez refroidir la brioche puis démoulez-la. Si elle colle sur les côtés : passez simplement une spatule, retournez le moule sur une grille puis soulevez délicatement. * Il ne reste plus qu’à déguster votre brioche moelleuse à la mie filante comme chez le"},{"@type":"HowToStep","text":"boulanger !"},{"@type":"HowToStep","text":"**Quelle farine utiliser pour réaliser une brioche ?** La pâte à brioche est une pâte levée, il faut utiliser une farine type 45 (ou type 55 si vous n’en trouvez pas) qui est légère et facilite la pousse de la brioche. Pour que le réseaux glutineux se développe, qui donne de la force à la brioche pour qu’elle lève également, il faut aussi une farine riche en protéines : minimum 11%. Je vous recommande donc une farine de qualité, type farine de Gruau ou une farine label rouge. N’hésitez pas à regarder les valeurs nutritionnelles indiquées sur le paquet pour trouver le taux de protéine si vous avez un doute. Si vous n’habitez pas en France, regardez du côté des farines à pizza, qui sont très riche en protéines. **Comment conserver ma brioche ?** L’astuce consiste à préparer et cuire la brioche la veille et à la placer encore tiède (et donc humide) dans une boite hermétique. Cela nécessite d’avoir des boîtes assez grandes je vous l’accorde, mais l’humidité de la brioche sortie du four sera emprisonnée dans la boite et elle ne desséchera pas. Vous pouvez également passer la brioche, ou juste des tranches, quelques secondes au micro-onde. La chaleur va ramollir le beurre présent dans la recette et rendre la brioche à nouveau moelleuse."},{"@type":"HowToStep","text":"**Comment faire pour cuire la brioche avant le petit-déjeuner ?** Vous pouvez faire la seconde levée au réfrigérateur pendant la nuit. Réalisez votre pâte à brioche en fin de journée, puis placez-la au réfrigérateur dès qu’elle est mise en forme. Le lendemain matin vous pourrez directement la mettre à cuire. Vérifiez la cuisson avec une pointe de couteau, la pâte et le moule étant froids il vous faudra peut-être quelques minutes de plus."},{"@type":"HowToStep","text":"**Comment obtenir une brioche à la mie filante ?** La pâte doit être travaillée longtemps au batteur. Même si le mélange vous semble bien, mais que cela ne fait pas 20 minutes qu’elle tourne, n’arrêtez pas ! Il faut du temps pour que le réseau de gluten se forme et que la mie devienne filante et moelleuse."},{"@type":"HowToStep","text":"**Comment faire pousser une brioche ?** Vous pouvez accélérer la pousse de votre brioche (que ce soit la première ou la seconde) en la plaçant dans un four à maximum 30°C (surtout pas plus sinon vous allez faire fondre le beurre et tuer la levure) avec un petit bol d’eau au fond. Cela va faire comme une étuve et votre pâte devrait lever deux fois plus vite. **Puis-je dorer ma brioche avec du lait ?** Si vous n’avez plus d’œuf pour la dorure, vous pouvez utiliser un peu de lait. Votre brioche sera moins brillante mais la dorure ne reste qu’un élément esthétique."}]}</script>
+<div>
+    <nav class="mb-4 breadcrumb print:hidden">
+        <ol class="flex items-center space-x-2 text-sm text-muted">
+            <li><a href="/Food/index.html" class="hover:text-text">Recipes</a></li>
+            
+            <li class="flex items-center">
+                <span class="mx-2 text-faint">/</span>
+                
+                    <a href="/Food/directory/Recettes Sucrées.html" class="hover:text-text">Recettes Sucrées</a>
+                
+            </li>
+            
+            <li class="flex items-center">
+                <span class="mx-2 text-faint">/</span>
+                
+                    <span class="text-text">Brioche inratable</span>
+                
+            </li>
+            
+        </ol>
+    </nav>
+
+    <div class="mb-8">
+        <!-- Recipe image if available -->
+        
+        <div class="mb-6 max-w-4xl mx-auto flex justify-center">
+            <img src="/Food/api/static/Recettes%20Sucr%C3%A9es/Brioche%20inratable.png" alt="Brioche inratable" class="rounded-xl shadow-[var(--shadow-card)] max-w-full h-auto max-h-[500px]">
+        </div>
+        
+
+        <!-- Title bar with scale and shopping list button -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 print:flex-row print:items-center">
+            <h1 class="text-display font-bold text-text print:text-2xl">
+                Brioche inratable
+            </h1>
+            
+            <div class="flex flex-wrap items-center gap-2 lg:gap-3 print:hidden">
+                
+                <button id="start-cooking-btn" onclick="startCookingMode()" class="btn btn-primary" title="Start Cooking">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span class="hidden lg:inline">Cook</span>
+                </button>
+                
+                <a href="/Food/recipe/Recettes Sucrées/Brioche inratable.cook" download class="btn" title="Download .cook source">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"></path>
+                    </svg>
+                    <span class="hidden lg:inline">.cook</span>
+                </a>
+                
+            </div>
+        </div>
+
+        <!-- Recipe info section -->
+        <div class="space-y-4">
+            <!-- Tags row -->
+            
+            <div class="flex flex-wrap gap-2">
+                
+                <span class="tag">#MAP</span>
+                
+                <span class="tag">#pains</span>
+                
+                <span class="tag">#recette</span>
+                
+            </div>
+            
+
+            
+
+            <!-- Description if present -->
+            
+            
+
+            <!-- Metadata row -->
+            <div id="metadata-container" class="flex flex-wrap gap-3">
+                
+                
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                <!-- Custom metadata -->
+                
+                
+                <span class="metadata-pill metadata-custom">Created at: 2016-01-25</span>
+                
+                
+                
+                <span class="metadata-pill metadata-custom">Last updated at: 2025-11-15</span>
+                
+                
+            </div>
+
+            
+        </div>
+    </div>
+
+    <div id="recipe-body" class="grid md:grid-cols-3 gap-8 mb-8">
+        <div class="md:col-span-1">
+            <div class="card p-6">
+                <h2 class="text-title font-bold mb-4 text-accent-text">🥘 Ingredients</h2>
+                
+                <!-- Fallback to original flat list for recipes without sections -->
+                <ul class="ingredient-list space-y-3">
+                    
+                </ul>
+                
+
+                
+            </div>
+        </div>
+
+        <div class="md:col-span-2">
+            <div class="card p-6" data-recipe-path="Recettes Sucrées/Brioche inratable">
+                
+                
+                
+                <ol class="step-list space-y-4 ">
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            <img class="image-step" src="/Food/api/static/Recettes%20Sucr%C3%A9es/Brioche%20inratable.1.png" />
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">1</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        # Brioche inratable
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">2</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        4 personnes Préparation: 120 min + **1 nuit de repos** Cuisson: 30 min
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">3</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Ingrédients X2 pour 2 broche**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">4</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 250 g de farine * 8 cl de lait tiède + 1 càc levure de boulanger diluée dedans (environ 1/2 sachet de levure de boulanger à réhydrater) ou 14g de levure fraîche de boulanger * 30 à 60 g de sucre, * 1 œuf à 2 œufs * 50 à 100 g de beurre mou ou mascarpone * Arôme : fleur d&#x27;oranger et rhum ambré voir les 2
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">5</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Préparation**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">6</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * Commencer par mélanger la farine, le lait + levure, le sucre et les œufs un à un. Pétrir pour obtenir une pâte assez homogène, et à vrai dire, assez collante. Puis ajouter le beurre en petits morceaux. Grâce au beurre la pâte sera plus facile à travailler. Pétrir jusqu&#x27;à entière répartition du beurre. * `Éviter de rajouter de la farine, sinon elle sera sèche !` * Laisser lever une 1ère fois dans un endroit tiède. Rompre la pâte et repétrir 1 min. * Puis laisser lever toute une nuit au frigo dans un récipient assez grand, car la pâte va gonfler, gonfler, gonfler .... Et surtout couvrir avec du film étirable ou une assiette pour que la pâte ne sèche pas. (minimum 3 heures) * Le lendemain, admirez ... La pâte a envahit (décidemment je suis envahie de tous les côtés !) le récipient. Laisser la pâte à l&#x27;air tempéré, pour qu&#x27;elle se ramollisse un peu. * Lui donner la forme souhaitée. Badigeonner d&#x27;œuf battu et enfourner à four chaud 200°C jusqu&#x27;à ce qu&#x27;elle soit dorée à souhait (environ 1/2 h, 3/4 d&#x27;h) !
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">7</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **`Commentaires`**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">8</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        ![](../_resources/Image.2.png)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">9</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        # Brioche de Stephane Lagorce
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">10</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Ingrédients** **pour 6 personnes :** 
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">11</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 250 g de farine (type 00 à pizza si possible, riche en gluten)  * 3 oeufs entiers * 15 g de sucre * 5 g de sel  * 10 g de levure  * 15 g de lait * 100g de beurre
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">12</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Préparation :**  La veille, pétrissez assez sauvagement la farine avec les œufs, le sucre, le sel, la levure et le lait. Ajoutez ensuite le beurre et mélanger jusqu&#x27;à intégration complète. Oubliez une nuit dans le réfrigérateur. Le lendemain, formez votre brioche. Laissez fermenter 2 à 3 bonnes heures si possible à 28°C Enfournez à 165/170°C (surtout pas 180°C comme on le voit partout). Laissez cuire. Lorsque la pâte fait mine de colorer, passez à 150°C et laissez cuire encore un peu.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">13</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Pour 2 belles brioches de 450 g environ** (si vous n&#x27;en voulez qu&#x27;une, vous coupez les quantités en deux ! Je les fais deux par deux, tellement elles s&#x27;évaporent vite … Je fais cuire l&#x27;une un jour et l&#x27;autre le lendemain ou les deux ensembles si j&#x27;ai du monde)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">14</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        - 600 gr + 40 g de farine T45 (ou 55 ou 65 ça va aussi) - 80 gr de sucre en poudre - 15g de sel - 240g de tangzhong (expliqué plus bas) - 6 oeufs (ou 2 oeufs et un yaourt nature) - 200 g de lait + 2CS - 250 gr de beurre - 20 g de levure de boulanger fraiche - 1 jus de citron
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">15</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        COMMENT FAIRE ? PLUSIEURS HEURES AVANT DE FAIRE LA PATE : - Sortir le beurre du frigo, le peser, et le couper en petits morceaux et le mettre dans un petit bol, laisser à l&#x27;air libre : il faut qu&#x27;il devienne mou (pas fondu, mou mou mou) ; en général, compter au moins 4h à 20° de température ambiante. (si vous oubliez de le sortir d&#x27;avance surtout ne pas le faire fondre dans une casserole - ça n&#x27;est pas top. Vous pouvez le mettre en lamelles sur une petite assiette en carton sur la box - attention, il mollit vite !!!)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">16</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        30MN AVANT de faire la pâte : - Peser la farine, le sucre, le sel - mettre ensemble dans un grand saladier (attention ça double de volume ! prévoir grand) - Peser le lait - réserver - Peser la levure ; la mélanger avec 2 CS de lait, faire un puits dans le mélange farine sucre sel, verser le mélange, touiller avec un peu de farine (léger), recouvrir par de la farine prise sur les bords (que ça soit bien couvert) Laisser reposer sous un torchon mouillé, dans un endroit chaud sans courant d&#x27;air jusqu&#x27;à ce que la farine du dessus se craquèle (ça devrait prendre environ 30mn) - Sortir les oeufs du frigo - Faire le tangzhong : **Recette du tangzhong (simplissime !) :** Il est recommandé de le préparer la veille ou qques heures avant ; perso j&#x27;ai d&#x27;excellents résultats en le préparant 30mn avant - et je l&#x27;utilise tiède (pas chaud ça pourrait tuer la levure). Pour cette brioche, j&#x27;ai utilisé les 200 g de lait pour 40g de farine Mettre le lait à chauffer à feu moyen, et remuer tout en versant la farine en pluie ne va rien se passer durant un tit moment et soudain on sent que ça change de consistance attention de remuer en passant partout pour bien mélanger, ça va épaissir (vite) et devenir comme une &quot;purée&quot; gélatineuse. Retirer la casserole du feu en continuant à remuer S&#x27;il y a des grumeaux, pas d&#x27;inquiétude, ça va disparaitre au pétrissage. Laisser refroidir autour de 30mn (environ, il faut que ça soit tiède, pas chaud), et verser dans un tit bol (en raclant bien la casserole pour pas perdre !) VERIFIER ça a bien craquelé dans le saladier
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">17</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **FAIRE LA PATE :** Dans le saladier : - Ajouter le tangzhong TIÈDE - Casser deux oeufs dans un petit bol, en récupérant le jaune dans un petit tupéroir, mettre les blancs dans le saladier, les jaunes au frigo - puis casser les autres oeufs
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">18</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Tout mélanger à la main (et oui faut y mettre les mains :D !) et pétrir jusqu&#x27;à ce que la pâte soit homogène (ce que je fais : j&#x27;attrape une poignée de pâte sur le bord, j&#x27;étire, je rabats vers le centre, je tourne et je continue tout le tour autant de tours que besoin) Si tout va bien, on obtient une pâte collante - pas de panique, c&#x27;est normal ! Et SEULEMENT à ce moment là, prendre le beurre bien mou, et le rajouter petit à petit à la pâte en malaxant, ne pas en rajouter avant que ce qu&#x27;on a mit avant n&#x27;aie été bien incorporé à la pâte
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">19</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Refaire un tour de pétrissage.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">20</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Après cet ajout, la pâte est beaucoup moins collante et plus facile à travailler Couvrir le saladier d&#x27;un torchon mouillé d&#x27;eau chaude et essoré, et laisser reposer autant que nécessaire (en général, entre 2 et 5h voire plus) : faut que ça double de volume !
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">21</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Une fois que la pâte a bien doublé, deux options : A/ soit vous faites les deux brioches à suivre B/ soit vous mettez la pâte au frigo une nuit pour cuire les brioches le lendemain
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">22</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Si option A :** - Mettre la pâte au moins deux heures au frigo - Préparer ses plats ; les chemiser avec du papier cuisson Puis nettoyer, sécher et fariner son plan de travail - Au bout de 2h minima, sortir la pâte, et la verser sur le plan de travail ; vous avez le choix pour la mise en forme, la tresse (mais difficile avec ce genre de pâte, et ça a tendance à &quot;s&#x27;effacer&quot; à la cuisson), ou les boules.J&#x27;ai opté pour quatre belles boules (vous pouvez peser la pâte et la diviser en 3 ... ou y aller au &quot;pifomètre&quot;) - ou faire plus de boules aussi ! Travailler rapidement chaque boule (faire des rabats : étaler, aplatir, rabattre les côtés vers le centre, retourner, aplatir, recommencer - 3 fois au mois), les rouler dans la farine pour les poudrer, et les mettre dans le plat Torchon mouillé dessus, repos une à deux heures - environ - dans un endroit à l&#x27;abri des courants d&#x27;air et autour de 20° Quand ça a bien monté, mettre le four à chauffer à 180 Badigeonner le dessus avec du jaune d&#x27;oeuf (celui que vous avez mis au frigo en début de recette) Enfourner, laisser cuire 20mn à 180 Baisser à 160 et laisser cuire 20mn (attention je conseille au bout de 15mn de piquer la brioche voir si c&#x27;est cuit ou pas, ça peut aller plus ou moins vite selon les fours)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">23</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Si option B : (celle que je trouve la plus simple)** Rabattre la pâte (se fariner les mains, mais faut pas rêver, ça colle à mort) en attrapant une poignée le long du saladier, la rabattre vers le milieu, et ainsi de suite jusqu&#x27;à avoir fait le tour Couvrir d&#x27;un film plastique de façon hermétique Mettre au frigo pour la nuit Au matin, reprendre au début de l&#x27;option A
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">24</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        LES TEMPS DE CUISSON DONNÉS SONT ESTIMATIFS ! Surveiller que : - ça ne va pas trop vite (surtout au dessus) et couvrir avec papier alu si besoin au dessus - attention, 5mn de trop peuvent faire la différence entre une brioche &quot;boof&quot; et une brioche à se taper le cul par terre ... - que ça soit cuit surtout au milieu ! ma dernière brioche a subi 4 ou 5 coups de couteau avant d&#x27;être &quot;parfaite&quot; Sortir du four, démouler (suffit de choper le papier cuisson :D ) et mettre sur une grille et couvrir DE SUITE avec un papier alu et un torchon mouillé (ça donne un moelleux ...)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">25</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Laisser refroidir et ... bon appétit !
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">26</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        # Brioche de boulanger type NANTERRE
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">27</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Une brioche de boulanger pour 8 personnes (moule à cake de 26 cm)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">28</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Préparation : 30 min Repos : 4 h 10 Cuisson : 25 min Difficulté : Moyenne
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">29</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Ingrédients pour une pâte à brioche :
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">30</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 250 g de farine type 45 * 3 g de sel * 40 g de sucre * 10 g de levure fraîche de boulanger * 150 g d’œufs (3 œufs) * 125 g de beurre (froid) * 1 œuf pour la dorure
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">31</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        La pâte à brioche :
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">32</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * Mettez dans le bol du batteur avec le crochet, la farine, le sucre, le sel et la levure et les * 150 g d’œufs. Respectez bien le poids des œufs et retirez un peu de blancs si vous * dépassez les 150 g. * Prenez soin que la levure ne soit pas en contact avec le sel tant que le batteur n’est pas * en route, car il y a un risque que le sel brûle la levure et donc que votre brioche ne monte pas correctement. * Laissez pétrir à vitesse moyenne jusqu’à ce que le mélange soit homogène. * Ajoutez le beurre coupé en morceaux et laissez pétrir à vitesse moyenne pendant 20 minutes (vitesse 2 au début, puis 4 si la pâte n’est pas assez filante, sur un Kitchenaid). * La pâte va se décoller du bol (ce n’est pas systématique, ce n’est pas grave si ce n’est pas le cas), mais ne l’arrêtez pas si cela ne fait pas 20 minutes que le batteur tourne. * Plus la brioche va pétrir et plus la mie sera filante. * Raclez proprement le bol du batteur puis déposez un film au contact de la pâte. * J’entends souvent parler d’un torchon qu’on place sur la pâte pour la protéger des courants d’air. C’est bien mais le torchon doit être humide, sinon votre pâte va sécher et une croûte va se former (et il n’aura servi à rien). * Laissez la pâte lever pendant 2 heures, en évitant les courants d’air puis dégazez-la en la travaillant un petit peu à la main ou au batteur. Il s’agit de faire sortir le gaz qui s’est formé par l’action de la levure et a fait gonfler la pâte. * Placez la pâte à brioche dans un papier film 10 minutes au congélateur, pour stopper l’action de la levure et la rendre plus facile à travailler (si vous n’avez pas de congélateur placez-la au réfrigérateur, mais au minimum une heure).
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">33</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Le façonnage :
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">34</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * Sortez la pâte du congélateur (ou du réfrigérateur) et divisez-la en 8 morceaux d’environ 72 g. * Farinez votre plan de travail et boulez chaque morceau de pâte : rabattez la pâte pour former une petite boule (première image). * Retournez ensuite la boule, pour que la partie lisse soit sur le dessus. Placez la paume de votre main sur la pâte, sans l’écraser, simplement en contact, et faites un mouvement circulaire. Vos doigts doivent être écartés et rigides pour empêcher la boule de pâte de s’échapper de votre main. * Placez les boules en deux rangs de quatre dans un moule à cake de 26 cm de long (graissez-le avec de l’huile ou du beurre s’il n’est pas anti-adhésif). * Laissez monter la pâte pendant environ 2 heures, en évitant les courants d’air.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">35</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        La cuisson de la brioche :
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">36</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * Préchauffez votre four à 170°C chaleur tournante. * Battez l’œuf pour la dorure et badigeonnez le dessus de la brioche à l’aide d’un pinceau sans l’écraser, pour ne pas la faire retomber. * Enfournez pendant 25 minutes en surveillant la cuisson. * Si la brioche fonce trop pendant la cuisson, vous pouvez placer une feuille de papier aluminium pour éviter qu’elle ne brûle sur le dessus. * Laissez refroidir la brioche puis démoulez-la. Si elle colle sur les côtés : passez simplement une spatule, retournez le moule sur une grille puis soulevez délicatement. * Il ne reste plus qu’à déguster votre brioche moelleuse à la mie filante comme chez le
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">37</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        boulanger !
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">38</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Quelle farine utiliser pour réaliser une brioche ?** La pâte à brioche est une pâte levée, il faut utiliser une farine type 45 (ou type 55 si vous n’en trouvez pas) qui est légère et facilite la pousse de la brioche. Pour que le réseaux glutineux se développe, qui donne de la force à la brioche pour qu’elle lève également, il faut aussi une farine riche en protéines : minimum 11%. Je vous recommande donc une farine de qualité, type farine de Gruau ou une farine label rouge. N’hésitez pas à regarder les valeurs nutritionnelles indiquées sur le paquet pour trouver le taux de protéine si vous avez un doute. Si vous n’habitez pas en France, regardez du côté des farines à pizza, qui sont très riche en protéines. **Comment conserver ma brioche ?** L’astuce consiste à préparer et cuire la brioche la veille et à la placer encore tiède (et donc humide) dans une boite hermétique. Cela nécessite d’avoir des boîtes assez grandes je vous l’accorde, mais l’humidité de la brioche sortie du four sera emprisonnée dans la boite et elle ne desséchera pas. Vous pouvez également passer la brioche, ou juste des tranches, quelques secondes au micro-onde. La chaleur va ramollir le beurre présent dans la recette et rendre la brioche à nouveau moelleuse.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">39</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Comment faire pour cuire la brioche avant le petit-déjeuner ?** Vous pouvez faire la seconde levée au réfrigérateur pendant la nuit. Réalisez votre pâte à brioche en fin de journée, puis placez-la au réfrigérateur dès qu’elle est mise en forme. Le lendemain matin vous pourrez directement la mettre à cuire. Vérifiez la cuisson avec une pointe de couteau, la pâte et le moule étant froids il vous faudra peut-être quelques minutes de plus.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">40</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Comment obtenir une brioche à la mie filante ?** La pâte doit être travaillée longtemps au batteur. Même si le mélange vous semble bien, mais que cela ne fait pas 20 minutes qu’elle tourne, n’arrêtez pas ! Il faut du temps pour que le réseau de gluten se forme et que la mie devienne filante et moelleuse.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">41</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Comment faire pousser une brioche ?** Vous pouvez accélérer la pousse de votre brioche (que ce soit la première ou la seconde) en la plaçant dans un four à maximum 30°C (surtout pas plus sinon vous allez faire fondre le beurre et tuer la levure) avec un petit bol d’eau au fond. Cela va faire comme une étuve et votre pâte devrait lever deux fois plus vite. **Puis-je dorer ma brioche avec du lait ?** Si vous n’avez plus d’œuf pour la dorure, vous pouvez utiliser un peu de lait. Votre brioche sera moins brillante mais la dorure ne reste qu’un élément esthétique.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                </ol>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<script id="cooking-mode-data" type="application/json">
+{"image":"/Food/api/static/Recettes%20Sucr%C3%A9es/Brioche%20inratable.png","name":"Brioche inratable","scale":1.0,"sections":[{"ingredients":[],"name":null,"stepOffset":0,"steps":[{"globalNumber":1,"image":"/Food/api/static/Recettes%20Sucr%C3%A9es/Brioche%20inratable.1.png","ingredients":[],"number":1,"type":"step"},{"globalNumber":2,"image":null,"ingredients":[],"number":2,"type":"step"},{"globalNumber":3,"image":null,"ingredients":[],"number":3,"type":"step"},{"globalNumber":4,"image":null,"ingredients":[],"number":4,"type":"step"},{"globalNumber":5,"image":null,"ingredients":[],"number":5,"type":"step"},{"globalNumber":6,"image":null,"ingredients":[],"number":6,"type":"step"},{"globalNumber":7,"image":null,"ingredients":[],"number":7,"type":"step"},{"globalNumber":8,"image":null,"ingredients":[],"number":8,"type":"step"},{"globalNumber":9,"image":null,"ingredients":[],"number":9,"type":"step"},{"globalNumber":10,"image":null,"ingredients":[],"number":10,"type":"step"},{"globalNumber":11,"image":null,"ingredients":[],"number":11,"type":"step"},{"globalNumber":12,"image":null,"ingredients":[],"number":12,"type":"step"},{"globalNumber":13,"image":null,"ingredients":[],"number":13,"type":"step"},{"globalNumber":14,"image":null,"ingredients":[],"number":14,"type":"step"},{"globalNumber":15,"image":null,"ingredients":[],"number":15,"type":"step"},{"globalNumber":16,"image":null,"ingredients":[],"number":16,"type":"step"},{"globalNumber":17,"image":null,"ingredients":[],"number":17,"type":"step"},{"globalNumber":18,"image":null,"ingredients":[],"number":18,"type":"step"},{"globalNumber":19,"image":null,"ingredients":[],"number":19,"type":"step"},{"globalNumber":20,"image":null,"ingredients":[],"number":20,"type":"step"},{"globalNumber":21,"image":null,"ingredients":[],"number":21,"type":"step"},{"globalNumber":22,"image":null,"ingredients":[],"number":22,"type":"step"},{"globalNumber":23,"image":null,"ingredients":[],"number":23,"type":"step"},{"globalNumber":24,"image":null,"ingredients":[],"number":24,"type":"step"},{"globalNumber":25,"image":null,"ingredients":[],"number":25,"type":"step"},{"globalNumber":26,"image":null,"ingredients":[],"number":26,"type":"step"},{"globalNumber":27,"image":null,"ingredients":[],"number":27,"type":"step"},{"globalNumber":28,"image":null,"ingredients":[],"number":28,"type":"step"},{"globalNumber":29,"image":null,"ingredients":[],"number":29,"type":"step"},{"globalNumber":30,"image":null,"ingredients":[],"number":30,"type":"step"},{"globalNumber":31,"image":null,"ingredients":[],"number":31,"type":"step"},{"globalNumber":32,"image":null,"ingredients":[],"number":32,"type":"step"},{"globalNumber":33,"image":null,"ingredients":[],"number":33,"type":"step"},{"globalNumber":34,"image":null,"ingredients":[],"number":34,"type":"step"},{"globalNumber":35,"image":null,"ingredients":[],"number":35,"type":"step"},{"globalNumber":36,"image":null,"ingredients":[],"number":36,"type":"step"},{"globalNumber":37,"image":null,"ingredients":[],"number":37,"type":"step"},{"globalNumber":38,"image":null,"ingredients":[],"number":38,"type":"step"},{"globalNumber":39,"image":null,"ingredients":[],"number":39,"type":"step"},{"globalNumber":40,"image":null,"ingredients":[],"number":40,"type":"step"},{"globalNumber":41,"image":null,"ingredients":[],"number":41,"type":"step"}]}]}
+</script>
+
+
+
+        </main>
+
+        
+        <footer class="mt-12 mb-6 text-center text-sm text-faint print:hidden">
+            Built with
+            <a href="https://cooklang.org/cli/" class="text-accent-text hover:underline" target="_blank" rel="noopener">CookCLI</a>
+            
+            &middot;
+            <a href="https://github.com/S3v3r1n3/Food" class="text-accent-text hover:underline" target="_blank" rel="noopener">View source</a>
+            
+        </footer>
+        
+    </div>
+
+    <script>
+        // Theme toggle function
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.classList.contains('dark') ? 'dark' : 'light';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+            html.classList.toggle('dark');
+            localStorage.setItem('theme', newTheme);
+        }
+    </script>
+
+    
+    <script>window.__PREFIX__ = "/Food";</script>
+    <script src="/Food/static/js/search.js"></script>
+    
+
+    <!-- URL prefix for JavaScript -->
+    <script>
+        window.__PREFIX__ = "/Food";
+        window.__STATIC_MODE__ = true;
+        window.__STRINGS__ = { close: "Close" };
+        // Bring the visitor back to this page after signing in.
+        document.querySelectorAll('[data-login-link]').forEach((link) => {
+            const prefix = window.__PREFIX__;
+            const path = location.pathname.startsWith(prefix)
+                ? location.pathname.slice(prefix.length)
+                : location.pathname;
+            if (path === '/login') return;
+            link.href = `${prefix}/login?next=${encodeURIComponent((path || '/') + location.search)}`;
+        });
+    </script>
+
+    <!-- Keyboard shortcuts -->
+    <script src="/Food/static/js/keyboard-shortcuts.js"></script>
+    <!-- Expose showShortcutsHelp globally for the help button -->
+    <script>
+        // showShortcutsHelp is defined in keyboard-shortcuts.js
+        // This ensures it's available for the onclick handler
+        if (typeof showShortcutsHelp === 'undefined') {
+            window.showShortcutsHelp = function() {
+                console.warn('Keyboard shortcuts not loaded');
+            };
+        }
+    </script>
+
+    
+<link rel="stylesheet" href="/Food/static/css/cooking-mode.css">
+<script src="/Food/static/js/cooking-mode.js"></script>
+<script src="/Food/static/js/timers.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en-US" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scones - Cook</title>
+    <link rel="icon" type="image/x-icon" href="/Food/static/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/Food/static/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/Food/static/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/Food/static/apple-touch-icon.png">
+    <link rel="manifest" href="/Food/static/site.webmanifest">
+    
+    <link href="/Food/static/css/output.css" rel="stylesheet">
+    <script>
+        // Check for saved theme preference, or check for prefers-color-scheme, or default to light
+        const theme = localStorage.getItem('theme')
+            || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.classList.toggle('dark', theme === 'dark');
+        // False for a guest, or a role below shopper, on a server that requires signing in.
+        window.__CAN_EDIT_LISTS__ = true;
+        // `--recipes-only` and nobody signed in: no shopping list or pantry.
+        window.__RECIPES_ONLY__ = false;
+    </script>
+    <style>
+        .viewport {
+            width: 100%;
+            max-width: 72rem;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        /* Search result keyboard selection. --surface-sunk alone is barely
+           visible against --surface in dark mode, so the accent bar carries
+           the signal. */
+        #search-results a.search-selected {
+            background: var(--accent-soft);
+            box-shadow: inset 3px 0 0 var(--accent);
+        }
+
+        @media print {
+            /* Token values are reset to light in input.css; this resets the
+               browser's own defaults so unstyled text is dark too. */
+            html.dark, html {
+                color-scheme: light !important;
+            }
+
+            * {
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+
+            body {
+                background: white !important;
+                margin: 0;
+                padding: 0;
+            }
+
+            .viewport {
+                max-width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            /* Hide navigation and non-essential elements */
+            nav, #search-container, #search-input, #search-results, .print\:hidden, .breadcrumb {
+                display: none !important;
+            }
+
+            /* Hide all navigation links */
+            a[href="/Food/"] {
+                display: none !important;
+            }
+
+            /* Recipe layout for print: one column */
+            .grid {
+                display: block !important;
+            }
+
+            .md\:col-span-1, .md\:col-span-2 {
+                page-break-inside: avoid;
+                width: 100% !important;
+            }
+
+            /* Square corners on paper */
+            .card, .step-box, .ingredient-row, .recipe-note, .rounded-xl {
+                border-radius: 0 !important;
+            }
+
+            /* Step numbers */
+            .step-number {
+                background: #000 !important;
+                color: #fff !important;
+            }
+
+            /* Images */
+            img {
+                max-height: 300px !important;
+                max-width: 100% !important;
+                height: auto !important;
+                object-fit: contain !important;
+                page-break-inside: avoid;
+                page-break-after: avoid;
+            }
+
+            /* Recipe sections on same page if possible */
+            h2, h3 {
+                page-break-after: avoid;
+            }
+
+            ol, ul {
+                page-break-inside: avoid;
+            }
+
+            /* Compact spacing */
+            .mb-8, .mb-6, .mb-4 {
+                margin-bottom: 0.5rem !important;
+            }
+
+            .p-6 {
+                padding: 0.5rem !important;
+            }
+
+            /* Recipe header */
+            h1 {
+                color: #000 !important;
+                font-size: 1.5rem !important;
+                margin-bottom: 0 !important;
+            }
+
+            /* Shopping list print styles */
+            .lg\:w-2\/5, .xl\:w-1\/3 {
+                display: none !important;
+            }
+
+            #shopping-list-results {
+                font-size: 11pt !important;
+                line-height: 1.2 !important;
+            }
+
+            #shopping-list-results input[type="checkbox"] {
+                display: none !important;
+            }
+
+            #shopping-list-results li .flex-1 {
+                width: auto !important;
+                flex: 1 1 0% !important;
+            }
+
+            #shopping-list-results label {
+                cursor: default !important;
+            }
+
+            #shopping-list-results h2 {
+                font-size: 11pt !important;
+                color: #000 !important;
+                margin-bottom: 0 !important;
+            }
+
+            #shopping-list-results .space-y-2 > * + *,
+            #shopping-list-results ul > * + * {
+                margin-top: 0 !important;
+            }
+
+            #shopping-list-results li {
+                padding: 0 !important;
+                line-height: 1.3 !important;
+                border-bottom: 1px dotted #ccc;
+            }
+
+            #shopping-list-results .card {
+                margin-bottom: 0.15rem !important;
+                padding: 0 !important;
+                border: none !important;
+            }
+
+            /* Menu print styles */
+            #menu-content {
+                font-size: 10pt !important;
+                line-height: 1.4 !important;
+            }
+
+            #menu-content h1 {
+                font-size: 14pt !important;
+                margin-bottom: 0.25rem !important;
+                color: #000 !important;
+            }
+
+            #menu-content .space-y-6 > * + * {
+                margin-top: 0.3rem !important;
+            }
+
+            #menu-content .menu-section {
+                border: 1px solid #ccc !important;
+                border-radius: 0 !important;
+                page-break-inside: avoid;
+            }
+
+            #menu-content .menu-section-header {
+                background: #eee !important;
+                color: #000 !important;
+                padding: 0.15rem 0.5rem !important;
+            }
+
+            #menu-content .menu-section-header h2 {
+                font-size: 11pt !important;
+                color: #000 !important;
+            }
+
+            #menu-content .menu-section-body {
+                padding: 0.25rem 0.5rem !important;
+            }
+
+            #menu-content .menu-section-body .space-y-2 > * + *,
+            #menu-content .menu-section-body > * + * {
+                margin-top: 0.05rem !important;
+            }
+
+            #menu-content .menu-section-body h3 {
+                font-size: 10pt !important;
+                margin-top: 0.2rem !important;
+                margin-bottom: 0 !important;
+            }
+
+            #menu-content .menu-section-body .pl-6 {
+                padding-left: 1rem !important;
+            }
+
+            /* Preserve word spacing in flex lines */
+            #menu-content .menu-section-body .flex {
+                gap: 0.25em !important;
+            }
+
+            #menu-content .ingredient-badge {
+                font-weight: bold !important;
+                color: #000 !important;
+            }
+
+            #menu-content a {
+                color: #000 !important;
+                text-decoration: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-bg text-text">
+    <div class="viewport">
+        <nav class="nav-card relative">
+            <div class="px-3 lg:px-6 py-4 relative">
+                <div class="flex items-center justify-between flex-wrap gap-y-3">
+                    <a href="/Food/index.html" class="order-1 hidden md:flex items-center space-x-2">
+                        <img src="/Food/static/android-chrome-192x192.png" alt="Cook" class="brand-mark h-8 w-8 rounded-md" width="32" height="32">
+                    </a>
+
+                    <div class="relative z-50 order-2 flex-1 min-w-0 mr-2 md:ml-2 md:mr-4" id="search-container">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-faint" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        <input type="text"
+                               id="search-input"
+                               placeholder="Search recipes..."
+                               class="search-input">
+                        <div id="search-results"
+                             class="absolute top-full mt-2 w-full card shadow-[var(--shadow-overlay)] hidden max-h-96 overflow-y-auto"
+                             style="z-index: 9999;">
+                        </div>
+                    </div>
+
+                    <div class="order-3 flex items-center gap-1 lg:gap-2">
+                        
+                        <div class="hidden md:flex items-center gap-1 mr-2 lg:mr-4">
+                            <a href="/Food/index.html"
+                               class="nav-pill active">
+                                Recipes
+                            </a>
+                            
+                            
+                        </div>
+                        
+                        <!-- Inline buttons on md+ screens -->
+                        
+                        <button onclick="showShortcutsHelp()" class="icon-btn hidden md:inline-flex ml-2 print:hidden" aria-label="Keyboard shortcuts" title="Keyboard shortcuts (?)">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </button>
+                        <button onclick="toggleTheme()" class="icon-btn hidden md:inline-flex ml-2 print:hidden" aria-label="Toggle theme">
+                            <svg class="hidden dark:block" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
+                            </svg>
+                            <svg class="block dark:hidden" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                            </svg>
+                        </button>
+                        
+                        <!-- Overflow menu for small screens -->
+                        <div class="relative md:hidden ml-auto" id="more-menu-container">
+                            <button onclick="document.getElementById('more-dropdown').classList.toggle('hidden')" class="icon-btn" aria-label="More options">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+                                </svg>
+                            </button>
+                            <div id="more-dropdown" class="hidden absolute right-0 mt-2 w-56 card shadow-[var(--shadow-overlay)] z-50 py-1">
+                                
+                                <a href="/Food/index.html" class="menu-item active">
+                                    <span>🍳</span> <span>Recipes</span>
+                                </a>
+                                
+                                
+                                <div class="border-t border-line my-1"></div>
+                                
+                                
+                                
+                                <button onclick="showShortcutsHelp(); document.getElementById('more-dropdown').classList.add('hidden');" class="menu-item">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    <span>Keyboard Shortcuts</span>
+                                </button>
+                                <button onclick="toggleTheme(); document.getElementById('more-dropdown').classList.add('hidden');" class="menu-item">
+                                    <svg class="w-4 h-4 hidden dark:block" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path></svg>
+                                    <svg class="w-4 h-4 block dark:hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                                    <span>Toggle Theme</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main>
+            
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Recipe","image":"/Food/api/static/Recettes%20Sucr%C3%A9es/Scones.jpeg","keywords":"boulangerie, recette","name":"Scones","recipeIngredient":[],"recipeInstructions":[{"@type":"HowToStep","text":"# Scones"},{"@type":"HowToStep","text":"**Scones pour 4 personnes** La recette n’est pas compliquée, il y a juste pas mal de petites choses simples à respecter et à ne pas zapper, je les ai souligné pour les plus tête-en-l’air. On dit souvent qu’il faut pétrir à minima les scones, je pense que ce n’est pas tout à fait juste car si on les pétrit à minima en se contentant d'amalgamer la pâte, ils ont plutôt une sale tête et ne montent pas si bien je trouve. C’est donc la seule difficulté de la recette : trouver le juste milieu car bien sûr il ne faut quand même pas trop pétrir une pâte à scones mais juste assez quand même pour avoir une pâte homogène. Les scones n'ont pas de temps de levée, c'est donc plutôt vite fait, on peut sans problème les réaliser le matin même pour le petit déjeuner ou dans l'après midi pour le goûter... Quelques minutes plus tard on se régalera de scones tout chauds..."},{"@type":"HowToStep","text":"La pâte contient un peu de sucre mais les scones restent « neutres », vous pouvez donc les manger aussi bien avec du sucré qu’avec du salé (mais vous savez déjà avec quoi je vous conseil de les servir). Ces scones se conservent plusieurs jours dans des sacs congélation, à température ambiante. Vous pouvez ensuite les manger tels quels ou les réchauffer brièvement au four. Il est aussi possible de les congeler. <u>Pour 8 scones (n’hésitez pas à multiplier les proportions par deux):<\/u> 350g de farine ¼ de cuillère à café de sel 1 sachet de levure chimique 85g de beurre (coupé en petits cubes) 2 cuillères à soupe de sucre semoule 115mL de lait fermenté * 60mL de lait (demi écrémé) 1 gousse de vanille (facultatif) et/ou 80g de raisins secs 1 œuf battu (facultatif) <u>Pour servir :<\/u> Confiture de framboise pépins Crème fleurette * J’utilise toujours du lait fermenté mais si vous n’en avez pas/n’en trouvez pas, utilisez du lait normal et additionnez le de jus de citron pour l’acidifier et favoriser la levée"},{"@type":"HowToStep","text":"Préchauffer le four <u>et la plaque de cuisson<\/u> (recouverte de papier cuisson) à 220°C. Dans un bol mélanger la farine, le sel et la levure chimique. Ajouter ensuite le beurre en morceaux et mélanger <u>avec les doigts<\/u> pour obtenir une texture sableuse. Ajouter le sucre et mélanger. Dans une casserole mélanger le lait fermenté et le lait, fendre la gousse de vanille en deux dans la longueur, à l’aide de la pointe d’un couteau récupérer les graines de la gousse et les ajouter aux laits. Mélanger et faire légèrement tiédir. Faire un puits dans le bol contenant la préparation sèche, y ajouter les laits et mélanger <u>avec la lame d’un couteau non coupant (couteau à bout rond).<\/u> <u>Fariner le plan de travail<\/u>, y verser le contenu du saladier, pétrir <u>en repliant la pâte plusieurs fois sur elle-même<\/u>. On dit toujours qu’il ne faut pas trop mélanger et pétrir la pâte à scones mais il ne faut pas non plus tomber dans l’excès inverse au risque d’avoir des scones pas très présentables. Tout le truc est donc de **trouver le juste milieu**, il faut replier la pâte sur elle-même jusqu’à ce qu’elle soit homogène. Ne pas préparer la pâte à l’avance mais l’utiliser immédiatement Etaler la pâte obtenue <u>avec le plat des mains<\/u> (et non pas au rouleau à pâtisserie) pour avoir <u>une épaisseur de 3,5-4 centimètres<\/u> (attention, c’est épais !) et découper des cercles de pâte avec <u>un emporte pièce rond lisse (par opposition à cranté) de 5 centimètres de diamètre<\/u>, fariner un peu l’emporte pièce si nécessaire et découper les scones d’un coup franc et sec pour avoir ensuite une belle levée. Une fois quelques scones découpés, rassembler le reste de pâte, pétrir brièvement pour former une pâte homogène et répéter l’opération jusqu’à épuisement. A l’aide d’un pinceau badigeonner le dessus des scones d’un peu de jaunes d’œuf puis enfourner pour 12 à 14 minutes à 220°C."},{"@type":"HowToStep","text":"Déguster les scones tièdes à la sortie du four ou les réchauffer brièvement avant dégustation (mais même froids ils sont délicieux)."},{"@type":"HowToStep","text":"Pendant la cuisson des scones fouetter la crème fleurette pour obtenir une crème fouettée ferme (mais pas sucrée), pour déguster de façon optimale les scones, les couper en deux, tartiner généreusement de confiture de framboise et surmonter de crème fouettée : tout simplement irrésistible !"},{"@type":"HowToStep","text":"Ces scones se conservent plusieurs jours dans des sacs congélation, à température ambiante `Sympa`"},{"@type":"HowToStep","text":"![](../_resources/unknown_filename.344.jpeg)"},{"@type":"HowToStep","text":"À essayer : ![](../_resources/unknown_filename.345.jpeg)"},{"@type":"HowToStep","text":"**_Pour 9 scones_**"},{"@type":"HowToStep","text":"**Pour la pâte**"},{"@type":"HowToStep","text":"* 225 g de farine * 2 c. à c. de levure chimique * 3 pincées de sel * 25 g de sucre de canne blond non raffiné * 75 g de beurre mou * 5 cl de lait * 1 oeuf"},{"@type":"HowToStep","text":"**Pour dorer les scones**"},{"@type":"HowToStep","text":"* 1 oeuf * 1 c. à s. de lait * Un peu de cassonade"},{"@type":"HowToStep","text":"**_Comment faire ?_** Préchauffez votre four à 180°C.Dans un grand bol, mélangez la farine, la levure, le sucre et le sel à la fourchette.Dans un pichet, battez l’oeuf à la fourchette avec la moitié du lait.Incorporez le beurre dans les éléments secs du bout des doigts puis sablez bien, histoire que tout le beurre soit bien incorporé à la farine.Ajoutez le contenu du pichet.Avec votre index formez des cercles de plus en plus grands en partant du centre et du fond du bol. C’est magique, la pâte va s’amalgamer, sans que vous ayez besoin de beaucoup la travailler."},{"@type":"HowToStep","text":"**Secret 1 : ne pas trop travailler la pâte** Déposez la pâte sur une surface très légèrement farinée ou sur un tapis en silicone, ils sont bien pratiques et étalez au rouleau très légèrement, sur une épaisseur de 1,2cm.Détaillez des cercles de 6 cm d’un coup sec en vous servant d’un emporte-pièce et déposez les cercles de pâte sur une plaque de cuisson. Reformez des cercles avec les chutes. Battez le second oeuf avec le lait et badigeonnez les scones avec, en passant deux fois.Parsemez de cassonade et enfournez pour 12 minutes. **Secret 2 : laissez-les blonds et non dorés :** Mettez-les sur une grille et attendez 5 minutes **Secret 3 : ils sont tellement meilleurs 5 minutes après la sortie du four :** Fendez-les en deux puis servez avec beurre et confiture. Les britanniques servent avec de la clotted cream et de la confiture mais j’aime bien aussi avec du beurre qui va fondre sur le scones."}]}</script>
+<div>
+    <nav class="mb-4 breadcrumb print:hidden">
+        <ol class="flex items-center space-x-2 text-sm text-muted">
+            <li><a href="/Food/index.html" class="hover:text-text">Recipes</a></li>
+            
+            <li class="flex items-center">
+                <span class="mx-2 text-faint">/</span>
+                
+                    <a href="/Food/directory/Recettes Sucrées.html" class="hover:text-text">Recettes Sucrées</a>
+                
+            </li>
+            
+            <li class="flex items-center">
+                <span class="mx-2 text-faint">/</span>
+                
+                    <span class="text-text">Scones</span>
+                
+            </li>
+            
+        </ol>
+    </nav>
+
+    <div class="mb-8">
+        <!-- Recipe image if available -->
+        
+        <div class="mb-6 max-w-4xl mx-auto flex justify-center">
+            <img src="/Food/api/static/Recettes%20Sucr%C3%A9es/Scones.jpeg" alt="Scones" class="rounded-xl shadow-[var(--shadow-card)] max-w-full h-auto max-h-[500px]">
+        </div>
+        
+
+        <!-- Title bar with scale and shopping list button -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 print:flex-row print:items-center">
+            <h1 class="text-display font-bold text-text print:text-2xl">
+                Scones
+            </h1>
+            
+            <div class="flex flex-wrap items-center gap-2 lg:gap-3 print:hidden">
+                
+                <button id="start-cooking-btn" onclick="startCookingMode()" class="btn btn-primary" title="Start Cooking">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span class="hidden lg:inline">Cook</span>
+                </button>
+                
+                <a href="/Food/recipe/Recettes Sucrées/Scones.cook" download class="btn" title="Download .cook source">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"></path>
+                    </svg>
+                    <span class="hidden lg:inline">.cook</span>
+                </a>
+                
+            </div>
+        </div>
+
+        <!-- Recipe info section -->
+        <div class="space-y-4">
+            <!-- Tags row -->
+            
+            <div class="flex flex-wrap gap-2">
+                
+                <span class="tag">#boulangerie</span>
+                
+                <span class="tag">#recette</span>
+                
+            </div>
+            
+
+            
+
+            <!-- Description if present -->
+            
+            
+
+            <!-- Metadata row -->
+            <div id="metadata-container" class="flex flex-wrap gap-3">
+                
+                
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                <!-- Custom metadata -->
+                
+                
+                <span class="metadata-pill metadata-custom">Created at: 2015-03-28</span>
+                
+                
+                
+                <span class="metadata-pill metadata-custom">Last updated at: 2019-09-30</span>
+                
+                
+            </div>
+
+            
+        </div>
+    </div>
+
+    <div id="recipe-body" class="grid md:grid-cols-3 gap-8 mb-8">
+        <div class="md:col-span-1">
+            <div class="card p-6">
+                <h2 class="text-title font-bold mb-4 text-accent-text">🥘 Ingredients</h2>
+                
+                <!-- Fallback to original flat list for recipes without sections -->
+                <ul class="ingredient-list space-y-3">
+                    
+                </ul>
+                
+
+                
+            </div>
+        </div>
+
+        <div class="md:col-span-2">
+            <div class="card p-6" data-recipe-path="Recettes Sucrées/Scones">
+                
+                
+                
+                <ol class="step-list space-y-4 ">
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">1</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        # Scones
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">2</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Scones pour 4 personnes** La recette n’est pas compliquée, il y a juste pas mal de petites choses simples à respecter et à ne pas zapper, je les ai souligné pour les plus tête-en-l’air. On dit souvent qu’il faut pétrir à minima les scones, je pense que ce n’est pas tout à fait juste car si on les pétrit à minima en se contentant d&#x27;amalgamer la pâte, ils ont plutôt une sale tête et ne montent pas si bien je trouve. C’est donc la seule difficulté de la recette : trouver le juste milieu car bien sûr il ne faut quand même pas trop pétrir une pâte à scones mais juste assez quand même pour avoir une pâte homogène. Les scones n&#x27;ont pas de temps de levée, c&#x27;est donc plutôt vite fait, on peut sans problème les réaliser le matin même pour le petit déjeuner ou dans l&#x27;après midi pour le goûter... Quelques minutes plus tard on se régalera de scones tout chauds...
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">3</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        La pâte contient un peu de sucre mais les scones restent « neutres », vous pouvez donc les manger aussi bien avec du sucré qu’avec du salé (mais vous savez déjà avec quoi je vous conseil de les servir). Ces scones se conservent plusieurs jours dans des sacs congélation, à température ambiante. Vous pouvez ensuite les manger tels quels ou les réchauffer brièvement au four. Il est aussi possible de les congeler.  &lt;u&gt;Pour 8 scones (n’hésitez pas à multiplier les proportions par deux):&lt;/u&gt; 350g de farine ¼ de cuillère à café de sel 1 sachet de levure chimique 85g de beurre (coupé en petits cubes) 2 cuillères à soupe de sucre semoule 115mL de lait fermenté * 60mL de lait (demi écrémé) 1 gousse de vanille (facultatif) et/ou 80g de raisins secs  1 œuf battu (facultatif) &lt;u&gt;Pour servir :&lt;/u&gt; Confiture de framboise pépins Crème fleurette * J’utilise toujours du lait fermenté mais si vous n’en avez pas/n’en trouvez pas, utilisez du lait normal et additionnez le de jus de citron pour l’acidifier et favoriser la levée
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">4</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Préchauffer le four &lt;u&gt;et la plaque de cuisson&lt;/u&gt; (recouverte de papier cuisson) à 220°C. Dans un bol mélanger la farine, le sel et la levure chimique. Ajouter ensuite le beurre en morceaux et mélanger &lt;u&gt;avec les doigts&lt;/u&gt; pour obtenir une texture sableuse. Ajouter le sucre et mélanger. Dans une casserole mélanger le lait fermenté et le lait, fendre la gousse de vanille en deux dans la longueur, à l’aide de la pointe d’un couteau récupérer les graines de la gousse et les ajouter aux laits. Mélanger et faire légèrement tiédir. Faire un puits dans le bol contenant la préparation sèche, y ajouter les laits et mélanger &lt;u&gt;avec la lame d’un couteau non coupant (couteau à bout rond).&lt;/u&gt; &lt;u&gt;Fariner le plan de travail&lt;/u&gt;, y verser le contenu du saladier, pétrir &lt;u&gt;en repliant la pâte plusieurs fois sur elle-même&lt;/u&gt;. On dit toujours qu’il ne faut pas trop mélanger et pétrir la pâte à scones mais il ne faut pas non plus tomber dans l’excès inverse au risque d’avoir des scones pas très présentables. Tout le truc est donc de **trouver le juste milieu**, il faut replier la pâte sur elle-même jusqu’à ce qu’elle soit homogène. Ne pas préparer la pâte à l’avance mais l’utiliser immédiatement Etaler la pâte obtenue &lt;u&gt;avec le plat des mains&lt;/u&gt; (et non pas au rouleau à pâtisserie) pour avoir &lt;u&gt;une épaisseur de 3,5-4 centimètres&lt;/u&gt; (attention, c’est épais !) et découper des cercles de pâte avec &lt;u&gt;un emporte pièce rond lisse (par opposition à cranté) de 5 centimètres de diamètre&lt;/u&gt;, fariner un peu l’emporte pièce si nécessaire et découper les scones d’un coup franc et sec pour avoir ensuite une belle levée. Une fois quelques scones découpés, rassembler le reste de pâte, pétrir brièvement pour former une pâte homogène et répéter l’opération jusqu’à épuisement. A l’aide d’un pinceau badigeonner le dessus des scones d’un peu de jaunes d’œuf puis enfourner pour 12 à 14 minutes à 220°C.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">5</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Déguster les scones tièdes à la sortie du four ou les réchauffer brièvement avant dégustation (mais même froids ils sont délicieux).
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">6</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Pendant la cuisson des scones fouetter la crème fleurette pour obtenir une crème fouettée ferme (mais pas sucrée), pour déguster de façon optimale les scones, les couper en deux, tartiner généreusement de confiture de framboise et surmonter de crème fouettée : tout simplement irrésistible !
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">7</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Ces scones se conservent plusieurs jours dans des sacs congélation, à température ambiante `Sympa`
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">8</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        ![](../_resources/unknown_filename.344.jpeg)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">9</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        À essayer : ![](../_resources/unknown_filename.345.jpeg)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">10</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **_Pour 9 scones_**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">11</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Pour la pâte**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">12</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 225 g de farine * 2 c. à c. de levure chimique * 3 pincées de sel * 25 g de sucre de canne blond non raffiné * 75 g de beurre mou * 5 cl de lait * 1 oeuf
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">13</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Pour dorer les scones**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">14</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 1 oeuf * 1 c. à s. de lait * Un peu de cassonade
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">15</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **_Comment faire ?_** Préchauffez votre four à 180°C.Dans un grand bol, mélangez la farine, la levure, le sucre et le sel à la fourchette.Dans un pichet, battez l’oeuf à la fourchette avec la moitié du lait.Incorporez le beurre dans les éléments secs du bout des doigts puis sablez bien, histoire que tout le beurre soit bien incorporé à la farine.Ajoutez le contenu du pichet.Avec votre index formez des cercles de plus en plus grands en partant du centre et du fond du bol. C’est magique, la pâte va s’amalgamer, sans que vous ayez besoin de beaucoup la travailler.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">16</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Secret 1 : ne pas trop travailler la pâte** Déposez la pâte sur une surface très légèrement farinée ou sur un tapis en silicone, ils sont bien pratiques et étalez au rouleau très légèrement, sur une épaisseur de 1,2cm.Détaillez des cercles de 6 cm d’un coup sec en vous servant d’un emporte-pièce et déposez les cercles de pâte sur une plaque de cuisson. Reformez des cercles avec les chutes. Battez le second oeuf avec le lait et badigeonnez les scones avec, en passant deux fois.Parsemez de cassonade et enfournez pour 12 minutes. **Secret 2 : laissez-les blonds et non dorés :** Mettez-les sur une grille et attendez 5 minutes **Secret 3 : ils sont tellement meilleurs 5 minutes après la sortie du four :** Fendez-les en deux puis servez avec beurre et confiture. Les britanniques servent avec de la clotted cream et de la confiture mais j’aime bien aussi avec du beurre qui va fondre sur le scones.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                </ol>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<script id="cooking-mode-data" type="application/json">
+{"image":"/Food/api/static/Recettes%20Sucr%C3%A9es/Scones.jpeg","name":"Scones","scale":1.0,"sections":[{"ingredients":[],"name":null,"stepOffset":0,"steps":[{"globalNumber":1,"image":null,"ingredients":[],"number":1,"type":"step"},{"globalNumber":2,"image":null,"ingredients":[],"number":2,"type":"step"},{"globalNumber":3,"image":null,"ingredients":[],"number":3,"type":"step"},{"globalNumber":4,"image":null,"ingredients":[],"number":4,"type":"step"},{"globalNumber":5,"image":null,"ingredients":[],"number":5,"type":"step"},{"globalNumber":6,"image":null,"ingredients":[],"number":6,"type":"step"},{"globalNumber":7,"image":null,"ingredients":[],"number":7,"type":"step"},{"globalNumber":8,"image":null,"ingredients":[],"number":8,"type":"step"},{"globalNumber":9,"image":null,"ingredients":[],"number":9,"type":"step"},{"globalNumber":10,"image":null,"ingredients":[],"number":10,"type":"step"},{"globalNumber":11,"image":null,"ingredients":[],"number":11,"type":"step"},{"globalNumber":12,"image":null,"ingredients":[],"number":12,"type":"step"},{"globalNumber":13,"image":null,"ingredients":[],"number":13,"type":"step"},{"globalNumber":14,"image":null,"ingredients":[],"number":14,"type":"step"},{"globalNumber":15,"image":null,"ingredients":[],"number":15,"type":"step"},{"globalNumber":16,"image":null,"ingredients":[],"number":16,"type":"step"}]}]}
+</script>
+
+
+
+        </main>
+
+        
+        <footer class="mt-12 mb-6 text-center text-sm text-faint print:hidden">
+            Built with
+            <a href="https://cooklang.org/cli/" class="text-accent-text hover:underline" target="_blank" rel="noopener">CookCLI</a>
+            
+            &middot;
+            <a href="https://github.com/S3v3r1n3/Food" class="text-accent-text hover:underline" target="_blank" rel="noopener">View source</a>
+            
+        </footer>
+        
+    </div>
+
+    <script>
+        // Theme toggle function
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.classList.contains('dark') ? 'dark' : 'light';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+            html.classList.toggle('dark');
+            localStorage.setItem('theme', newTheme);
+        }
+    </script>
+
+    
+    <script>window.__PREFIX__ = "/Food";</script>
+    <script src="/Food/static/js/search.js"></script>
+    
+
+    <!-- URL prefix for JavaScript -->
+    <script>
+        window.__PREFIX__ = "/Food";
+        window.__STATIC_MODE__ = true;
+        window.__STRINGS__ = { close: "Close" };
+        // Bring the visitor back to this page after signing in.
+        document.querySelectorAll('[data-login-link]').forEach((link) => {
+            const prefix = window.__PREFIX__;
+            const path = location.pathname.startsWith(prefix)
+                ? location.pathname.slice(prefix.length)
+                : location.pathname;
+            if (path === '/login') return;
+            link.href = `${prefix}/login?next=${encodeURIComponent((path || '/') + location.search)}`;
+        });
+    </script>
+
+    <!-- Keyboard shortcuts -->
+    <script src="/Food/static/js/keyboard-shortcuts.js"></script>
+    <!-- Expose showShortcutsHelp globally for the help button -->
+    <script>
+        // showShortcutsHelp is defined in keyboard-shortcuts.js
+        // This ensures it's available for the onclick handler
+        if (typeof showShortcutsHelp === 'undefined') {
+            window.showShortcutsHelp = function() {
+                console.warn('Keyboard shortcuts not loaded');
+            };
+        }
+    </script>
+
+    
+<link rel="stylesheet" href="/Food/static/css/cooking-mode.css">
+<script src="/Food/static/js/cooking-mode.js"></script>
+<script src="/Food/static/js/timers.js"></script>
+
+</body>
+</html>

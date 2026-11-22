@@ -1,0 +1,1547 @@
+<!DOCTYPE html>
+<html lang="en-US" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rouleaux de printemps et feuilles de riz - Cook</title>
+    <link rel="icon" type="image/x-icon" href="/Food/static/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/Food/static/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/Food/static/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/Food/static/apple-touch-icon.png">
+    <link rel="manifest" href="/Food/static/site.webmanifest">
+    
+    <link href="/Food/static/css/output.css" rel="stylesheet">
+    <script>
+        // Check for saved theme preference, or check for prefers-color-scheme, or default to light
+        const theme = localStorage.getItem('theme')
+            || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.classList.toggle('dark', theme === 'dark');
+        // False for a guest, or a role below shopper, on a server that requires signing in.
+        window.__CAN_EDIT_LISTS__ = true;
+        // `--recipes-only` and nobody signed in: no shopping list or pantry.
+        window.__RECIPES_ONLY__ = false;
+    </script>
+    <style>
+        .viewport {
+            width: 100%;
+            max-width: 72rem;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        /* Search result keyboard selection. --surface-sunk alone is barely
+           visible against --surface in dark mode, so the accent bar carries
+           the signal. */
+        #search-results a.search-selected {
+            background: var(--accent-soft);
+            box-shadow: inset 3px 0 0 var(--accent);
+        }
+
+        @media print {
+            /* Token values are reset to light in input.css; this resets the
+               browser's own defaults so unstyled text is dark too. */
+            html.dark, html {
+                color-scheme: light !important;
+            }
+
+            * {
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+
+            body {
+                background: white !important;
+                margin: 0;
+                padding: 0;
+            }
+
+            .viewport {
+                max-width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            /* Hide navigation and non-essential elements */
+            nav, #search-container, #search-input, #search-results, .print\:hidden, .breadcrumb {
+                display: none !important;
+            }
+
+            /* Hide all navigation links */
+            a[href="/Food/"] {
+                display: none !important;
+            }
+
+            /* Recipe layout for print: one column */
+            .grid {
+                display: block !important;
+            }
+
+            .md\:col-span-1, .md\:col-span-2 {
+                page-break-inside: avoid;
+                width: 100% !important;
+            }
+
+            /* Square corners on paper */
+            .card, .step-box, .ingredient-row, .recipe-note, .rounded-xl {
+                border-radius: 0 !important;
+            }
+
+            /* Step numbers */
+            .step-number {
+                background: #000 !important;
+                color: #fff !important;
+            }
+
+            /* Images */
+            img {
+                max-height: 300px !important;
+                max-width: 100% !important;
+                height: auto !important;
+                object-fit: contain !important;
+                page-break-inside: avoid;
+                page-break-after: avoid;
+            }
+
+            /* Recipe sections on same page if possible */
+            h2, h3 {
+                page-break-after: avoid;
+            }
+
+            ol, ul {
+                page-break-inside: avoid;
+            }
+
+            /* Compact spacing */
+            .mb-8, .mb-6, .mb-4 {
+                margin-bottom: 0.5rem !important;
+            }
+
+            .p-6 {
+                padding: 0.5rem !important;
+            }
+
+            /* Recipe header */
+            h1 {
+                color: #000 !important;
+                font-size: 1.5rem !important;
+                margin-bottom: 0 !important;
+            }
+
+            /* Shopping list print styles */
+            .lg\:w-2\/5, .xl\:w-1\/3 {
+                display: none !important;
+            }
+
+            #shopping-list-results {
+                font-size: 11pt !important;
+                line-height: 1.2 !important;
+            }
+
+            #shopping-list-results input[type="checkbox"] {
+                display: none !important;
+            }
+
+            #shopping-list-results li .flex-1 {
+                width: auto !important;
+                flex: 1 1 0% !important;
+            }
+
+            #shopping-list-results label {
+                cursor: default !important;
+            }
+
+            #shopping-list-results h2 {
+                font-size: 11pt !important;
+                color: #000 !important;
+                margin-bottom: 0 !important;
+            }
+
+            #shopping-list-results .space-y-2 > * + *,
+            #shopping-list-results ul > * + * {
+                margin-top: 0 !important;
+            }
+
+            #shopping-list-results li {
+                padding: 0 !important;
+                line-height: 1.3 !important;
+                border-bottom: 1px dotted #ccc;
+            }
+
+            #shopping-list-results .card {
+                margin-bottom: 0.15rem !important;
+                padding: 0 !important;
+                border: none !important;
+            }
+
+            /* Menu print styles */
+            #menu-content {
+                font-size: 10pt !important;
+                line-height: 1.4 !important;
+            }
+
+            #menu-content h1 {
+                font-size: 14pt !important;
+                margin-bottom: 0.25rem !important;
+                color: #000 !important;
+            }
+
+            #menu-content .space-y-6 > * + * {
+                margin-top: 0.3rem !important;
+            }
+
+            #menu-content .menu-section {
+                border: 1px solid #ccc !important;
+                border-radius: 0 !important;
+                page-break-inside: avoid;
+            }
+
+            #menu-content .menu-section-header {
+                background: #eee !important;
+                color: #000 !important;
+                padding: 0.15rem 0.5rem !important;
+            }
+
+            #menu-content .menu-section-header h2 {
+                font-size: 11pt !important;
+                color: #000 !important;
+            }
+
+            #menu-content .menu-section-body {
+                padding: 0.25rem 0.5rem !important;
+            }
+
+            #menu-content .menu-section-body .space-y-2 > * + *,
+            #menu-content .menu-section-body > * + * {
+                margin-top: 0.05rem !important;
+            }
+
+            #menu-content .menu-section-body h3 {
+                font-size: 10pt !important;
+                margin-top: 0.2rem !important;
+                margin-bottom: 0 !important;
+            }
+
+            #menu-content .menu-section-body .pl-6 {
+                padding-left: 1rem !important;
+            }
+
+            /* Preserve word spacing in flex lines */
+            #menu-content .menu-section-body .flex {
+                gap: 0.25em !important;
+            }
+
+            #menu-content .ingredient-badge {
+                font-weight: bold !important;
+                color: #000 !important;
+            }
+
+            #menu-content a {
+                color: #000 !important;
+                text-decoration: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-bg text-text">
+    <div class="viewport">
+        <nav class="nav-card relative">
+            <div class="px-3 lg:px-6 py-4 relative">
+                <div class="flex items-center justify-between flex-wrap gap-y-3">
+                    <a href="/Food/index.html" class="order-1 hidden md:flex items-center space-x-2">
+                        <img src="/Food/static/android-chrome-192x192.png" alt="Cook" class="brand-mark h-8 w-8 rounded-md" width="32" height="32">
+                    </a>
+
+                    <div class="relative z-50 order-2 flex-1 min-w-0 mr-2 md:ml-2 md:mr-4" id="search-container">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-faint" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        <input type="text"
+                               id="search-input"
+                               placeholder="Search recipes..."
+                               class="search-input">
+                        <div id="search-results"
+                             class="absolute top-full mt-2 w-full card shadow-[var(--shadow-overlay)] hidden max-h-96 overflow-y-auto"
+                             style="z-index: 9999;">
+                        </div>
+                    </div>
+
+                    <div class="order-3 flex items-center gap-1 lg:gap-2">
+                        
+                        <div class="hidden md:flex items-center gap-1 mr-2 lg:mr-4">
+                            <a href="/Food/index.html"
+                               class="nav-pill active">
+                                Recipes
+                            </a>
+                            
+                            
+                        </div>
+                        
+                        <!-- Inline buttons on md+ screens -->
+                        
+                        <button onclick="showShortcutsHelp()" class="icon-btn hidden md:inline-flex ml-2 print:hidden" aria-label="Keyboard shortcuts" title="Keyboard shortcuts (?)">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </button>
+                        <button onclick="toggleTheme()" class="icon-btn hidden md:inline-flex ml-2 print:hidden" aria-label="Toggle theme">
+                            <svg class="hidden dark:block" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
+                            </svg>
+                            <svg class="block dark:hidden" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                            </svg>
+                        </button>
+                        
+                        <!-- Overflow menu for small screens -->
+                        <div class="relative md:hidden ml-auto" id="more-menu-container">
+                            <button onclick="document.getElementById('more-dropdown').classList.toggle('hidden')" class="icon-btn" aria-label="More options">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+                                </svg>
+                            </button>
+                            <div id="more-dropdown" class="hidden absolute right-0 mt-2 w-56 card shadow-[var(--shadow-overlay)] z-50 py-1">
+                                
+                                <a href="/Food/index.html" class="menu-item active">
+                                    <span>🍳</span> <span>Recipes</span>
+                                </a>
+                                
+                                
+                                <div class="border-t border-line my-1"></div>
+                                
+                                
+                                
+                                <button onclick="showShortcutsHelp(); document.getElementById('more-dropdown').classList.add('hidden');" class="menu-item">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    <span>Keyboard Shortcuts</span>
+                                </button>
+                                <button onclick="toggleTheme(); document.getElementById('more-dropdown').classList.add('hidden');" class="menu-item">
+                                    <svg class="w-4 h-4 hidden dark:block" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path></svg>
+                                    <svg class="w-4 h-4 block dark:hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                                    <span>Toggle Theme</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main>
+            
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Recipe","image":"/Food/api/static/Recettes%20sal%C3%A9es/Rouleaux%20de%20printemps%20et%20feuilles%20de%20riz.jpg","keywords":"Apero, Classique, recette, tapas","name":"Rouleaux de printemps et feuilles de riz","recipeIngredient":[],"recipeInstructions":[{"@type":"HowToStep","text":"# Rouleaux de printemps et feuilles de riz"},{"@type":"HowToStep","text":"![](../_resources/unknown_filename.806.jpeg)"},{"@type":"HowToStep","text":"![](../_resources/unknown_filename.807.jpeg)"},{"@type":"HowToStep","text":"![](../_resources/unknown_filename.808.jpeg)"},{"@type":"HowToStep","text":"![](../_resources/unknown_filename.810.jpeg) **_Rouleaux de printemps végétariens_** ![](../_resources/unknown_filename.811.jpeg)"},{"@type":"HowToStep","text":"* * *"},{"@type":"HowToStep","text":"**INGREDIENTS**"},{"@type":"HowToStep","text":"* 20 feuilles de papier de riz carrées * 3 carottes * 1 courgette * 1 concombre * 4 mini pak-choï ou un grand * 2 poignées de germes de soja * 6 cs de graines de sésame * 4 cs de miel * 2 ciboules * 1 cc de curry en poudre * 4 cm de gingembre frais * Sel et poivre"},{"@type":"HowToStep","text":"<u>En accompagnement:<\/u> de la sauce épicée, de la sauce au miel, de la sauce soja,..."},{"@type":"HowToStep","text":"**<u>Préparation:<\/u>** Commencez par râper les légumes. Grattez les carottes grossièrement au couteau et râpez-les. Ajoutez le miel, salez et poivrez. Mélangez et réservez. Lavez la courgette et râpez-la. Ajoutez 2 cs de graines de sésame et les ciboules finement ciselées. Salez et poivrez. Mélangez. Réservez également. Lavez le concombre et râpez-le. Ajoutez le curry, salez et poivrez. Mélangez. Réservez à nouveau. Lavez les mini pak-choï et émincez-les finement. Ajoutez-y 2 cs d'huile d'olive et le gingembre râpé. Salez et poivrez. Mélangez et réservez. Versez de l'eau tiède dans un grand plat pouvant contenir le carré de feuille de riz. Commencez par faire tremper deux feuilles de papier de riz dans le plat jusqu'à ce qu'elles ramolissent (environ 2 minutes). Essorez-la grossièrement entre deux doigts et étalez-la sur une planche devant vous. Farcissez-la avec soit un peu de chaque mélange et refermez-les (pour la technique du pliage, voir ci-dessous*). Vous pouvez chsoisir de ne mettre qu'un seul ingrédients à l'intérieur, soit un mélange de chaque. Répétez l'opération jusqu'à ce que tous les papiers de riz soient utilisés. Placez-les au fur et à mesure sur un plat de présentation. Ils sont prêts à être mangés. Vous pouvez utiliser les graines de sésame restantes en inbibant un bout du rouleau de sauce et e, le trempant ensuite dans les graines de sésame, ça donne un petit peu de goût et du croquant en plus. Si cela s'y prête, essaez de préparer cette recette avec vos enfants, ils choisiront ce qu'ils y mettent et apprécieront le fait de les avoir préparés eux-mêmes. J'ai fait le test, c'était très concluant chez moi :-) Pour accompagner ces rouleaux de printemps, mélangez tous les ingrédients restants dans un grand saladier et servez, ça donne une petite salade sympa. Cette recette convient à merveille aux personnes devant faire attention à l'utilisation de matières grasses étant donné que pour toute la recette, les quelques gouttes d'huile d'olive constituent la seul apport en graisse. *Comme promis plus haut, voici commen plier les feuilles de papier de riz:"},{"@type":"HowToStep","text":"![](../_resources/unknown_filename.809.png)"},{"@type":"HowToStep","text":"**_Rouleaux de printemps betterave et riz_**"},{"@type":"HowToStep","text":"* * *"},{"@type":"HowToStep","text":"**INGREDIENTS** -1 paquet de 10 feuilles de riz rondes -2 poignées de [riz noir cuit](http://fr.wikipedia.org/wiki/Riz_noir_(c%C3%A9r%C3%A9ale)) -feuilles de 10 brins de coriandre -quelques feuilles de menthe -5 feuilles de salade -100 g de carotte râpées -100g de betterave crue râpée -50g de coeur de chou vert râpé -graines de sésame/lin/courge"},{"@type":"HowToStep","text":"**<u>Sauce d'accompagnement :<\/u>** -mélangez 2 càs de sauce soja allégée en sel avec 1 càs d'eau et quelques gouttes d'huile de sésame grillé, parsemez éventuellement de graines de sésame...de gouttes de citron... La veille : faites tremper les graines mélangées de sésame/lin/courge dans un bol en les recouvrant d'eau, réservez-en quelques-unes (sésame) pour la sauce."},{"@type":"HowToStep","text":"![](../_resources/unknown_filename.804.jpeg)"},{"@type":"HowToStep","text":"Le jour même, rincez les graines dans une passoire fine et égouttez. Faites-tremper les galettes de riz au fur-et-à-mesure de la confection des rouleaux, dans une eau légèrement tiède ou froide (attention pas trop élevée la température, sous peine de voir la feuille se déliter) Déposez et déployez la galette sur un torchon propre étalé sur le plan de travail, retournez-la délicatement pour sécher l'autre face. Travaillez sur la moitié inférieure du cercle : déposez des crudités de façon à former un rectangle, en commençant par les ingrédients qui apparaitront en premier par transparence (exemple : les feuilles de coriandre et aussi pensez à intercaler les couleurs) empilez les ingrédients. Lorsque vous avez le volume désiré, roulez la partie inférieure du cercle en \"bloquant\" les légumes, roulez en serrant, une fois arrivé au milieu de la feuille : rabattez les côtés sur la préparation, continuez à enrouler la feuille de riz sur elle-même, la pâte collera toute seule sur elle-même. Procédez ainsi jusqu'à épuisement des ingrédients pour former les 10 rouleaux de printemps, dégustez avec la sauce"},{"@type":"HowToStep","text":"**_Rouleaux de printemps au Bresse Bleu_**"},{"@type":"HowToStep","text":"* * *"},{"@type":"HowToStep","text":"**INGREDIENTS**"},{"@type":"HowToStep","text":"Bresse Bleu classique : 250 g galette(s) de riz pour rouleaux de printemps : 8 blanc(s) de poulet : 1 carotte(s) : 3 germes de soja : 80 g coriandre : 4 cuillère(s) à soupe beurre : 20 g sauce soja : 3 cuillère(s) à soupe vinaigre balsamique : 1 cuillère(s) à café sel fin : 1 pincée(s) poivre : 1 pincée(s)"},{"@type":"HowToStep","text":"**ASTUCE** Les galettes de riz doivent être trempées dans de l’eau chaude mais pas brûlante, pendant 5 secondes environ. Elles se travaillent alors très facilement, il suffit de prendre le tour de main : prévoyez-en deux ou trois de plus pour vos premiers essais… Façonnez vos rouleaux de printemps bien serrés, pour une présentation optimale'"},{"@type":"HowToStep","text":"**PREPARATION**"},{"@type":"HowToStep","text":"Taillez le blanc de poulet en lanières, salez et poivrez-les. Faites-les revenir au beurre, dans une poêle, 7 à 8 min sur feu moyen en les retournant régulièrement. Laissez refroidir. Pelez les carottes, râpez-les. Effeuillez la coriandre. Coupez le Bresse Bleu en deux. Taillez chaque moitié en 8 belles lamelles. Remplissez un saladier d’eau chaude. Trempez-y une galette de riz, égouttez-la, puis disposez-la à plat sur un plan de travail. Disposez sur le tiers inférieur des lanières de poulet, des carottes, des germes de soja et de la coriandre. Commencez à rouler la galette en enfermant les ingrédients, repliez les deux côtés en angle droit, roulez encore un peu, puis disposez 2 lamelles de Bresse Bleu à plat sur le rouleau de printemps et finissez de rouler. Préparez ainsi 8 rouleaux de printemps. Préparez une sauce avec la sauce soja et le vinaigre balsamique, servez-la dans un petit ramequin avec les rouleaux de printemps."},{"@type":"HowToStep","text":"**_Rouleaux de printemps pliage_**"},{"@type":"HowToStep","text":"![](../_resources/Evernote_Camera_Roll_20141115_085552.jpg)"},{"@type":"HowToStep","text":"![](../_resources/unknown_filename.812.jpeg)"},{"@type":"HowToStep","text":"**♡ Ingrédients** (pour environ 10 beignets)"},{"@type":"HowToStep","text":"* 1 paquet de feuilles de riz * 200-250g d’épinards surgelés * 1/2 buchette de chèvre (ou plus!) * 1 poignée de raisins secs * 1 poignée de pignons de pin (ou de noix concassées) * 1 gousse d’ail * 1 petit morceau d’oignon * Sel, poivre"},{"@type":"HowToStep","text":"**♡ Préparation** 1. Dans une poêle, versez un filet d’huile d’olive, et faites revenir l’ail et l’oignon tranché pendant quelques instants. Ajoutez ensuite les épinards, que vous remuerez pendant 2-3 minutes pour les décongeler. Joignez-y les raisins secs, le fromage coupé en petits morceaux, et les pignons, et mélangez bien. Lorsque le tout vous semble suffisamment chaud et cuit, coupez le feu, salez et poivrez, et réservez. 2. Sur un plan de travail, préparez un grand saladier rempli d’eau froide et un torchon en coton propre que vous étalerez. Munissez-vous de 2 feuilles de riz (ou une seule, mais il y aura plus de risques de déchirures!), et plongez-les dans l’eau en essayant de ne pas trop les séparer, pendant environ 2 minutes, le temps qu’elles ramollissent. Une fois bien souples, sortez-les et étalez-les sur le torchon. Pliez le cercle (les deux épaisseurs) en deux pour obtenir un demi-cercle. 3. Prélevez une bonne cuillère à soupe du mélange épinards-chèvre. Vous allez devoir effectuer un pliage en triangle comme expliqué . Effectuez donc le premier pli, déposez votre farce et pliez jusqu’à obtenir un petit beignet triangulaire. Rentrez le dernier pan de feuille de riz vers l’intérieur du beignet ou « collez-la » avec un petit peu d’eau au reste du triangle. 4. Badigeonnez le beignet d’un peu d’huile d’olive et réservez. Recommencez les étapes de pliage jusqu’à avoir utilisé toute la farce. 5. Chauffez une poêle à feu moyen avec 2-3 cuillères à soupe d’huile d’olive (à moins qu’elle soit particulièrement anti-adhérente, auquel cas vous pouvez essayer avec juste un petit filet) et laissez frire les beignets d’un côté puis de l’autre jusqu’à ce qu’ils dorent légèrement. Déposez les beignets déjà cuits sur du papier absorbant en attendant que les autres soient cuits. 6. C’est prêt! Dégustez les beignets avec une bonne salade, pour compenser! ;)"},{"@type":"HowToStep","text":"![](../_resources/Image_20170129_221010.jpg)"},{"@type":"HowToStep","text":"**Rouleaux au canard**"},{"@type":"HowToStep","text":"![](../_resources/unknown_filename.805.jpeg) <https://encredechineblog.com/2016/11/09/%E2%80%A2-rouleaux-dautomne-au-canard-%E2%80%A2/dsc_0925/%23main>"},{"@type":"HowToStep","text":"**Ingrédients** (pour 6 rouleaux) :"},{"@type":"HowToStep","text":"* 12 tranches de magret de canard * 6 feuilles de riz * Trois carottes: une jaune, une orange, une carotte violette * Du chou rouge * 3 tiges d’oignons nouveaux * Quelques feuilles de laitues * 24 feuilles de coriandre * Une prune rouge * 2 cuillères à café d’huile d’olive * 1 cuillère à café de soja sucré"},{"@type":"HowToStep","text":"**Recette :**"},{"@type":"HowToStep","text":"1. Préparez tous vos légumes: coupez les carottes et les oignons nouveaux en julienne, hachez quelques feuilles de chou rouge et coupez quelques feuilles de laitue 2. Pour les rouleaux, les premières fois sont toujours périlleuses, il faut avoir la technique. Mais la marche à suivre est la suivante: Préparez un saladier d’eau tiède ainsi qu’un essuie qui doit être bien humide. Posez-le sur votre plan de travail. 3. Trempez votre feuille de riz dans l’eau tiède jusqu’à ce qu’elle ramolisse. Posez-la ensuite sur l’essuie mouillé. Montez votre rouleau de printemps en disposant tous vos ingrédients sur le premier tiers de votre feuillez de riz. Faites ainsi se chevaucher une couche de laitue, une couche de carottes, une couche d’oignon nouveau, une couche de chou rouge et 4 feuilles de coriandre. 4. Avez vos pouces roulez cette première partie afin que la feuille de riz recouvre entièrement vos légumes. Serrez bien tous les ingrédients afin que le rouleau soit compact. Une fois que vos légumes sont enroulé, rabattez les côtés droits et gauches sur le milieu. Posez ensuite vos deux tranches de magret et continuez à rouler votre feuille jusqu’à la fin. Si le tout est bien serré vous obtenez un beau rouleau bien scellé. 5. Servez vos rouleaux entiers ou découpés comme ici. A manger en lunch ou à l’apéro!"},{"@type":"HowToStep","text":"![](../_resources/Image_20170129_224505.jpg)"},{"@type":"HowToStep","text":"_* Puisqu’un dessin vaut mieux qu’un long discours, j’ai sorti la feuille de brouillon et mes feutres de couleur pour l’occasion 😉_ Pour la sauce: Retirez la peau de la prune et mixez-la avec environ 2 cm de gingembre épluché et rapé. Quand le tout est bien lisse, ajoutez l’huile d’olive et le soja. Salez et poivrez"},{"@type":"HowToStep","text":"**Ingredients rouleaux de printemps breton**"},{"@type":"HowToStep","text":"**Pour les rouleaux :**"},{"@type":"HowToStep","text":"* 8 sardines en boîte * 8 feuilles de riz * 8 feuilles de salade * 4 brins de menthe * 4 brins de coriandre * 1 carotte * 1 oignon * 1/2 concombre"},{"@type":"HowToStep","text":"**Pour la sauce**"},{"@type":"HowToStep","text":"* 6 cuillères à soupe de sauce soja * 1 cuillère à soupe de carottes râpées * 1 cuillère à soupe de graines de sésame * 1 cuillère à soupe de menthe * 1 cuillère à soupe de vinaigre de cidre * 1/2 citron"},{"@type":"HowToStep","text":"**Etapes :**"},{"@type":"HowToStep","text":"1. Si vous avez des sardines entières, enlevez la peau et l’arête centrale, sinon vous pouvez utiliser des sardines sans arêtes toutes prêtes. 2. Dans un saladier, ajoutez 4 brins de menthe et de coriandre au préalablement ciselés, le demi concombre découpé en fin bâtons, une carotte que vous aurez râpée et un oignon émincé. 3. Faites ramollir une feuille de riz sous l’eau tiède (lisez les instructions au cas-ou sur l’emballage de votre paquet) : étalez-la bien. 4. Déposez dans l’ordre suivant et uniquement sur la moitié de la feuille de riz : une feuille de salade découpée en morceaux, un peu de votre mélange de légumes puis une sardine. 5. Rabattez chaque côté puis procédez au roulage 6. Faites la même chose pour les autres rouleaux de printemps, enroulez les dans du film alimentaire et déposez au frigo pendant une heure. 7. Pendant ce temps, faites la sauce qui vous servira à tremper les rouleaux : mélangez le soja, le vinaigre, le jus extrait d’un demi citron puis ajoutez 1 cuillère à soupe de graines de sésame, de menthe au préalablement ciselée et de carottes râpées. 8. Si jamais votre sauce est trop salée à cause du soja, n’hésitez pas à rajouter un petit peu d’eau, selon vos goûts. 9. Disposez la sauce également au frais."},{"@type":"HowToStep","text":"![](../_resources/Image_20170908_221303.jpg)"},{"@type":"HowToStep","text":"**Rouleaux de printemps végétarien**"},{"@type":"HowToStep","text":"![](../_resources/IMG_2280.PNG) **Rouleaux de printemps végétarien à la galette ***** ![](../_resources/image.49.png)"}]}</script>
+<div>
+    <nav class="mb-4 breadcrumb print:hidden">
+        <ol class="flex items-center space-x-2 text-sm text-muted">
+            <li><a href="/Food/index.html" class="hover:text-text">Recipes</a></li>
+            
+            <li class="flex items-center">
+                <span class="mx-2 text-faint">/</span>
+                
+                    <a href="/Food/directory/Recettes salées.html" class="hover:text-text">Recettes salées</a>
+                
+            </li>
+            
+            <li class="flex items-center">
+                <span class="mx-2 text-faint">/</span>
+                
+                    <span class="text-text">Rouleaux de printemps et feuilles de riz</span>
+                
+            </li>
+            
+        </ol>
+    </nav>
+
+    <div class="mb-8">
+        <!-- Recipe image if available -->
+        
+        <div class="mb-6 max-w-4xl mx-auto flex justify-center">
+            <img src="/Food/api/static/Recettes%20sal%C3%A9es/Rouleaux%20de%20printemps%20et%20feuilles%20de%20riz.jpg" alt="Rouleaux de printemps et feuilles de riz" class="rounded-xl shadow-[var(--shadow-card)] max-w-full h-auto max-h-[500px]">
+        </div>
+        
+
+        <!-- Title bar with scale and shopping list button -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 print:flex-row print:items-center">
+            <h1 class="text-display font-bold text-text print:text-2xl">
+                Rouleaux de printemps et feuilles de riz
+            </h1>
+            
+            <div class="flex flex-wrap items-center gap-2 lg:gap-3 print:hidden">
+                
+                <button id="start-cooking-btn" onclick="startCookingMode()" class="btn btn-primary" title="Start Cooking">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span class="hidden lg:inline">Cook</span>
+                </button>
+                
+                <a href="/Food/recipe/Recettes salées/Rouleaux de printemps et feuilles de riz.cook" download class="btn" title="Download .cook source">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"></path>
+                    </svg>
+                    <span class="hidden lg:inline">.cook</span>
+                </a>
+                
+            </div>
+        </div>
+
+        <!-- Recipe info section -->
+        <div class="space-y-4">
+            <!-- Tags row -->
+            
+            <div class="flex flex-wrap gap-2">
+                
+                <span class="tag">#Apero</span>
+                
+                <span class="tag">#Classique</span>
+                
+                <span class="tag">#recette</span>
+                
+                <span class="tag">#tapas</span>
+                
+            </div>
+            
+
+            
+
+            <!-- Description if present -->
+            
+            
+
+            <!-- Metadata row -->
+            <div id="metadata-container" class="flex flex-wrap gap-3">
+                
+                
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                <!-- Custom metadata -->
+                
+                
+                <span class="metadata-pill metadata-custom">Created at: 2014-06-08</span>
+                
+                
+                
+                <span class="metadata-pill metadata-custom">Last updated at: 2022-09-09</span>
+                
+                
+            </div>
+
+            
+        </div>
+    </div>
+
+    <div id="recipe-body" class="grid md:grid-cols-3 gap-8 mb-8">
+        <div class="md:col-span-1">
+            <div class="card p-6">
+                <h2 class="text-title font-bold mb-4 text-accent-text">🥘 Ingredients</h2>
+                
+                <!-- Fallback to original flat list for recipes without sections -->
+                <ul class="ingredient-list space-y-3">
+                    
+                </ul>
+                
+
+                
+            </div>
+        </div>
+
+        <div class="md:col-span-2">
+            <div class="card p-6" data-recipe-path="Recettes salées/Rouleaux de printemps et feuilles de riz">
+                
+                
+                
+                <ol class="step-list space-y-4 ">
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">1</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        # Rouleaux de printemps et feuilles de riz
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">2</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        ![](../_resources/unknown_filename.806.jpeg)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">3</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        ![](../_resources/unknown_filename.807.jpeg)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">4</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        ![](../_resources/unknown_filename.808.jpeg)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">5</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        ![](../_resources/unknown_filename.810.jpeg) **_Rouleaux de printemps végétariens_** ![](../_resources/unknown_filename.811.jpeg)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">6</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * * *
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">7</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **INGREDIENTS**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">8</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 20 feuilles de papier de riz carrées * 3 carottes * 1 courgette * 1 concombre * 4 mini pak-choï ou un grand * 2 poignées de germes de soja *  6 cs de graines de sésame * 4 cs de miel * 2 ciboules * 1 cc de curry en poudre * 4 cm de gingembre frais * Sel et poivre
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">9</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        &lt;u&gt;En accompagnement:&lt;/u&gt; de la sauce épicée, de la sauce au miel, de la sauce soja,...
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">10</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **&lt;u&gt;Préparation:&lt;/u&gt;** Commencez par râper les légumes. Grattez les carottes grossièrement au couteau et râpez-les. Ajoutez le miel, salez et poivrez. Mélangez et réservez. Lavez la courgette et râpez-la. Ajoutez 2 cs de graines de sésame et les ciboules finement ciselées. Salez et poivrez. Mélangez. Réservez également. Lavez le concombre et râpez-le. Ajoutez le curry, salez et poivrez. Mélangez. Réservez à nouveau. Lavez les mini pak-choï et émincez-les finement. Ajoutez-y 2 cs d&#x27;huile d&#x27;olive et le gingembre râpé. Salez et poivrez. Mélangez et réservez. Versez de l&#x27;eau tiède dans un grand plat pouvant contenir le carré de feuille de riz. Commencez par faire tremper deux feuilles de papier de riz dans le plat jusqu&#x27;à ce qu&#x27;elles ramolissent (environ 2 minutes). Essorez-la grossièrement entre deux doigts et étalez-la sur une planche devant vous. Farcissez-la avec soit un peu de chaque mélange et refermez-les (pour la technique du pliage, voir ci-dessous*). Vous pouvez chsoisir de ne mettre qu&#x27;un seul ingrédients à l&#x27;intérieur, soit un mélange de chaque. Répétez l&#x27;opération jusqu&#x27;à ce que tous les papiers de riz soient utilisés. Placez-les au fur et à mesure sur un plat de présentation. Ils sont prêts à être mangés. Vous pouvez utiliser les graines de sésame restantes en inbibant un bout du rouleau de sauce et e, le trempant ensuite dans les graines de sésame, ça donne un petit peu de goût et du croquant en plus. Si cela s&#x27;y prête, essaez de préparer cette recette avec vos enfants, ils choisiront ce qu&#x27;ils y mettent et apprécieront le fait de les avoir préparés eux-mêmes. J&#x27;ai fait le test, c&#x27;était très concluant chez moi :-) Pour accompagner ces rouleaux de printemps, mélangez tous les ingrédients restants dans un grand saladier et servez, ça donne une petite salade sympa. Cette recette convient à merveille aux personnes devant faire attention à l&#x27;utilisation de matières grasses étant donné que pour toute la recette, les quelques gouttes d&#x27;huile d&#x27;olive constituent la seul apport en graisse. *Comme promis plus haut, voici commen plier les feuilles de papier de riz:
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">11</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        ![](../_resources/unknown_filename.809.png)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">12</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **_Rouleaux de printemps betterave et riz_**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">13</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * * *
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">14</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **INGREDIENTS** -1 paquet de 10 feuilles de riz rondes -2 poignées de [riz noir cuit](http://fr.wikipedia.org/wiki/Riz_noir_(c%C3%A9r%C3%A9ale)) -feuilles de 10 brins de coriandre -quelques feuilles de menthe -5 feuilles de salade -100 g de carotte râpées -100g de betterave crue râpée -50g de coeur de chou vert râpé -graines de sésame/lin/courge
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">15</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **&lt;u&gt;Sauce d&#x27;accompagnement :&lt;/u&gt;** -mélangez 2 càs de sauce soja allégée en sel avec 1 càs d&#x27;eau et quelques gouttes d&#x27;huile de sésame grillé, parsemez éventuellement de graines de sésame...de gouttes de citron... La veille : faites tremper les graines mélangées de sésame/lin/courge dans un bol en les recouvrant d&#x27;eau, réservez-en quelques-unes (sésame) pour la sauce.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">16</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        ![](../_resources/unknown_filename.804.jpeg)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">17</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Le jour même, rincez les graines dans une passoire fine et égouttez. Faites-tremper les galettes de riz au fur-et-à-mesure de la confection des rouleaux, dans une eau légèrement tiède ou froide (attention pas trop élevée la température, sous peine de voir la feuille se déliter) Déposez et déployez la galette sur un torchon propre étalé sur le plan de travail, retournez-la délicatement pour sécher l&#x27;autre face. Travaillez sur la moitié inférieure du cercle : déposez des crudités de façon à former un rectangle, en commençant par les ingrédients qui apparaitront en premier par transparence (exemple : les feuilles de coriandre et aussi pensez à intercaler les couleurs) empilez les ingrédients. Lorsque vous avez le volume désiré, roulez la partie inférieure du cercle en &quot;bloquant&quot; les légumes, roulez en serrant, une fois arrivé au milieu de la feuille : rabattez les côtés sur la préparation, continuez à enrouler la feuille de riz sur elle-même, la pâte collera toute seule sur elle-même. Procédez ainsi jusqu&#x27;à épuisement des ingrédients pour former les 10 rouleaux de printemps, dégustez avec la sauce
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">18</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **_Rouleaux de printemps au Bresse Bleu_**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">19</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * * *
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">20</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **INGREDIENTS**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">21</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Bresse Bleu classique : 250 g galette(s) de riz pour rouleaux de printemps : 8 blanc(s) de poulet : 1 carotte(s) : 3 germes de soja : 80 g coriandre : 4 cuillère(s) à soupe beurre : 20 g sauce soja : 3 cuillère(s) à soupe vinaigre balsamique : 1 cuillère(s) à café sel fin : 1 pincée(s) poivre : 1 pincée(s)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">22</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **ASTUCE** Les galettes de riz doivent être trempées dans de l’eau chaude mais pas brûlante, pendant 5 secondes environ. Elles se travaillent alors très facilement, il suffit de prendre le tour de main : prévoyez-en deux ou trois de plus pour vos premiers essais… Façonnez vos rouleaux de printemps bien serrés, pour une présentation optimale&#x27;
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">23</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **PREPARATION**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">24</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Taillez le blanc de poulet en lanières, salez et poivrez-les. Faites-les revenir au beurre, dans une poêle, 7 à 8 min sur feu moyen en les retournant régulièrement. Laissez refroidir. Pelez les carottes, râpez-les. Effeuillez la coriandre. Coupez le Bresse Bleu en deux. Taillez chaque moitié en 8 belles lamelles. Remplissez un saladier d’eau chaude. Trempez-y une galette de riz, égouttez-la, puis disposez-la à plat sur un plan de travail. Disposez sur le tiers inférieur des lanières de poulet, des carottes, des germes de soja et de la coriandre. Commencez à rouler la galette en enfermant les ingrédients, repliez les deux côtés en angle droit, roulez encore un peu, puis disposez 2 lamelles de Bresse Bleu à plat sur le rouleau de printemps et finissez de rouler. Préparez ainsi 8 rouleaux de printemps. Préparez une sauce avec la sauce soja et le vinaigre balsamique, servez-la dans un petit ramequin avec les rouleaux de printemps.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">25</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **_Rouleaux de printemps pliage_**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">26</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        ![](../_resources/Evernote_Camera_Roll_20141115_085552.jpg)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">27</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        ![](../_resources/unknown_filename.812.jpeg)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">28</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **♡ Ingrédients** (pour environ 10 beignets)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">29</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 1 paquet de feuilles de riz * 200-250g d’épinards surgelés * 1/2 buchette de chèvre (ou plus!) * 1 poignée de raisins secs * 1 poignée de pignons de pin (ou de noix concassées) * 1 gousse d’ail * 1 petit morceau d’oignon * Sel, poivre
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">30</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **♡ Préparation** 1. Dans une poêle, versez un filet d’huile d’olive, et faites revenir l’ail et l’oignon tranché pendant quelques instants. Ajoutez ensuite les épinards, que vous remuerez pendant 2-3 minutes pour les décongeler. Joignez-y les raisins secs, le fromage coupé en petits morceaux, et les pignons, et mélangez bien. Lorsque le tout vous semble suffisamment chaud et cuit, coupez le feu, salez et poivrez, et réservez. 2. Sur un plan de travail, préparez un grand saladier rempli d’eau froide et un torchon en coton propre que vous étalerez. Munissez-vous de 2 feuilles de riz (ou une seule, mais il y aura plus de risques de déchirures!), et plongez-les dans l’eau en essayant de ne pas trop les séparer, pendant environ 2 minutes, le temps qu’elles ramollissent. Une fois bien souples, sortez-les et étalez-les sur le torchon. Pliez le cercle (les deux épaisseurs) en deux pour obtenir un demi-cercle. 3. Prélevez une bonne cuillère à soupe du mélange épinards-chèvre. Vous allez devoir effectuer un pliage en triangle comme expliqué . Effectuez donc le premier pli, déposez votre farce et pliez jusqu’à obtenir un petit beignet triangulaire. Rentrez le dernier pan de feuille de riz vers l’intérieur du beignet ou « collez-la » avec un petit peu d’eau au reste du triangle. 4. Badigeonnez le beignet d’un peu d’huile d’olive et réservez. Recommencez les étapes de pliage jusqu’à avoir utilisé toute la farce. 5. Chauffez une poêle à feu moyen avec 2-3 cuillères à soupe d’huile d’olive (à moins qu’elle soit particulièrement anti-adhérente, auquel cas vous pouvez essayer avec juste un petit filet) et laissez frire les beignets d’un côté puis de l’autre jusqu’à ce qu’ils dorent légèrement. Déposez les beignets déjà cuits sur du papier absorbant en attendant que les autres soient cuits. 6. C’est prêt! Dégustez les beignets avec une bonne salade, pour compenser! ;)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">31</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        ![](../_resources/Image_20170129_221010.jpg)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">32</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Rouleaux au canard**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">33</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        ![](../_resources/unknown_filename.805.jpeg) &lt;https://encredechineblog.com/2016/11/09/%E2%80%A2-rouleaux-dautomne-au-canard-%E2%80%A2/dsc_0925/%23main&gt;
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">34</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Ingrédients** (pour 6 rouleaux) :
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">35</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 12 tranches de magret de canard * 6 feuilles de riz * Trois carottes: une jaune, une orange, une carotte violette * Du chou rouge * 3 tiges d’oignons nouveaux * Quelques feuilles de laitues * 24 feuilles de coriandre * Une prune rouge * 2 cuillères à café d’huile d’olive * 1 cuillère à café de soja sucré
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">36</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Recette :**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">37</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        1. Préparez tous vos légumes: coupez les carottes et les oignons nouveaux en julienne, hachez quelques feuilles de chou rouge et coupez quelques feuilles de laitue 2. Pour les rouleaux, les premières fois sont toujours périlleuses, il faut avoir la technique. Mais la marche à suivre est la suivante: Préparez un saladier d’eau tiède ainsi qu’un essuie qui doit être bien humide. Posez-le sur votre plan de travail. 3. Trempez votre feuille de riz dans l’eau tiède jusqu’à ce qu’elle ramolisse. Posez-la ensuite sur l’essuie mouillé. Montez votre rouleau de printemps en disposant tous vos ingrédients sur le premier tiers de votre feuillez de riz. Faites ainsi se chevaucher une couche de laitue, une couche de carottes, une couche d’oignon nouveau, une couche de chou rouge et 4 feuilles de coriandre. 4. Avez vos pouces roulez cette première partie afin que la feuille de riz recouvre entièrement vos légumes. Serrez bien tous les ingrédients afin que le rouleau soit compact. Une fois que vos légumes sont enroulé, rabattez les côtés droits et gauches sur le milieu. Posez ensuite vos deux tranches de magret et continuez à rouler votre feuille jusqu’à la fin. Si le tout est bien serré vous obtenez un beau rouleau bien scellé. 5. Servez vos rouleaux entiers ou découpés comme ici. A manger en lunch ou à l’apéro!
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">38</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        ![](../_resources/Image_20170129_224505.jpg)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">39</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _* Puisqu’un dessin vaut mieux qu’un long discours, j’ai sorti la feuille de brouillon et mes feutres de couleur pour l’occasion  😉_ Pour la sauce: Retirez la peau de la prune et mixez-la avec environ 2 cm de gingembre épluché et rapé. Quand le tout est bien lisse, ajoutez l’huile d’olive et le soja. Salez et poivrez
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">40</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Ingredients rouleaux de printemps breton**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">41</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Pour les rouleaux :**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">42</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 8 sardines en boîte * 8 feuilles de riz * 8 feuilles de salade * 4 brins de menthe * 4 brins de coriandre * 1 carotte * 1 oignon * 1/2 concombre
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">43</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Pour la sauce**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">44</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 6 cuillères à soupe de sauce soja * 1 cuillère à soupe de carottes râpées * 1 cuillère à soupe de graines de sésame * 1 cuillère à soupe de menthe * 1 cuillère à soupe de vinaigre de cidre * 1/2 citron
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">45</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Etapes :**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">46</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        1. Si vous avez des sardines entières, enlevez la peau et l’arête centrale, sinon vous pouvez utiliser des sardines sans arêtes toutes prêtes. 2. Dans un saladier, ajoutez 4 brins de menthe et de coriandre au préalablement ciselés, le demi concombre découpé en fin bâtons, une carotte que vous aurez râpée et un oignon émincé. 3. Faites ramollir une feuille de riz sous l’eau tiède (lisez les instructions au cas-ou sur l’emballage de votre paquet) : étalez-la bien. 4. Déposez dans l’ordre suivant et uniquement sur la moitié de la feuille de riz : une feuille de salade découpée en morceaux, un peu de votre mélange de légumes puis une sardine. 5. Rabattez chaque côté puis procédez au roulage  6. Faites la même chose pour les autres rouleaux de printemps, enroulez les dans du film alimentaire et déposez au frigo pendant une heure. 7. Pendant ce temps, faites la sauce qui vous servira à tremper les rouleaux : mélangez le soja, le vinaigre, le jus extrait d’un demi citron puis ajoutez 1 cuillère à soupe de graines de sésame, de menthe au préalablement ciselée et de carottes râpées. 8. Si jamais votre sauce est trop salée à cause du soja, n’hésitez pas à rajouter un petit peu d’eau, selon vos goûts. 9. Disposez la sauce également au frais.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">47</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        ![](../_resources/Image_20170908_221303.jpg)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">48</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Rouleaux de printemps végétarien** 
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">49</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        ![](../_resources/IMG_2280.PNG) **Rouleaux de printemps végétarien à la galette ***** ![](../_resources/image.49.png)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                </ol>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<script id="cooking-mode-data" type="application/json">
+{"image":"/Food/api/static/Recettes%20sal%C3%A9es/Rouleaux%20de%20printemps%20et%20feuilles%20de%20riz.jpg","name":"Rouleaux de printemps et feuilles de riz","scale":1.0,"sections":[{"ingredients":[],"name":null,"stepOffset":0,"steps":[{"globalNumber":1,"image":null,"ingredients":[],"number":1,"type":"step"},{"globalNumber":2,"image":null,"ingredients":[],"number":2,"type":"step"},{"globalNumber":3,"image":null,"ingredients":[],"number":3,"type":"step"},{"globalNumber":4,"image":null,"ingredients":[],"number":4,"type":"step"},{"globalNumber":5,"image":null,"ingredients":[],"number":5,"type":"step"},{"globalNumber":6,"image":null,"ingredients":[],"number":6,"type":"step"},{"globalNumber":7,"image":null,"ingredients":[],"number":7,"type":"step"},{"globalNumber":8,"image":null,"ingredients":[],"number":8,"type":"step"},{"globalNumber":9,"image":null,"ingredients":[],"number":9,"type":"step"},{"globalNumber":10,"image":null,"ingredients":[],"number":10,"type":"step"},{"globalNumber":11,"image":null,"ingredients":[],"number":11,"type":"step"},{"globalNumber":12,"image":null,"ingredients":[],"number":12,"type":"step"},{"globalNumber":13,"image":null,"ingredients":[],"number":13,"type":"step"},{"globalNumber":14,"image":null,"ingredients":[],"number":14,"type":"step"},{"globalNumber":15,"image":null,"ingredients":[],"number":15,"type":"step"},{"globalNumber":16,"image":null,"ingredients":[],"number":16,"type":"step"},{"globalNumber":17,"image":null,"ingredients":[],"number":17,"type":"step"},{"globalNumber":18,"image":null,"ingredients":[],"number":18,"type":"step"},{"globalNumber":19,"image":null,"ingredients":[],"number":19,"type":"step"},{"globalNumber":20,"image":null,"ingredients":[],"number":20,"type":"step"},{"globalNumber":21,"image":null,"ingredients":[],"number":21,"type":"step"},{"globalNumber":22,"image":null,"ingredients":[],"number":22,"type":"step"},{"globalNumber":23,"image":null,"ingredients":[],"number":23,"type":"step"},{"globalNumber":24,"image":null,"ingredients":[],"number":24,"type":"step"},{"globalNumber":25,"image":null,"ingredients":[],"number":25,"type":"step"},{"globalNumber":26,"image":null,"ingredients":[],"number":26,"type":"step"},{"globalNumber":27,"image":null,"ingredients":[],"number":27,"type":"step"},{"globalNumber":28,"image":null,"ingredients":[],"number":28,"type":"step"},{"globalNumber":29,"image":null,"ingredients":[],"number":29,"type":"step"},{"globalNumber":30,"image":null,"ingredients":[],"number":30,"type":"step"},{"globalNumber":31,"image":null,"ingredients":[],"number":31,"type":"step"},{"globalNumber":32,"image":null,"ingredients":[],"number":32,"type":"step"},{"globalNumber":33,"image":null,"ingredients":[],"number":33,"type":"step"},{"globalNumber":34,"image":null,"ingredients":[],"number":34,"type":"step"},{"globalNumber":35,"image":null,"ingredients":[],"number":35,"type":"step"},{"globalNumber":36,"image":null,"ingredients":[],"number":36,"type":"step"},{"globalNumber":37,"image":null,"ingredients":[],"number":37,"type":"step"},{"globalNumber":38,"image":null,"ingredients":[],"number":38,"type":"step"},{"globalNumber":39,"image":null,"ingredients":[],"number":39,"type":"step"},{"globalNumber":40,"image":null,"ingredients":[],"number":40,"type":"step"},{"globalNumber":41,"image":null,"ingredients":[],"number":41,"type":"step"},{"globalNumber":42,"image":null,"ingredients":[],"number":42,"type":"step"},{"globalNumber":43,"image":null,"ingredients":[],"number":43,"type":"step"},{"globalNumber":44,"image":null,"ingredients":[],"number":44,"type":"step"},{"globalNumber":45,"image":null,"ingredients":[],"number":45,"type":"step"},{"globalNumber":46,"image":null,"ingredients":[],"number":46,"type":"step"},{"globalNumber":47,"image":null,"ingredients":[],"number":47,"type":"step"},{"globalNumber":48,"image":null,"ingredients":[],"number":48,"type":"step"},{"globalNumber":49,"image":null,"ingredients":[],"number":49,"type":"step"}]}]}
+</script>
+
+
+
+        </main>
+
+        
+        <footer class="mt-12 mb-6 text-center text-sm text-faint print:hidden">
+            Built with
+            <a href="https://cooklang.org/cli/" class="text-accent-text hover:underline" target="_blank" rel="noopener">CookCLI</a>
+            
+            &middot;
+            <a href="https://github.com/S3v3r1n3/Food" class="text-accent-text hover:underline" target="_blank" rel="noopener">View source</a>
+            
+        </footer>
+        
+    </div>
+
+    <script>
+        // Theme toggle function
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.classList.contains('dark') ? 'dark' : 'light';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+            html.classList.toggle('dark');
+            localStorage.setItem('theme', newTheme);
+        }
+    </script>
+
+    
+    <script>window.__PREFIX__ = "/Food";</script>
+    <script src="/Food/static/js/search.js"></script>
+    
+
+    <!-- URL prefix for JavaScript -->
+    <script>
+        window.__PREFIX__ = "/Food";
+        window.__STATIC_MODE__ = true;
+        window.__STRINGS__ = { close: "Close" };
+        // Bring the visitor back to this page after signing in.
+        document.querySelectorAll('[data-login-link]').forEach((link) => {
+            const prefix = window.__PREFIX__;
+            const path = location.pathname.startsWith(prefix)
+                ? location.pathname.slice(prefix.length)
+                : location.pathname;
+            if (path === '/login') return;
+            link.href = `${prefix}/login?next=${encodeURIComponent((path || '/') + location.search)}`;
+        });
+    </script>
+
+    <!-- Keyboard shortcuts -->
+    <script src="/Food/static/js/keyboard-shortcuts.js"></script>
+    <!-- Expose showShortcutsHelp globally for the help button -->
+    <script>
+        // showShortcutsHelp is defined in keyboard-shortcuts.js
+        // This ensures it's available for the onclick handler
+        if (typeof showShortcutsHelp === 'undefined') {
+            window.showShortcutsHelp = function() {
+                console.warn('Keyboard shortcuts not loaded');
+            };
+        }
+    </script>
+
+    
+<link rel="stylesheet" href="/Food/static/css/cooking-mode.css">
+<script src="/Food/static/js/cooking-mode.js"></script>
+<script src="/Food/static/js/timers.js"></script>
+
+</body>
+</html>

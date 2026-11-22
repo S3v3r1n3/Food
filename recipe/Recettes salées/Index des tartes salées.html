@@ -1,0 +1,2466 @@
+<!DOCTYPE html>
+<html lang="en-US" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Index des tartes salées - Cook</title>
+    <link rel="icon" type="image/x-icon" href="/Food/static/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/Food/static/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/Food/static/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/Food/static/apple-touch-icon.png">
+    <link rel="manifest" href="/Food/static/site.webmanifest">
+    
+    <link href="/Food/static/css/output.css" rel="stylesheet">
+    <script>
+        // Check for saved theme preference, or check for prefers-color-scheme, or default to light
+        const theme = localStorage.getItem('theme')
+            || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.classList.toggle('dark', theme === 'dark');
+        // False for a guest, or a role below shopper, on a server that requires signing in.
+        window.__CAN_EDIT_LISTS__ = true;
+        // `--recipes-only` and nobody signed in: no shopping list or pantry.
+        window.__RECIPES_ONLY__ = false;
+    </script>
+    <style>
+        .viewport {
+            width: 100%;
+            max-width: 72rem;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        /* Search result keyboard selection. --surface-sunk alone is barely
+           visible against --surface in dark mode, so the accent bar carries
+           the signal. */
+        #search-results a.search-selected {
+            background: var(--accent-soft);
+            box-shadow: inset 3px 0 0 var(--accent);
+        }
+
+        @media print {
+            /* Token values are reset to light in input.css; this resets the
+               browser's own defaults so unstyled text is dark too. */
+            html.dark, html {
+                color-scheme: light !important;
+            }
+
+            * {
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+
+            body {
+                background: white !important;
+                margin: 0;
+                padding: 0;
+            }
+
+            .viewport {
+                max-width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            /* Hide navigation and non-essential elements */
+            nav, #search-container, #search-input, #search-results, .print\:hidden, .breadcrumb {
+                display: none !important;
+            }
+
+            /* Hide all navigation links */
+            a[href="/Food/"] {
+                display: none !important;
+            }
+
+            /* Recipe layout for print: one column */
+            .grid {
+                display: block !important;
+            }
+
+            .md\:col-span-1, .md\:col-span-2 {
+                page-break-inside: avoid;
+                width: 100% !important;
+            }
+
+            /* Square corners on paper */
+            .card, .step-box, .ingredient-row, .recipe-note, .rounded-xl {
+                border-radius: 0 !important;
+            }
+
+            /* Step numbers */
+            .step-number {
+                background: #000 !important;
+                color: #fff !important;
+            }
+
+            /* Images */
+            img {
+                max-height: 300px !important;
+                max-width: 100% !important;
+                height: auto !important;
+                object-fit: contain !important;
+                page-break-inside: avoid;
+                page-break-after: avoid;
+            }
+
+            /* Recipe sections on same page if possible */
+            h2, h3 {
+                page-break-after: avoid;
+            }
+
+            ol, ul {
+                page-break-inside: avoid;
+            }
+
+            /* Compact spacing */
+            .mb-8, .mb-6, .mb-4 {
+                margin-bottom: 0.5rem !important;
+            }
+
+            .p-6 {
+                padding: 0.5rem !important;
+            }
+
+            /* Recipe header */
+            h1 {
+                color: #000 !important;
+                font-size: 1.5rem !important;
+                margin-bottom: 0 !important;
+            }
+
+            /* Shopping list print styles */
+            .lg\:w-2\/5, .xl\:w-1\/3 {
+                display: none !important;
+            }
+
+            #shopping-list-results {
+                font-size: 11pt !important;
+                line-height: 1.2 !important;
+            }
+
+            #shopping-list-results input[type="checkbox"] {
+                display: none !important;
+            }
+
+            #shopping-list-results li .flex-1 {
+                width: auto !important;
+                flex: 1 1 0% !important;
+            }
+
+            #shopping-list-results label {
+                cursor: default !important;
+            }
+
+            #shopping-list-results h2 {
+                font-size: 11pt !important;
+                color: #000 !important;
+                margin-bottom: 0 !important;
+            }
+
+            #shopping-list-results .space-y-2 > * + *,
+            #shopping-list-results ul > * + * {
+                margin-top: 0 !important;
+            }
+
+            #shopping-list-results li {
+                padding: 0 !important;
+                line-height: 1.3 !important;
+                border-bottom: 1px dotted #ccc;
+            }
+
+            #shopping-list-results .card {
+                margin-bottom: 0.15rem !important;
+                padding: 0 !important;
+                border: none !important;
+            }
+
+            /* Menu print styles */
+            #menu-content {
+                font-size: 10pt !important;
+                line-height: 1.4 !important;
+            }
+
+            #menu-content h1 {
+                font-size: 14pt !important;
+                margin-bottom: 0.25rem !important;
+                color: #000 !important;
+            }
+
+            #menu-content .space-y-6 > * + * {
+                margin-top: 0.3rem !important;
+            }
+
+            #menu-content .menu-section {
+                border: 1px solid #ccc !important;
+                border-radius: 0 !important;
+                page-break-inside: avoid;
+            }
+
+            #menu-content .menu-section-header {
+                background: #eee !important;
+                color: #000 !important;
+                padding: 0.15rem 0.5rem !important;
+            }
+
+            #menu-content .menu-section-header h2 {
+                font-size: 11pt !important;
+                color: #000 !important;
+            }
+
+            #menu-content .menu-section-body {
+                padding: 0.25rem 0.5rem !important;
+            }
+
+            #menu-content .menu-section-body .space-y-2 > * + *,
+            #menu-content .menu-section-body > * + * {
+                margin-top: 0.05rem !important;
+            }
+
+            #menu-content .menu-section-body h3 {
+                font-size: 10pt !important;
+                margin-top: 0.2rem !important;
+                margin-bottom: 0 !important;
+            }
+
+            #menu-content .menu-section-body .pl-6 {
+                padding-left: 1rem !important;
+            }
+
+            /* Preserve word spacing in flex lines */
+            #menu-content .menu-section-body .flex {
+                gap: 0.25em !important;
+            }
+
+            #menu-content .ingredient-badge {
+                font-weight: bold !important;
+                color: #000 !important;
+            }
+
+            #menu-content a {
+                color: #000 !important;
+                text-decoration: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-bg text-text">
+    <div class="viewport">
+        <nav class="nav-card relative">
+            <div class="px-3 lg:px-6 py-4 relative">
+                <div class="flex items-center justify-between flex-wrap gap-y-3">
+                    <a href="/Food/index.html" class="order-1 hidden md:flex items-center space-x-2">
+                        <img src="/Food/static/android-chrome-192x192.png" alt="Cook" class="brand-mark h-8 w-8 rounded-md" width="32" height="32">
+                    </a>
+
+                    <div class="relative z-50 order-2 flex-1 min-w-0 mr-2 md:ml-2 md:mr-4" id="search-container">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-faint" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        <input type="text"
+                               id="search-input"
+                               placeholder="Search recipes..."
+                               class="search-input">
+                        <div id="search-results"
+                             class="absolute top-full mt-2 w-full card shadow-[var(--shadow-overlay)] hidden max-h-96 overflow-y-auto"
+                             style="z-index: 9999;">
+                        </div>
+                    </div>
+
+                    <div class="order-3 flex items-center gap-1 lg:gap-2">
+                        
+                        <div class="hidden md:flex items-center gap-1 mr-2 lg:mr-4">
+                            <a href="/Food/index.html"
+                               class="nav-pill active">
+                                Recipes
+                            </a>
+                            
+                            
+                        </div>
+                        
+                        <!-- Inline buttons on md+ screens -->
+                        
+                        <button onclick="showShortcutsHelp()" class="icon-btn hidden md:inline-flex ml-2 print:hidden" aria-label="Keyboard shortcuts" title="Keyboard shortcuts (?)">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </button>
+                        <button onclick="toggleTheme()" class="icon-btn hidden md:inline-flex ml-2 print:hidden" aria-label="Toggle theme">
+                            <svg class="hidden dark:block" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
+                            </svg>
+                            <svg class="block dark:hidden" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                            </svg>
+                        </button>
+                        
+                        <!-- Overflow menu for small screens -->
+                        <div class="relative md:hidden ml-auto" id="more-menu-container">
+                            <button onclick="document.getElementById('more-dropdown').classList.toggle('hidden')" class="icon-btn" aria-label="More options">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+                                </svg>
+                            </button>
+                            <div id="more-dropdown" class="hidden absolute right-0 mt-2 w-56 card shadow-[var(--shadow-overlay)] z-50 py-1">
+                                
+                                <a href="/Food/index.html" class="menu-item active">
+                                    <span>🍳</span> <span>Recipes</span>
+                                </a>
+                                
+                                
+                                <div class="border-t border-line my-1"></div>
+                                
+                                
+                                
+                                <button onclick="showShortcutsHelp(); document.getElementById('more-dropdown').classList.add('hidden');" class="menu-item">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    <span>Keyboard Shortcuts</span>
+                                </button>
+                                <button onclick="toggleTheme(); document.getElementById('more-dropdown').classList.add('hidden');" class="menu-item">
+                                    <svg class="w-4 h-4 hidden dark:block" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path></svg>
+                                    <svg class="w-4 h-4 block dark:hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                                    <span>Toggle Theme</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main>
+            
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Recipe","image":"/Food/api/static/Recettes%20sal%C3%A9es/Index%20des%20tartes%20sal%C3%A9es.jpg","keywords":"recette, tarte-salee","name":"Index des tartes salées","recipeIngredient":[],"recipeInstructions":[{"@type":"HowToStep","text":"# Index des tartes salées"},{"@type":"HowToStep","text":"**Tarte salée – recette universelle**"},{"@type":"HowToStep","text":"1 tarte – 6/8 personnes Préparation: 20 min Cuisson : 30-45 min"},{"@type":"HowToStep","text":"**_Version mascarpone/fromage blanc, oignon et vin blanc – cuisson 30 minutes_**"},{"@type":"HowToStep","text":"* 1 pâte brisée huile d'olive, vin blanc et paprika * 500 g d'oignons => à faire revenir dans poêle en petits morceaux avec vin blanc * crème = 250 g de mascarpone + 3 œufs + 1 càc de sel/poivre + 5 g de paprika doux * Ou + léger : 125 g de fromage blanc, 1 oeuf ou blanc, 25g de parmesan râpé * Mélanger oignons et crème * Commentaires: peut rester une nuit au frais, top"},{"@type":"HowToStep","text":"**_Version oignons – à blanc / cuisson 10 minutes_**"},{"@type":"HowToStep","text":"* _1 pâte feuilletée_ * _1 compotée d'oignons = 4 oignons + 1 càs de miel -> 20 min à feu doux (eau si besoin)_ * _1> cuire la pâte fine au préalable 2> compotée d'oignons + 30g de crottin de chavignol 10 minutes à 200°_ * _Commentaires : très bon_"},{"@type":"HowToStep","text":"**_Version chèvre, courgette-carotte, abricot - cuisson 30 minutes_**"},{"@type":"HowToStep","text":"* 1 Pâte Eryn salée tout usage (laisser reposer 1h) * 2 courgettes et / ou 1 carotte => à faire revenir à la poele quelques minutes après avoir râpé (on peut garder des rondelles pour la déco) * crème = 3 abricots + 60 g de chavignol ou chèvre en bûche + 120g de fromage blanc ou 20 cl de crème liquide+ sel/poivre + 1 œuf * 1> crème 2>3 autres abricots + 60 g d'un autre chavignol + courgettes 3> 1 càs de miel en filet * Commentaires: très sympa, mettre des herbes pour le goût"},{"@type":"HowToStep","text":"**_Version mozzarella et aubergines – cuisson 25 minutes_**"},{"@type":"HowToStep","text":"* 1 pâte feuilletée * 3 aubergines en tranches longueur => à cuire à la vapeur (5minutes) et les faire revenir dans huile d'olive * 1/2 poivron rouge en dés * 1 tomate en tranches * 2 boules de mozzarella en tranches * herbes de Provence, sel/poivre * 1> mozzarella 2> aubergines 3> tomates 4>poivron * Commentaires: très bon avec fêta et un peu de gruyère aussi"},{"@type":"HowToStep","text":"**_Version camembert et pommes – cuisson 30 minutes *_**"},{"@type":"HowToStep","text":"* 1 pâte feuilletée * 2 pommes à couper * 1 camembert à tailler en tranches de 5 mm d'épaisseur * 1 poignée de roquette à étaler * 2 càs de pignon de pin * poivre * 1> pommes 2> roquette 3> camembert 4>pignons"},{"@type":"HowToStep","text":"**_Version ricotta, aubergine et noix – cuisson 40 minutes_**"},{"@type":"HowToStep","text":"* 1 pâte brisée * 1 aubergine en petits cubes => à poêler dans huile d'olive avec herbes de Provence et 1 càs de miel * 2 càs de poudre d'amandes à mettre sur le fond de tarte * crème = 2 œufs + sel/poivre + 10 cl crème liquide + 150 g de ricotta + 50 g de noix concassées * 1> aubergines 2>crème * Commentaires: très bon avec pas mal d’herbes, marche aussi avec un seul oeuf"},{"@type":"HowToStep","text":"**_Version printemps – cuisson 30 minutes_**"},{"@type":"HowToStep","text":"* 1 pâte brisée * crème = 2 œufs + sel/poivre + 10 cl crème liquide + persil * 1> crème 2>2 oignons en rondelle + 1 poireau + 6 tomates cerises + 50 g de comté en morceaux + persil + sel/poivre * Commentaires => bon aussi avec crème soja et ricotta"},{"@type":"HowToStep","text":"**_Version betterave, carottes et lardons – cuisson 30 minutes_**"},{"@type":"HowToStep","text":"* 1 pâte brisée à huile d'olive et graines de pavot * 1 betterave cuite en lamelles * 1 carotte râpée * crème = 3 œufs + sel/poivre + 15cl lait d'avoine * 1> betterave 2>carotte 3> crème 4> 70g de lardons * Commentaires => association très intéressante – peut se déguster froide aussi"},{"@type":"HowToStep","text":"**_Version oignons et champignons – à blanc / cuisson 10 minutes_**"},{"@type":"HowToStep","text":"* 1 pâte fine croustillante (thym et piment d’Espelette) * 1 compotée d'oignons = 250 g d'oignons + huile ou beurre + 1 gousse d'ail + 1 feuille de laurier + 1 branche de thym + sel/piment d’Espelette dans casserole à feu doux pendant 1h * 1> cuire la pâte fine au préalable 2> compotée d'oignons + champignons 10 minutes avant la fin * Commentaires : on peut réchauffer la tarte, on peut ajouter aussi du crottin de chavignol"},{"@type":"HowToStep","text":"**_Version poireaux et variantes – cuisson 25 minutes_**"},{"@type":"HowToStep","text":"* 1 pâte brisée * 3 blancs de poireaux => à faire revenir dans poêle 10 minutes avec beurre, curry, noix et poivre * crème de poireaux = poireaux + 10 cl de crème ou lait + 100 g de parmesan * Commentaires => très bon, ça marche aussi avec lait de soja à la place de crème – cumin en plus"},{"@type":"HowToStep","text":"_Variante => remplacer parmesan par comté ou fêta, curry par muscade, crème par béchamel, ajout d'un oignon,..._"},{"@type":"HowToStep","text":"Variante CRUMBLE => mélanger 80g de farine + 70g de beurre + 70g de chapelure => disposer sur garniture (30min de cuisson plutôt)"},{"@type":"HowToStep","text":"**_Version chèvre et légumes – cuisson 25 minutes_**"},{"@type":"HowToStep","text":"* 1 pâte feuilletée / brisée * poêler => 1 courgette en rondelle et 1 oignon coupé * crème = 1 œuf et 10 cl de crème * 1> 1 poivron en dés + 1 tomate coupée 2> courgettes et oignon 3> dés de dinde ou jambon 4> 1 bûche coupée de chèvre 5> crème 6> un peu de gruyère râpé * Commentaires : très bon avec ratatouille et petit billy, sans viande ; peut se faire avec de l’aubergine, des pignons,… avec du basilic"},{"@type":"HowToStep","text":"**_Version comté, figues et jambon cru – cuisson 20 minutes_**"},{"@type":"HowToStep","text":"* 1 pâte feuilletée / brisée * 1> 100 g de jambon cru 2> 40 g de figues 3> 150 g de comté en morceaux 4> basilic haché * Commentaires : très bon"},{"@type":"HowToStep","text":"**_Version tomates et variantes– cuisson 25 minutes / à blanc_**"},{"@type":"HowToStep","text":"* 1 pâte feuilletée ou pâte à l'huile d'olive et basilic * 4 grosses tomates à découper en tranche à saler et à dégorger 10 minutes * 2 oignons à découper en forme d'anneaux si caramélisés mettre au four 15 minutes avec huile d'olive + vinaigre balsamique + sucre * on peut badigeonner le pourtour de la tarte avec du lait * 1> tomates 2> oignons 3> 150 g de fêta émiettée / mozzarella * Commentaires : meilleur tiède"},{"@type":"HowToStep","text":"_Variantes => remplacer fêta par comté / gruyère, ajout d'un fond de moutarde, purée d'aubergines (fendre l'aubergine en 2, mettre aux micro-ondes 5 min), mettre des herbes de Provence, basilic_"},{"@type":"HowToStep","text":"_Variantes => 1 seul oignon, 1 gousse d’ail, mozzarella, 3 courgettes et basilic_"},{"@type":"HowToStep","text":"* _Faire une compotée avec oignon, ail, huile, pulpe de tomates environ 15 min et ajouter du basilic_ * _Poeler les courgettes tranchées_ * _Monter la tarte avec compotée au fond, courgettes / tomates / mozza et parsemer de basilic et on peut faire un appareil à quiche par-dessus – cuisson 35 min environ_"},{"@type":"HowToStep","text":"**_Version carottes et fromage – cuisson 30 minutes_**"},{"@type":"HowToStep","text":"* _1 pâte feuilletée_ * _crème => 2 œufs + 1 petit billy ou vaches qui rit + 2 càs de crème fraîche + herbes (muscade, cumin, coriandre, coriandre, persil, thym, fruits secs, zestes de fruits)_ * _Commentaires : Excellente avec 4 carottes moyennes râpées et cuites au préalable (pour l'eau) avec 1 oignon, sel et poivre et citron - puis préparation de la crème en écrasant petit billy + 1 oeuf battu + 10cl de crème à 5% avec coriandre, cumin, sel et poivre_"},{"@type":"HowToStep","text":"_Variante à faire => avec 75g de noix de cajou concassées à ajouter après cuisson des carottes et epices: cumin, coriandre_"},{"@type":"HowToStep","text":"**_Version carottes et beaufort – cuisson 30 minutes ***_**"},{"@type":"HowToStep","text":"* _1 pâte brisée à précuire ~ 15 min_ * _6-8 carottes taillées finement à la mandoline_ * _40g de Beaufort à raper_ * _crème => 2 œufs + 20 cl de lait + 40g de beaufort râpé + cumin ou carvi_ * _Commentaires : xxx_"},{"@type":"HowToStep","text":"**_Version carottes et thon – cuisson 30 minutes_**"},{"@type":"HowToStep","text":"* _1 pâte feuilletée_ * _crème => 1 œuf + 1 yaourt + 1 oignon + 1 carotte émincée à la mandoline +1 boîte de thon émiettée + herbes (paprika)_ * _Commentaires : good_"},{"@type":"HowToStep","text":"**_Version aubergine, poivrons, oignon, tomates et petit billy – cuisson 30 minutes_**"},{"@type":"HowToStep","text":"* _1 pâte feuilletée_ * _1 aubergine, 3 tomates coupées en rondelles et poêlées + 1 oignon + 1/2 poivron rouge & vert + 3 tranches de jambon italien_ * _crème => 1/2 petit billy + 4 càs de crème fraîche + 2 càs de moutarde ancienne + herbes (ail, persil, herbes de Provence)_ * _Commentaires =>Excellente_"},{"@type":"HowToStep","text":"**_Version chèvre et figues – cuisson 25 minutes_**"},{"@type":"HowToStep","text":"* _1 pâte feuilletée / brisée_ * _1> 6 figues (on peut les faire cuire au préalable avec vinaigre balsamique et sucre) 2> 6 tomates 3> poitrine fumé et chèvre 4> thym et chapelure_ * _Commentaires =>très bon, on peut mettre un peu de miel aussi sans tomates et viande par exemple_"},{"@type":"HowToStep","text":"**_Version cèpes – cuisson 5 minutes – et 3h de préparation *_**"},{"@type":"HowToStep","text":"* _Mettre les cèpes séchés (1 boîte) dans un saladier et recouvrir d'eau chaude. Laisser tremper pendant 3 heures en changeant l'eau régulièrement._ * _Pour chaque fond de tarte, découper dans les feuilles de brick 3 disques concentriques de taille différente. Pour cela, utiliser des ustensiles de cuisine de tailles différentes comme supports. Par exemple, un verre pour les plus petits disques, le moule à tartelette puis un grand bol_ * _A l'aide d'un Sopalin imbibé d'huile d'olive, huiler les 6 disques ainsi obtenus sur chaque face. Superposer les 3 disques dans chaque moule à tartelette. On peut aussi les disposer à plat sur du papier sulfurisé._ * _Enfourner les 2 fonds de tarte 5 minutes maximum en les surveillant attentivement : ils doivent être tout juste dorés. Attention, la feuille de brick brunit très vite !_ * _Au bout de 3 heures, essorer les cèpes réhydratés puis couper en lamelles. Les faire revenir dans l'huile d'olive. Saler et poivrer._ * _Dresser les tartelettes : déposer 1 càs de crème fraîche sur chaque fond de tarte, puis disposer la moitié des cèpes sautés. Saupoudrer de persil. Déposer une noisette de beurre et servir immédiatement !_"},{"@type":"HowToStep","text":"**_Version légumes grillés et fromage de brebis – cuisson 15 min à 190°C_**"},{"@type":"HowToStep","text":"* _1 pâte aux 5 céréales si possible cuite à blanc 15 minutes_ * _Des légumes rôtis au four_ * _Ajouter des épices et un mélange œuf / fromage de brebis par exemple_ * _Commentaires : excellent_"},{"@type":"HowToStep","text":"**_Version courgettes et lardons – cuisson 30 min à 190°C_**"},{"@type":"HowToStep","text":"* _1 pâte brisée_ * _2 courgettes / 1 oignon / 200 g de lardons poêlés au préalable => à étaler_ * _Puis mélanger 20 cl de crème allégée + 2 œufs + ciboulette + parmesan râpé => à répartir_ * _Mettre du poivre_"},{"@type":"HowToStep","text":"**_Version courgettes et reblochon – cuisson 30 min à 180°C_**"},{"@type":"HowToStep","text":"* 1 pâte brisée * 1 courgette / 150 g de reblochon => à mettre au congélateur avant de découper des copeaux * Puis mélanger 20 cl de crème + 3 œufs + 1 cac de maïzena + origan frais et carvi => à répartir * _Commentaires : très bon, mieux vaut faire revenir les courgettes à la poêle avant cuisson_"},{"@type":"HowToStep","text":"![](../_resources/unknown_filename.392.jpeg)"},{"@type":"HowToStep","text":"**_Version épinards, ricotta et poissons – cuisson 30 min à 190°C_**"},{"@type":"HowToStep","text":"* _1 pâte brisée_ * _300g d’épinards/ 1 oignon / 100 g de poisson déjà cuit_ * _Puis mélanger 1 œuf + farce + curry > à répartir_ * _Puis Répartir la ricotta (si possible avec de l’ail ou autre gout) + face_ * _Commentaires : sympathique_"},{"@type":"HowToStep","text":"**_Version mâche, ricotta et champignons – cuisson 30 min à 190°C_**"},{"@type":"HowToStep","text":"* _1 pâte brisée_ * _200g d’épinards/ 1 oignon / 150 g de champignons émincés / 1 ail -> à poeler_ * _Puis mélanger ricotta – ciboulette – poivre/sem - parmesan > à répartir_ * _Puis répartir + farce_ * _Commentaires : miam tiède_"},{"@type":"HowToStep","text":"**_Version magret de canard fumé, chèvre et poivron – cuisson 30 min à 190°C_**"},{"@type":"HowToStep","text":"* _1 pâte brisée à faire cuire à blanc tout d’abord (piquer la pâte au préalable) – 15 min_ * _Faire revenir le poivron en lamelle à la poêle avec un peu d’huile d’olive_ * _Mettre les poivrons en lamelle, puis les tranches de magret puis la chèvre en rondelle_ * _Recouvrir de sel, poivre, miel, thym et romarin_ * _Enfourner pendant 20 minutes ensuite_ * _Commentaires : très bon même sans miel, enlever le gras ou précuire le magret de canard pour éviter qu’il n’y ait trop de gras…_"},{"@type":"HowToStep","text":"**_Version choucroute– cuisson 35 min à 190°C *_**"},{"@type":"HowToStep","text":"* _1 pâte brisée_ * _Faire revenir 200g de lardons à la poêle et les égoutter_ * _Etaler 500g de choucroute, ajouter les lardons_ * _Mélanger 2 œufs + 20 cl de crème fraîche + 15 cl de lait + sel/poivre et verser sur la tarte_ * _Mettre 60g de gruyère râpé_"},{"@type":"HowToStep","text":"**_Version courgette / tomate / cancoillotte– cuisson 30 min à 190°C_**"},{"@type":"HowToStep","text":"* _1 pâte brisée aux petits suisses + herbes de provences_ * _Mettre moutarde sur fond de pâte, ajouter cancoillote chaude dessus à étaler avec ail et origan, mettre tomates & courgettes en rondelles_ * _Finir en salant, poivrant + herbes : basilic & romarin_ * _Commentaires : intéressant & sympa_"},{"@type":"HowToStep","text":"**_Version morteau et comté *_**"},{"@type":"HowToStep","text":"* _1 pâte brisée_ * _Faire revenir la saucisse de morteau – 30 min dans eau frémissante sans la piquer_ * _Faire une fondue avec 1 verre de vin blanc, poivre, 200 g de comté et remuer tout le temps_ * _Garnir les tartes / tartelettes de cette fondue puis disposer la saucisse coupée en fines tranches_ * _Enfourner 5 min à 240°C, puis 10-15 min à 190°C – jusqu’à l’obtention du gratiné_"},{"@type":"HowToStep","text":"**_Version poireaux et saint-jacques – cuisson 20 minutes à 210°C *_**"},{"@type":"HowToStep","text":"* _1 pâte feuilletée_ * _200g blancs de poireaux => à faire revenir dans poêle 10 minutes avec 1 échalotte, vin blanc et 1 trait de vinaigre balsamique_ * _Crème : 1 œuf + 20 cl de crème + sel/poivre + muscade + paprika_ * _Mettre dans poele avec poireaux 5 min_ * _Mettre ce premier mélange sur tarte_ * _Faire revenir une dizaine de saint-jacques avec un peu de beurre à la poele pour les faire dorer – 2 min_ * _Disposer sur la tarte_"},{"@type":"HowToStep","text":"**_Version courgettes et féta – cuisson 25 min à 190°C *_**"},{"@type":"HowToStep","text":"* _1 pâte brisée arômatisée thym et romarin à piquer_ * _Faire blanchir 3 min à l’eau bouillante les zestes d’un citron_ * _Couper 1 courgette en tronçons et 1 courgette en rondelles – faites revenir le tout 8 min avec 1 càs huile + sel/poivre_ * _Mettre l’ensemble sur la tarte, fouetter 1 œuf avec les zestes, 15 cl de crème fraîche, origan, 100g de feta_"},{"@type":"HowToStep","text":"**_Version sardines, tomates grappes, poireau, poivron et ricotta – cuisson 35 min à 180°C_**"},{"@type":"HowToStep","text":"* _1 pâte brisée arômatisée ou pas_ * _Mettre dans un saladier: 5 tomates coupées en 4 + rondelles de poireau ou oignons + poivron en des avec 1 càs d'huile d'olive sel/poivre_ * _Mettre 4 càs de ricotta avec ou sans moutarde_ * _Mettre l’ensemble sur la tarte, et cuire_ * `_Sympa et rapide à faire_`"},{"@type":"HowToStep","text":"**_Version épinards et ricotta – cuisson 35 min à 180°C_**"},{"@type":"HowToStep","text":"* _1 pâte brisée arômatisée_ * _Faire revenir les 150g épinards hachés très rapidement avec 1 échalote à la poêle, puis égoutter_ * _Faire revenir 150g de lardons_ * _Mettre dans un saladier: 1 pot de ricotta, qq càs de crème liquide, sel, poivre, champignons déshydratés, parmesan râpé_ * _Mettre l’ensemble sur la tarte, et cuire_ * `_Sympa et bien mettre autre chose dans l'appareil pour apporter du goût_`"},{"@type":"HowToStep","text":"**_Version chou blanc, carotte, et lardons – cuisson 35 min à 180°C_**"},{"@type":"HowToStep","text":"* _1 pâte brisée arômatisée_ * _Faire revenir le 1/2 chou blanc pointu, 2 petites carottes en bâtonnets, 200g de bons lardons_ * _Mettre dans un saladier: 3/4 du pot de lait concentré non sucré, 2 oeufs, et mélanger le tout_ * _Mettre l’ensemble sur la tarte, et cuire_ * `Top`"},{"@type":"HowToStep","text":"**_Version asperges et maquereaux – cuisson 20 min à 180°C ***_**"},{"@type":"HowToStep","text":"* 1 pâte brisée * Faire cuire 8 min environ 12 asperges dans une casserole d'eau bouillante salée. Égoutter et couper en tronçons * Fouetter 2 œufs + 1 cas de moutarde + 1- 2 boîtes de maquereau émietté + 20 cl de lait vegetal + sel/poivre * _Mettre l’ensemble sur la tarte, et cuire_"},{"@type":"HowToStep","text":"## _Appareils à tarte salée sympa :_"},{"@type":"HowToStep","text":"* _Vache qui rit + moutarde + herbes_ * _Feta + œuf + moutarde + herbes_ * _Lait concentré + œuf ou maïzena + herbes_"},{"@type":"HowToStep","text":"## _Préparation_"},{"@type":"HowToStep","text":"* _Étaler la pâte à tarte choisie_ * _la piquer à la fourchette_ * _vérifier s’il est nécessaire de la cuire à blanc au préalable_ * _chauffer le four à 180/190°C_ * _mettre les ingrédients sur la tarte comme indiqué_ * _faire cuire le temps indiqué_"},{"@type":"HowToStep","text":"**_ATTENTION_**"},{"@type":"HowToStep","text":"_Comment réchauffer un reste de tarte/quiche ?_"},{"@type":"HowToStep","text":"* _Si vous avez des restes, ne les réchauffez surtout pas au four à micro-onde, Mettez les restes dans un plat, recouvrez de papier sulfurisé ou de papier alu, mettez dans votre four puis préchauffez-le à 200°C (10 min)_ * _Attention mozzarella rend du jus_"},{"@type":"HowToStep","text":"_Idée tarte poivrons, légumes et jambon - à tester_"},{"@type":"HowToStep","text":"![](../_resources/IMG_1652.PNG)"},{"@type":"HowToStep","text":"Tarte poires comté à tester ![](../_resources/Screenshot_20221012-211212_ReadEra.jpg)"},{"@type":"HowToStep","text":"Tarte brocolis et morbier – cuisson 40 min à 180°C ***"},{"@type":"HowToStep","text":"* 1 pâte brisée (voir déroulé de la pâte brisée maison) * 3 oeufs * 30 cl de crème liquide * 2 petits brocolis (600 g en tout) * 250 g de morbier * 50 g d’amandes effilées * Sel et poivre"},{"@type":"HowToStep","text":"Recette"},{"@type":"HowToStep","text":"* Préchauffez le four à 180°C (th.6) * Coupez la base des brocolis et découpez les fleurettes. Ébouillantez-les 2 minutes, puis passez-les sous un filet d’eau froide pour les rafraîchir et égouttez-les * Battez les oeufs avec la crème liquide, salez et poivrez. Taillez le morbier en lanières sans en ôter la croûte. Disposez les lanières de fromage sur le fond de tarte, ajoutez les brocolis et versez le mélange oeufs-crème. * Parsemez d’amandes effilées et enfournez"},{"@type":"HowToStep","text":"Tarte au thon et à la tomate *** ![](../_resources/Screenshot_20230801-200712_ReadEra.jpg)"},{"@type":"HowToStep","text":"Tarte sardine aubergine et tomate *** ![](../_resources/Screenshot_20230801-200758_ReadEra.jpg) Tarte houmous et légumes ***"},{"@type":"HowToStep","text":"![](../_resources/Screenshot_20230801-200818_ReadEra.jpg) Pissaladière *** ![](../_resources/Screenshot_20230801-200734_ReadEra.jpg)"}]}</script>
+<div>
+    <nav class="mb-4 breadcrumb print:hidden">
+        <ol class="flex items-center space-x-2 text-sm text-muted">
+            <li><a href="/Food/index.html" class="hover:text-text">Recipes</a></li>
+            
+            <li class="flex items-center">
+                <span class="mx-2 text-faint">/</span>
+                
+                    <a href="/Food/directory/Recettes salées.html" class="hover:text-text">Recettes salées</a>
+                
+            </li>
+            
+            <li class="flex items-center">
+                <span class="mx-2 text-faint">/</span>
+                
+                    <span class="text-text">Index des tartes salées</span>
+                
+            </li>
+            
+        </ol>
+    </nav>
+
+    <div class="mb-8">
+        <!-- Recipe image if available -->
+        
+        <div class="mb-6 max-w-4xl mx-auto flex justify-center">
+            <img src="/Food/api/static/Recettes%20sal%C3%A9es/Index%20des%20tartes%20sal%C3%A9es.jpg" alt="Index des tartes salées" class="rounded-xl shadow-[var(--shadow-card)] max-w-full h-auto max-h-[500px]">
+        </div>
+        
+
+        <!-- Title bar with scale and shopping list button -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 print:flex-row print:items-center">
+            <h1 class="text-display font-bold text-text print:text-2xl">
+                Index des tartes salées
+            </h1>
+            
+            <div class="flex flex-wrap items-center gap-2 lg:gap-3 print:hidden">
+                
+                <button id="start-cooking-btn" onclick="startCookingMode()" class="btn btn-primary" title="Start Cooking">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span class="hidden lg:inline">Cook</span>
+                </button>
+                
+                <a href="/Food/recipe/Recettes salées/Index des tartes salées.cook" download class="btn" title="Download .cook source">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"></path>
+                    </svg>
+                    <span class="hidden lg:inline">.cook</span>
+                </a>
+                
+            </div>
+        </div>
+
+        <!-- Recipe info section -->
+        <div class="space-y-4">
+            <!-- Tags row -->
+            
+            <div class="flex flex-wrap gap-2">
+                
+                <span class="tag">#recette</span>
+                
+                <span class="tag">#tarte-salee</span>
+                
+            </div>
+            
+
+            
+
+            <!-- Description if present -->
+            
+            
+
+            <!-- Metadata row -->
+            <div id="metadata-container" class="flex flex-wrap gap-3">
+                
+                
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                <!-- Custom metadata -->
+                
+                
+                <span class="metadata-pill metadata-custom">Created at: 2016-01-21</span>
+                
+                
+                
+                <span class="metadata-pill metadata-custom">Last updated at: 2023-12-25</span>
+                
+                
+            </div>
+
+            
+        </div>
+    </div>
+
+    <div id="recipe-body" class="grid md:grid-cols-3 gap-8 mb-8">
+        <div class="md:col-span-1">
+            <div class="card p-6">
+                <h2 class="text-title font-bold mb-4 text-accent-text">🥘 Ingredients</h2>
+                
+                <!-- Fallback to original flat list for recipes without sections -->
+                <ul class="ingredient-list space-y-3">
+                    
+                </ul>
+                
+
+                
+            </div>
+        </div>
+
+        <div class="md:col-span-2">
+            <div class="card p-6" data-recipe-path="Recettes salées/Index des tartes salées">
+                
+                
+                
+                <ol class="step-list space-y-4 ">
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">1</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        # Index des tartes salées
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">2</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Tarte salée – recette universelle**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">3</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        		1 tarte – 6/8 personnes 		Préparation: 20 min 		Cuisson : 30-45 min
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">4</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **_Version mascarpone/fromage blanc, oignon et vin blanc – cuisson 30 minutes_**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">5</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 1 pâte brisée huile d&#x27;olive, vin blanc et paprika * 500 g d&#x27;oignons =&gt; à faire revenir dans poêle en petits morceaux avec vin blanc 	* crème = 250 g de mascarpone + 3 œufs + 1 càc de sel/poivre + 5 g de paprika doux 	* Ou + léger : 125 g de fromage blanc, 1 oeuf ou blanc, 25g de parmesan râpé  * Mélanger oignons et crème * Commentaires: peut rester une nuit au frais, top
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">6</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **_Version oignons – à blanc / cuisson 10 minutes_**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">7</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * _1 pâte feuilletée_ * _1 compotée d&#x27;oignons = 4 oignons + 1 càs de miel -&gt; 20 min à feu doux (eau si besoin)_ * _1&gt; cuire la pâte fine au préalable 2&gt; compotée d&#x27;oignons + 30g de crottin de chavignol 10 minutes à 200°_ * _Commentaires : très bon_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">8</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **_Version chèvre, courgette-carotte, abricot - cuisson 30 minutes_**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">9</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 1 Pâte Eryn salée tout usage (laisser reposer 1h) * 2 courgettes et / ou 1 carotte =&gt; à faire revenir à la poele quelques minutes après avoir râpé (on peut garder des rondelles pour la déco) * crème = 3 abricots + 60 g de chavignol ou chèvre en bûche + 120g de fromage blanc ou 20 cl de crème liquide+ sel/poivre + 1 œuf * 1&gt; crème 2&gt;3 autres abricots + 60 g d&#x27;un autre chavignol + courgettes 3&gt; 1 càs de miel en filet * Commentaires: très sympa, mettre des herbes pour le goût
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">10</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **_Version mozzarella et aubergines – cuisson 25 minutes_**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">11</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 1 pâte feuilletée * 3 aubergines en tranches longueur =&gt; à cuire à la vapeur (5minutes) et les faire revenir dans huile d&#x27;olive * 1/2 poivron rouge en dés * 1 tomate en tranches * 2 boules de mozzarella en tranches * herbes de Provence, sel/poivre * 1&gt; mozzarella 2&gt; aubergines 3&gt; tomates 4&gt;poivron * Commentaires: très bon avec fêta et un peu de gruyère aussi
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">12</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **_Version camembert et pommes – cuisson 30 minutes *_**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">13</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 1 pâte feuilletée * 2 pommes à couper * 1 camembert à tailler en tranches de 5 mm d&#x27;épaisseur * 1 poignée de roquette à étaler * 2 càs de pignon de pin * poivre * 1&gt; pommes 2&gt; roquette 3&gt; camembert 4&gt;pignons
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">14</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **_Version ricotta, aubergine et noix – cuisson 40 minutes_**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">15</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 1 pâte brisée * 1 aubergine en petits cubes =&gt; à poêler dans huile d&#x27;olive avec herbes de Provence et 1 càs de miel * 2 càs de poudre d&#x27;amandes à mettre sur le fond de tarte * crème = 2 œufs + sel/poivre + 10 cl crème liquide + 150 g de ricotta + 50 g de noix concassées * 1&gt; aubergines 2&gt;crème * Commentaires: très bon avec pas mal d’herbes, marche aussi avec un seul oeuf
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">16</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **_Version printemps – cuisson 30 minutes_**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">17</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 1 pâte brisée * crème = 2 œufs + sel/poivre + 10 cl crème liquide + persil * 1&gt; crème 2&gt;2 oignons en rondelle + 1 poireau + 6 tomates cerises + 50 g de comté en morceaux + persil + sel/poivre * Commentaires =&gt; bon aussi avec crème soja et ricotta
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">18</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **_Version betterave, carottes et lardons – cuisson 30 minutes_**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">19</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 1 pâte brisée à huile d&#x27;olive et graines de pavot * 1 betterave cuite en lamelles * 1 carotte râpée * crème = 3 œufs + sel/poivre + 15cl lait d&#x27;avoine * 1&gt; betterave 2&gt;carotte 3&gt; crème 4&gt; 70g de lardons * Commentaires =&gt; association très intéressante – peut se déguster froide aussi
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">20</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **_Version oignons et champignons – à blanc / cuisson 10 minutes_**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">21</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 1 pâte fine croustillante (thym et piment d’Espelette) * 1 compotée d&#x27;oignons = 250 g d&#x27;oignons + huile ou beurre + 1 gousse d&#x27;ail + 1 feuille de laurier + 1 branche de thym + sel/piment d’Espelette dans casserole à feu doux pendant 1h * 1&gt; cuire la pâte fine au préalable 2&gt; compotée d&#x27;oignons + champignons 10 minutes avant la fin * Commentaires : on peut réchauffer la tarte, on peut ajouter aussi du crottin de chavignol
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">22</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **_Version poireaux et variantes – cuisson 25 minutes_**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">23</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 1 pâte brisée * 3 blancs de poireaux =&gt; à faire revenir dans poêle 10 minutes avec beurre, curry, noix et poivre * crème de poireaux = poireaux + 10 cl de crème ou lait + 100 g de parmesan * Commentaires =&gt; très bon, ça marche aussi avec lait de soja à la place de crème – cumin en plus
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">24</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _Variante =&gt; remplacer parmesan par comté ou fêta, curry par muscade, crème par béchamel, ajout d&#x27;un oignon,..._
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">25</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Variante CRUMBLE =&gt; mélanger 80g de farine + 70g de beurre + 70g de chapelure =&gt; disposer sur garniture (30min de cuisson plutôt)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">26</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **_Version chèvre et légumes – cuisson 25 minutes_**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">27</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 1 pâte feuilletée / brisée * poêler =&gt; 1 courgette en rondelle et 1 oignon coupé * crème = 1 œuf et 10 cl de crème * 1&gt; 1 poivron en dés + 1 tomate coupée 2&gt; courgettes et oignon 3&gt; dés de dinde ou jambon 4&gt; 1 bûche coupée de chèvre 5&gt; crème 6&gt; un peu de gruyère râpé * Commentaires : très bon avec ratatouille et petit billy, sans viande ; peut se faire avec de l’aubergine, des pignons,… avec du basilic
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">28</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **_Version comté, figues et jambon cru – cuisson 20 minutes_**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">29</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 1 pâte feuilletée / brisée * 1&gt; 100 g de jambon cru 2&gt; 40 g de figues 3&gt; 150 g de comté en morceaux 4&gt; basilic haché * Commentaires : très bon
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">30</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **_Version tomates et variantes– cuisson 25 minutes / à blanc_**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">31</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 1 pâte feuilletée ou pâte à l&#x27;huile d&#x27;olive et basilic * 4 grosses tomates à découper en tranche à saler et à dégorger 10 minutes * 2 oignons à découper en forme d&#x27;anneaux si caramélisés mettre au four 15 minutes avec huile d&#x27;olive + vinaigre balsamique + sucre * on peut badigeonner le pourtour de la tarte avec du lait * 1&gt; tomates 2&gt; oignons 3&gt; 150 g de fêta émiettée / mozzarella * Commentaires : meilleur tiède
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">32</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _Variantes =&gt; remplacer fêta par comté / gruyère, ajout d&#x27;un fond de moutarde, purée d&#x27;aubergines (fendre l&#x27;aubergine en 2, mettre aux micro-ondes 5 min), mettre des herbes de Provence, basilic_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">33</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _Variantes =&gt; 1 seul oignon, 1 gousse d’ail, mozzarella, 3 courgettes et basilic_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">34</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * _Faire une compotée avec oignon, ail, huile, pulpe de tomates environ 15 min et ajouter du basilic_ * _Poeler les courgettes tranchées_ * _Monter la tarte avec compotée au fond, courgettes / tomates / mozza et parsemer de basilic et on peut faire un appareil à quiche par-dessus – cuisson 35 min environ_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">35</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **_Version carottes et fromage – cuisson 30 minutes_**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">36</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * _1 pâte feuilletée_ * _crème =&gt; 2 œufs + 1 petit billy ou vaches qui rit + 2 càs de crème fraîche + herbes (muscade, cumin, coriandre, coriandre, persil, thym, fruits secs, zestes de fruits)_ * _Commentaires : Excellente avec 4 carottes moyennes râpées et cuites au préalable (pour l&#x27;eau) avec 1 oignon, sel et poivre et citron - puis préparation de la crème en écrasant petit billy + 1 oeuf battu + 10cl de crème à 5% avec coriandre, cumin, sel et poivre_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">37</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _Variante à faire =&gt; avec 75g de noix de cajou concassées à ajouter après cuisson des carottes et epices: cumin, coriandre_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">38</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **_Version carottes et beaufort – cuisson 30 minutes ***_**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">39</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * _1 pâte brisée à précuire 
+                                        ~ 15 min_ * _6-8 carottes taillées finement à la mandoline_ * _40g de Beaufort à raper_ * _crème =&gt; 2 œufs + 20 cl de lait + 40g de beaufort râpé + cumin ou carvi_ * _Commentaires : xxx_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">40</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **_Version carottes et thon – cuisson 30 minutes_**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">41</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * _1 pâte feuilletée_ * _crème =&gt; 1 œuf + 1 yaourt + 1 oignon + 1 carotte émincée à la mandoline +1 boîte de thon émiettée + herbes (paprika)_ * _Commentaires : good_ 
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">42</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **_Version aubergine, poivrons, oignon, tomates et petit billy – cuisson 30 minutes_**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">43</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * _1 pâte feuilletée_ * _1 aubergine, 3 tomates coupées en rondelles et poêlées + 1 oignon + 1/2 poivron rouge &amp; vert + 3 tranches de jambon italien_ * _crème =&gt; 1/2 petit billy + 4 càs de crème fraîche + 2 càs de moutarde ancienne + herbes (ail, persil, herbes de Provence)_ * _Commentaires =&gt;Excellente_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">44</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **_Version chèvre et figues – cuisson 25 minutes_**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">45</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * _1 pâte feuilletée / brisée_ * _1&gt; 6 figues (on peut les faire cuire au préalable avec vinaigre balsamique et sucre) 2&gt; 6 tomates 3&gt; poitrine fumé et chèvre 4&gt; thym et chapelure_ * _Commentaires =&gt;très bon, on peut mettre un peu de miel aussi sans tomates et viande par exemple_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">46</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **_Version cèpes – cuisson 5 minutes – et 3h de préparation *_**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">47</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * _Mettre les cèpes séchés (1 boîte) dans un saladier et recouvrir d&#x27;eau chaude. Laisser tremper pendant 3 heures en changeant l&#x27;eau régulièrement._ * _Pour chaque fond de tarte, découper dans les feuilles de brick 3 disques concentriques de taille différente. Pour cela, utiliser des ustensiles de cuisine de tailles différentes comme supports. Par exemple, un verre pour les plus petits disques, le moule à tartelette puis un grand bol_ * _A l&#x27;aide d&#x27;un Sopalin imbibé d&#x27;huile d&#x27;olive, huiler les 6 disques ainsi obtenus sur chaque face. Superposer les 3 disques dans chaque moule à tartelette. On peut aussi les disposer à plat sur du papier sulfurisé._ * _Enfourner les 2 fonds de tarte 5 minutes maximum en les surveillant attentivement : ils doivent être tout juste dorés. Attention, la feuille de brick brunit très vite !_ * _Au bout de 3 heures, essorer les cèpes réhydratés puis couper en lamelles. Les faire revenir dans l&#x27;huile d&#x27;olive. Saler et poivrer._ * _Dresser les tartelettes : déposer 1 càs de crème fraîche sur chaque fond de tarte, puis disposer la moitié des cèpes sautés. Saupoudrer de persil. Déposer une noisette de beurre et servir immédiatement !_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">48</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **_Version légumes grillés et fromage de brebis – cuisson 15 min à 190°C_**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">49</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * _1 pâte aux 5 céréales si possible cuite à blanc 15 minutes_ * _Des légumes rôtis au four_ * _Ajouter des épices et un mélange œuf / fromage de brebis par exemple_ * _Commentaires : excellent_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">50</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **_Version courgettes et lardons – cuisson 30 min à 190°C_**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">51</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * _1 pâte brisée_ * _2 courgettes / 1 oignon / 200 g de lardons poêlés au préalable =&gt; à étaler_ * _Puis mélanger 20 cl de crème allégée + 2 œufs + ciboulette + parmesan râpé =&gt; à répartir_ * _Mettre du poivre_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">52</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **_Version courgettes et reblochon – cuisson 30 min à 180°C_** 
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">53</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 1 pâte brisée * 1 courgette / 150 g de reblochon =&gt; à mettre au congélateur avant de découper des copeaux  * Puis mélanger 20 cl de crème + 3 œufs + 1 cac de maïzena + origan frais et carvi =&gt; à répartir * _Commentaires : très bon, mieux vaut faire revenir les courgettes à la poêle avant cuisson_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">54</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        ![](../_resources/unknown_filename.392.jpeg)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">55</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **_Version épinards, ricotta et poissons – cuisson 30 min à 190°C_**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">56</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * _1 pâte brisée_ * _300g d’épinards/ 1 oignon / 100 g de poisson déjà cuit_ * _Puis mélanger 1 œuf + farce + curry &gt; à répartir_ * _Puis Répartir la ricotta (si possible avec de l’ail ou autre gout) + face_ * _Commentaires : sympathique_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">57</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **_Version mâche, ricotta et champignons – cuisson 30 min à 190°C_**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">58</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * _1 pâte brisée_ * _200g d’épinards/ 1 oignon / 150 g de champignons émincés / 1 ail  -&gt; à poeler_ * _Puis mélanger ricotta – ciboulette – poivre/sem  - parmesan &gt; à répartir_ * _Puis répartir + farce_ * _Commentaires : miam tiède_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">59</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **_Version magret de canard fumé, chèvre et poivron – cuisson 30 min à 190°C_**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">60</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * _1 pâte brisée à faire cuire à blanc tout d’abord (piquer la pâte au préalable) – 15 min_ * _Faire revenir le poivron en lamelle à la poêle avec un peu d’huile d’olive_ * _Mettre les poivrons en lamelle, puis les tranches de magret puis la chèvre en rondelle_ * _Recouvrir de sel, poivre, miel, thym et romarin_ * _Enfourner pendant 20 minutes ensuite_ * _Commentaires : très bon même sans miel, enlever le gras ou précuire le magret de canard pour éviter qu’il n’y ait trop de gras…_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">61</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **_Version choucroute– cuisson 35 min à 190°C *_**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">62</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * _1 pâte brisée_ * _Faire revenir 200g de lardons à la poêle et les égoutter_ * _Etaler 500g de choucroute, ajouter les lardons_ * _Mélanger 2 œufs + 20 cl de crème fraîche + 15 cl de lait + sel/poivre et verser sur la tarte_ * _Mettre 60g de gruyère râpé_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">63</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **_Version courgette / tomate / cancoillotte– cuisson 30 min à 190°C_**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">64</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * _1 pâte brisée aux petits suisses + herbes de provences_ * _Mettre moutarde sur fond de pâte, ajouter cancoillote chaude dessus à étaler avec ail et origan, mettre tomates &amp; courgettes en rondelles_ * _Finir en salant, poivrant + herbes : basilic &amp; romarin_ * _Commentaires : intéressant &amp; sympa_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">65</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **_Version morteau et comté *_**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">66</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * _1 pâte brisée_ * _Faire revenir la saucisse de morteau – 30 min dans eau frémissante sans la piquer_ * _Faire une fondue avec 1 verre de vin blanc, poivre, 200 g de comté et remuer tout le temps_ * _Garnir les tartes / tartelettes de cette fondue puis disposer la saucisse coupée en fines tranches_ * _Enfourner 5 min à 240°C, puis 10-15 min à 190°C – jusqu’à l’obtention du gratiné_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">67</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **_Version poireaux et saint-jacques – cuisson 20 minutes à 210°C *_**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">68</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * _1 pâte feuilletée_ * _200g blancs de poireaux =&gt; à faire revenir dans poêle 10 minutes avec 1 échalotte, vin blanc et 1 trait de vinaigre balsamique_ * _Crème : 1 œuf + 20 cl de crème + sel/poivre + muscade + paprika_ * _Mettre dans poele avec poireaux 5 min_ * _Mettre ce premier mélange sur tarte_ * _Faire revenir une dizaine de saint-jacques avec un peu de beurre à la poele pour les faire dorer – 2 min_ * _Disposer sur la tarte_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">69</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **_Version courgettes et féta – cuisson 25 min à 190°C *_**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">70</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * _1 pâte brisée arômatisée thym et romarin à piquer_ * _Faire blanchir 3 min à l’eau bouillante les zestes d’un citron_ * _Couper 1 courgette en tronçons et 1 courgette en rondelles – faites revenir le tout 8 min avec 1 càs huile + sel/poivre_ * _Mettre l’ensemble sur la tarte, fouetter 1 œuf avec les zestes, 15 cl de crème fraîche, origan, 100g de feta_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">71</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **_Version sardines, tomates grappes, poireau, poivron et ricotta – cuisson 35 min à 180°C_** 
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">72</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * _1 pâte brisée arômatisée ou pas_ * _Mettre dans un saladier: 5 tomates coupées en 4 + rondelles de poireau ou oignons + poivron en des avec 1 càs d&#x27;huile d&#x27;olive sel/poivre_ * _Mettre 4 càs de ricotta avec ou sans moutarde_ * _Mettre l’ensemble sur la tarte, et cuire_ * `_Sympa et rapide à faire_`
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">73</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **_Version épinards et ricotta – cuisson 35 min à 180°C_** 
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">74</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * _1 pâte brisée arômatisée_ * _Faire revenir les 150g épinards hachés très rapidement avec 1 échalote à la poêle, puis égoutter_  * _Faire revenir 150g de lardons_ * _Mettre dans un saladier: 1 pot de ricotta, qq càs de crème liquide, sel, poivre, champignons déshydratés, parmesan râpé_  * _Mettre l’ensemble sur la tarte, et cuire_ * `_Sympa et bien mettre autre chose dans l&#x27;appareil pour apporter du goût_` 
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">75</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **_Version chou blanc, carotte, et lardons – cuisson 35 min à 180°C_** 
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">76</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * _1 pâte brisée arômatisée_ * _Faire revenir le 1/2 chou blanc pointu, 2 petites carottes en bâtonnets, 200g de bons lardons_  * _Mettre dans un saladier: 3/4 du pot de lait concentré non sucré, 2 oeufs, et mélanger le tout_  * _Mettre l’ensemble sur la tarte, et cuire_ * `Top`
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">77</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **_Version asperges et maquereaux – cuisson 20 min à 180°C ***_**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">78</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 1 pâte brisée * Faire cuire 8 min environ 12 asperges dans une casserole d&#x27;eau bouillante salée. Égoutter et couper en tronçons * Fouetter 2 œufs + 1 cas de moutarde + 1- 2 boîtes de maquereau émietté + 20 cl de lait vegetal + sel/poivre * _Mettre l’ensemble sur la tarte, et cuire_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">79</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        #
+                                        # _Appareils à tarte salée sympa :_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">80</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * _Vache qui rit + moutarde + herbes_ * _Feta + œuf + moutarde + herbes_ * _Lait concentré + œuf ou maïzena + herbes_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">81</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        #
+                                        # _Préparation_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">82</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * _Étaler la pâte à tarte choisie_ * _la piquer à la fourchette_ * _vérifier s’il est nécessaire de la cuire à blanc au préalable_ * _chauffer le four à 180/190°C_ * _mettre les ingrédients sur la tarte comme indiqué_ * _faire cuire le temps indiqué_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">83</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **_ATTENTION_**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">84</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _Comment réchauffer un reste de tarte/quiche ?_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">85</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * _Si vous avez des restes, ne les réchauffez surtout pas au four à micro-onde, Mettez les restes dans un plat, recouvrez de papier sulfurisé ou de papier alu, mettez dans votre four puis préchauffez-le à 200°C (10 min)_ * _Attention mozzarella rend du jus_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">86</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _Idée tarte poivrons, légumes et jambon - à tester_ 
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">87</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        ![](../_resources/IMG_1652.PNG)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">88</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Tarte poires comté à tester ![](../_resources/Screenshot_20221012-211212_ReadEra.jpg)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">89</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Tarte brocolis et morbier – cuisson 40 min à 180°C ***
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">90</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 1 pâte brisée (voir déroulé de la pâte brisée maison) * 3 oeufs * 30 cl de crème liquide * 2 petits brocolis (600 g en tout) * 250 g de morbier * 50 g d’amandes effilées * Sel et poivre
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">91</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Recette
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">92</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * Préchauffez le four à 180°C (th.6) * Coupez la base des brocolis et découpez les fleurettes. Ébouillantez-les 2 minutes, puis passez-les sous un filet d’eau froide pour les rafraîchir et égouttez-les * Battez les oeufs avec la crème liquide, salez et poivrez. Taillez le morbier en lanières sans en ôter la croûte. Disposez les lanières de fromage sur le fond de tarte, ajoutez les brocolis et versez le mélange oeufs-crème. * Parsemez d’amandes effilées et enfournez
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">93</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Tarte au thon et à la tomate *** ![](../_resources/Screenshot_20230801-200712_ReadEra.jpg)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">94</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Tarte sardine aubergine et tomate *** ![](../_resources/Screenshot_20230801-200758_ReadEra.jpg) Tarte houmous et légumes ***
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">95</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        ![](../_resources/Screenshot_20230801-200818_ReadEra.jpg) Pissaladière *** ![](../_resources/Screenshot_20230801-200734_ReadEra.jpg)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                </ol>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<script id="cooking-mode-data" type="application/json">
+{"image":"/Food/api/static/Recettes%20sal%C3%A9es/Index%20des%20tartes%20sal%C3%A9es.jpg","name":"Index des tartes salées","scale":1.0,"sections":[{"ingredients":[],"name":null,"stepOffset":0,"steps":[{"globalNumber":1,"image":null,"ingredients":[],"number":1,"type":"step"},{"globalNumber":2,"image":null,"ingredients":[],"number":2,"type":"step"},{"globalNumber":3,"image":null,"ingredients":[],"number":3,"type":"step"},{"globalNumber":4,"image":null,"ingredients":[],"number":4,"type":"step"},{"globalNumber":5,"image":null,"ingredients":[],"number":5,"type":"step"},{"globalNumber":6,"image":null,"ingredients":[],"number":6,"type":"step"},{"globalNumber":7,"image":null,"ingredients":[],"number":7,"type":"step"},{"globalNumber":8,"image":null,"ingredients":[],"number":8,"type":"step"},{"globalNumber":9,"image":null,"ingredients":[],"number":9,"type":"step"},{"globalNumber":10,"image":null,"ingredients":[],"number":10,"type":"step"},{"globalNumber":11,"image":null,"ingredients":[],"number":11,"type":"step"},{"globalNumber":12,"image":null,"ingredients":[],"number":12,"type":"step"},{"globalNumber":13,"image":null,"ingredients":[],"number":13,"type":"step"},{"globalNumber":14,"image":null,"ingredients":[],"number":14,"type":"step"},{"globalNumber":15,"image":null,"ingredients":[],"number":15,"type":"step"},{"globalNumber":16,"image":null,"ingredients":[],"number":16,"type":"step"},{"globalNumber":17,"image":null,"ingredients":[],"number":17,"type":"step"},{"globalNumber":18,"image":null,"ingredients":[],"number":18,"type":"step"},{"globalNumber":19,"image":null,"ingredients":[],"number":19,"type":"step"},{"globalNumber":20,"image":null,"ingredients":[],"number":20,"type":"step"},{"globalNumber":21,"image":null,"ingredients":[],"number":21,"type":"step"},{"globalNumber":22,"image":null,"ingredients":[],"number":22,"type":"step"},{"globalNumber":23,"image":null,"ingredients":[],"number":23,"type":"step"},{"globalNumber":24,"image":null,"ingredients":[],"number":24,"type":"step"},{"globalNumber":25,"image":null,"ingredients":[],"number":25,"type":"step"},{"globalNumber":26,"image":null,"ingredients":[],"number":26,"type":"step"},{"globalNumber":27,"image":null,"ingredients":[],"number":27,"type":"step"},{"globalNumber":28,"image":null,"ingredients":[],"number":28,"type":"step"},{"globalNumber":29,"image":null,"ingredients":[],"number":29,"type":"step"},{"globalNumber":30,"image":null,"ingredients":[],"number":30,"type":"step"},{"globalNumber":31,"image":null,"ingredients":[],"number":31,"type":"step"},{"globalNumber":32,"image":null,"ingredients":[],"number":32,"type":"step"},{"globalNumber":33,"image":null,"ingredients":[],"number":33,"type":"step"},{"globalNumber":34,"image":null,"ingredients":[],"number":34,"type":"step"},{"globalNumber":35,"image":null,"ingredients":[],"number":35,"type":"step"},{"globalNumber":36,"image":null,"ingredients":[],"number":36,"type":"step"},{"globalNumber":37,"image":null,"ingredients":[],"number":37,"type":"step"},{"globalNumber":38,"image":null,"ingredients":[],"number":38,"type":"step"},{"globalNumber":39,"image":null,"ingredients":[],"number":39,"type":"step"},{"globalNumber":40,"image":null,"ingredients":[],"number":40,"type":"step"},{"globalNumber":41,"image":null,"ingredients":[],"number":41,"type":"step"},{"globalNumber":42,"image":null,"ingredients":[],"number":42,"type":"step"},{"globalNumber":43,"image":null,"ingredients":[],"number":43,"type":"step"},{"globalNumber":44,"image":null,"ingredients":[],"number":44,"type":"step"},{"globalNumber":45,"image":null,"ingredients":[],"number":45,"type":"step"},{"globalNumber":46,"image":null,"ingredients":[],"number":46,"type":"step"},{"globalNumber":47,"image":null,"ingredients":[],"number":47,"type":"step"},{"globalNumber":48,"image":null,"ingredients":[],"number":48,"type":"step"},{"globalNumber":49,"image":null,"ingredients":[],"number":49,"type":"step"},{"globalNumber":50,"image":null,"ingredients":[],"number":50,"type":"step"},{"globalNumber":51,"image":null,"ingredients":[],"number":51,"type":"step"},{"globalNumber":52,"image":null,"ingredients":[],"number":52,"type":"step"},{"globalNumber":53,"image":null,"ingredients":[],"number":53,"type":"step"},{"globalNumber":54,"image":null,"ingredients":[],"number":54,"type":"step"},{"globalNumber":55,"image":null,"ingredients":[],"number":55,"type":"step"},{"globalNumber":56,"image":null,"ingredients":[],"number":56,"type":"step"},{"globalNumber":57,"image":null,"ingredients":[],"number":57,"type":"step"},{"globalNumber":58,"image":null,"ingredients":[],"number":58,"type":"step"},{"globalNumber":59,"image":null,"ingredients":[],"number":59,"type":"step"},{"globalNumber":60,"image":null,"ingredients":[],"number":60,"type":"step"},{"globalNumber":61,"image":null,"ingredients":[],"number":61,"type":"step"},{"globalNumber":62,"image":null,"ingredients":[],"number":62,"type":"step"},{"globalNumber":63,"image":null,"ingredients":[],"number":63,"type":"step"},{"globalNumber":64,"image":null,"ingredients":[],"number":64,"type":"step"},{"globalNumber":65,"image":null,"ingredients":[],"number":65,"type":"step"},{"globalNumber":66,"image":null,"ingredients":[],"number":66,"type":"step"},{"globalNumber":67,"image":null,"ingredients":[],"number":67,"type":"step"},{"globalNumber":68,"image":null,"ingredients":[],"number":68,"type":"step"},{"globalNumber":69,"image":null,"ingredients":[],"number":69,"type":"step"},{"globalNumber":70,"image":null,"ingredients":[],"number":70,"type":"step"},{"globalNumber":71,"image":null,"ingredients":[],"number":71,"type":"step"},{"globalNumber":72,"image":null,"ingredients":[],"number":72,"type":"step"},{"globalNumber":73,"image":null,"ingredients":[],"number":73,"type":"step"},{"globalNumber":74,"image":null,"ingredients":[],"number":74,"type":"step"},{"globalNumber":75,"image":null,"ingredients":[],"number":75,"type":"step"},{"globalNumber":76,"image":null,"ingredients":[],"number":76,"type":"step"},{"globalNumber":77,"image":null,"ingredients":[],"number":77,"type":"step"},{"globalNumber":78,"image":null,"ingredients":[],"number":78,"type":"step"},{"globalNumber":79,"image":null,"ingredients":[],"number":79,"type":"step"},{"globalNumber":80,"image":null,"ingredients":[],"number":80,"type":"step"},{"globalNumber":81,"image":null,"ingredients":[],"number":81,"type":"step"},{"globalNumber":82,"image":null,"ingredients":[],"number":82,"type":"step"},{"globalNumber":83,"image":null,"ingredients":[],"number":83,"type":"step"},{"globalNumber":84,"image":null,"ingredients":[],"number":84,"type":"step"},{"globalNumber":85,"image":null,"ingredients":[],"number":85,"type":"step"},{"globalNumber":86,"image":null,"ingredients":[],"number":86,"type":"step"},{"globalNumber":87,"image":null,"ingredients":[],"number":87,"type":"step"},{"globalNumber":88,"image":null,"ingredients":[],"number":88,"type":"step"},{"globalNumber":89,"image":null,"ingredients":[],"number":89,"type":"step"},{"globalNumber":90,"image":null,"ingredients":[],"number":90,"type":"step"},{"globalNumber":91,"image":null,"ingredients":[],"number":91,"type":"step"},{"globalNumber":92,"image":null,"ingredients":[],"number":92,"type":"step"},{"globalNumber":93,"image":null,"ingredients":[],"number":93,"type":"step"},{"globalNumber":94,"image":null,"ingredients":[],"number":94,"type":"step"},{"globalNumber":95,"image":null,"ingredients":[],"number":95,"type":"step"}]}]}
+</script>
+
+
+
+        </main>
+
+        
+        <footer class="mt-12 mb-6 text-center text-sm text-faint print:hidden">
+            Built with
+            <a href="https://cooklang.org/cli/" class="text-accent-text hover:underline" target="_blank" rel="noopener">CookCLI</a>
+            
+            &middot;
+            <a href="https://github.com/S3v3r1n3/Food" class="text-accent-text hover:underline" target="_blank" rel="noopener">View source</a>
+            
+        </footer>
+        
+    </div>
+
+    <script>
+        // Theme toggle function
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.classList.contains('dark') ? 'dark' : 'light';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+            html.classList.toggle('dark');
+            localStorage.setItem('theme', newTheme);
+        }
+    </script>
+
+    
+    <script>window.__PREFIX__ = "/Food";</script>
+    <script src="/Food/static/js/search.js"></script>
+    
+
+    <!-- URL prefix for JavaScript -->
+    <script>
+        window.__PREFIX__ = "/Food";
+        window.__STATIC_MODE__ = true;
+        window.__STRINGS__ = { close: "Close" };
+        // Bring the visitor back to this page after signing in.
+        document.querySelectorAll('[data-login-link]').forEach((link) => {
+            const prefix = window.__PREFIX__;
+            const path = location.pathname.startsWith(prefix)
+                ? location.pathname.slice(prefix.length)
+                : location.pathname;
+            if (path === '/login') return;
+            link.href = `${prefix}/login?next=${encodeURIComponent((path || '/') + location.search)}`;
+        });
+    </script>
+
+    <!-- Keyboard shortcuts -->
+    <script src="/Food/static/js/keyboard-shortcuts.js"></script>
+    <!-- Expose showShortcutsHelp globally for the help button -->
+    <script>
+        // showShortcutsHelp is defined in keyboard-shortcuts.js
+        // This ensures it's available for the onclick handler
+        if (typeof showShortcutsHelp === 'undefined') {
+            window.showShortcutsHelp = function() {
+                console.warn('Keyboard shortcuts not loaded');
+            };
+        }
+    </script>
+
+    
+<link rel="stylesheet" href="/Food/static/css/cooking-mode.css">
+<script src="/Food/static/js/cooking-mode.js"></script>
+<script src="/Food/static/js/timers.js"></script>
+
+</body>
+</html>

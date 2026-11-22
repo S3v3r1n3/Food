@@ -1,0 +1,1719 @@
+<!DOCTYPE html>
+<html lang="en-US" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pâte à choux - Petits choux - craquelin - Cook</title>
+    <link rel="icon" type="image/x-icon" href="/Food/static/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/Food/static/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/Food/static/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/Food/static/apple-touch-icon.png">
+    <link rel="manifest" href="/Food/static/site.webmanifest">
+    
+    <link href="/Food/static/css/output.css" rel="stylesheet">
+    <script>
+        // Check for saved theme preference, or check for prefers-color-scheme, or default to light
+        const theme = localStorage.getItem('theme')
+            || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.classList.toggle('dark', theme === 'dark');
+        // False for a guest, or a role below shopper, on a server that requires signing in.
+        window.__CAN_EDIT_LISTS__ = true;
+        // `--recipes-only` and nobody signed in: no shopping list or pantry.
+        window.__RECIPES_ONLY__ = false;
+    </script>
+    <style>
+        .viewport {
+            width: 100%;
+            max-width: 72rem;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        /* Search result keyboard selection. --surface-sunk alone is barely
+           visible against --surface in dark mode, so the accent bar carries
+           the signal. */
+        #search-results a.search-selected {
+            background: var(--accent-soft);
+            box-shadow: inset 3px 0 0 var(--accent);
+        }
+
+        @media print {
+            /* Token values are reset to light in input.css; this resets the
+               browser's own defaults so unstyled text is dark too. */
+            html.dark, html {
+                color-scheme: light !important;
+            }
+
+            * {
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+
+            body {
+                background: white !important;
+                margin: 0;
+                padding: 0;
+            }
+
+            .viewport {
+                max-width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            /* Hide navigation and non-essential elements */
+            nav, #search-container, #search-input, #search-results, .print\:hidden, .breadcrumb {
+                display: none !important;
+            }
+
+            /* Hide all navigation links */
+            a[href="/Food/"] {
+                display: none !important;
+            }
+
+            /* Recipe layout for print: one column */
+            .grid {
+                display: block !important;
+            }
+
+            .md\:col-span-1, .md\:col-span-2 {
+                page-break-inside: avoid;
+                width: 100% !important;
+            }
+
+            /* Square corners on paper */
+            .card, .step-box, .ingredient-row, .recipe-note, .rounded-xl {
+                border-radius: 0 !important;
+            }
+
+            /* Step numbers */
+            .step-number {
+                background: #000 !important;
+                color: #fff !important;
+            }
+
+            /* Images */
+            img {
+                max-height: 300px !important;
+                max-width: 100% !important;
+                height: auto !important;
+                object-fit: contain !important;
+                page-break-inside: avoid;
+                page-break-after: avoid;
+            }
+
+            /* Recipe sections on same page if possible */
+            h2, h3 {
+                page-break-after: avoid;
+            }
+
+            ol, ul {
+                page-break-inside: avoid;
+            }
+
+            /* Compact spacing */
+            .mb-8, .mb-6, .mb-4 {
+                margin-bottom: 0.5rem !important;
+            }
+
+            .p-6 {
+                padding: 0.5rem !important;
+            }
+
+            /* Recipe header */
+            h1 {
+                color: #000 !important;
+                font-size: 1.5rem !important;
+                margin-bottom: 0 !important;
+            }
+
+            /* Shopping list print styles */
+            .lg\:w-2\/5, .xl\:w-1\/3 {
+                display: none !important;
+            }
+
+            #shopping-list-results {
+                font-size: 11pt !important;
+                line-height: 1.2 !important;
+            }
+
+            #shopping-list-results input[type="checkbox"] {
+                display: none !important;
+            }
+
+            #shopping-list-results li .flex-1 {
+                width: auto !important;
+                flex: 1 1 0% !important;
+            }
+
+            #shopping-list-results label {
+                cursor: default !important;
+            }
+
+            #shopping-list-results h2 {
+                font-size: 11pt !important;
+                color: #000 !important;
+                margin-bottom: 0 !important;
+            }
+
+            #shopping-list-results .space-y-2 > * + *,
+            #shopping-list-results ul > * + * {
+                margin-top: 0 !important;
+            }
+
+            #shopping-list-results li {
+                padding: 0 !important;
+                line-height: 1.3 !important;
+                border-bottom: 1px dotted #ccc;
+            }
+
+            #shopping-list-results .card {
+                margin-bottom: 0.15rem !important;
+                padding: 0 !important;
+                border: none !important;
+            }
+
+            /* Menu print styles */
+            #menu-content {
+                font-size: 10pt !important;
+                line-height: 1.4 !important;
+            }
+
+            #menu-content h1 {
+                font-size: 14pt !important;
+                margin-bottom: 0.25rem !important;
+                color: #000 !important;
+            }
+
+            #menu-content .space-y-6 > * + * {
+                margin-top: 0.3rem !important;
+            }
+
+            #menu-content .menu-section {
+                border: 1px solid #ccc !important;
+                border-radius: 0 !important;
+                page-break-inside: avoid;
+            }
+
+            #menu-content .menu-section-header {
+                background: #eee !important;
+                color: #000 !important;
+                padding: 0.15rem 0.5rem !important;
+            }
+
+            #menu-content .menu-section-header h2 {
+                font-size: 11pt !important;
+                color: #000 !important;
+            }
+
+            #menu-content .menu-section-body {
+                padding: 0.25rem 0.5rem !important;
+            }
+
+            #menu-content .menu-section-body .space-y-2 > * + *,
+            #menu-content .menu-section-body > * + * {
+                margin-top: 0.05rem !important;
+            }
+
+            #menu-content .menu-section-body h3 {
+                font-size: 10pt !important;
+                margin-top: 0.2rem !important;
+                margin-bottom: 0 !important;
+            }
+
+            #menu-content .menu-section-body .pl-6 {
+                padding-left: 1rem !important;
+            }
+
+            /* Preserve word spacing in flex lines */
+            #menu-content .menu-section-body .flex {
+                gap: 0.25em !important;
+            }
+
+            #menu-content .ingredient-badge {
+                font-weight: bold !important;
+                color: #000 !important;
+            }
+
+            #menu-content a {
+                color: #000 !important;
+                text-decoration: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-bg text-text">
+    <div class="viewport">
+        <nav class="nav-card relative">
+            <div class="px-3 lg:px-6 py-4 relative">
+                <div class="flex items-center justify-between flex-wrap gap-y-3">
+                    <a href="/Food/index.html" class="order-1 hidden md:flex items-center space-x-2">
+                        <img src="/Food/static/android-chrome-192x192.png" alt="Cook" class="brand-mark h-8 w-8 rounded-md" width="32" height="32">
+                    </a>
+
+                    <div class="relative z-50 order-2 flex-1 min-w-0 mr-2 md:ml-2 md:mr-4" id="search-container">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-faint" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        <input type="text"
+                               id="search-input"
+                               placeholder="Search recipes..."
+                               class="search-input">
+                        <div id="search-results"
+                             class="absolute top-full mt-2 w-full card shadow-[var(--shadow-overlay)] hidden max-h-96 overflow-y-auto"
+                             style="z-index: 9999;">
+                        </div>
+                    </div>
+
+                    <div class="order-3 flex items-center gap-1 lg:gap-2">
+                        
+                        <div class="hidden md:flex items-center gap-1 mr-2 lg:mr-4">
+                            <a href="/Food/index.html"
+                               class="nav-pill active">
+                                Recipes
+                            </a>
+                            
+                            
+                        </div>
+                        
+                        <!-- Inline buttons on md+ screens -->
+                        
+                        <button onclick="showShortcutsHelp()" class="icon-btn hidden md:inline-flex ml-2 print:hidden" aria-label="Keyboard shortcuts" title="Keyboard shortcuts (?)">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </button>
+                        <button onclick="toggleTheme()" class="icon-btn hidden md:inline-flex ml-2 print:hidden" aria-label="Toggle theme">
+                            <svg class="hidden dark:block" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
+                            </svg>
+                            <svg class="block dark:hidden" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                            </svg>
+                        </button>
+                        
+                        <!-- Overflow menu for small screens -->
+                        <div class="relative md:hidden ml-auto" id="more-menu-container">
+                            <button onclick="document.getElementById('more-dropdown').classList.toggle('hidden')" class="icon-btn" aria-label="More options">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+                                </svg>
+                            </button>
+                            <div id="more-dropdown" class="hidden absolute right-0 mt-2 w-56 card shadow-[var(--shadow-overlay)] z-50 py-1">
+                                
+                                <a href="/Food/index.html" class="menu-item active">
+                                    <span>🍳</span> <span>Recipes</span>
+                                </a>
+                                
+                                
+                                <div class="border-t border-line my-1"></div>
+                                
+                                
+                                
+                                <button onclick="showShortcutsHelp(); document.getElementById('more-dropdown').classList.add('hidden');" class="menu-item">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    <span>Keyboard Shortcuts</span>
+                                </button>
+                                <button onclick="toggleTheme(); document.getElementById('more-dropdown').classList.add('hidden');" class="menu-item">
+                                    <svg class="w-4 h-4 hidden dark:block" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path></svg>
+                                    <svg class="w-4 h-4 block dark:hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                                    <span>Toggle Theme</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main>
+            
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Recipe","image":"/Food/api/static/Recettes%20Sucr%C3%A9es/P%C3%A2te%20%C3%A0%20choux%20-%20Petits%20choux%20-%20craquelin.jpg","keywords":"Classique, dessert","name":"Pâte à choux - Petits choux - craquelin","recipeIngredient":[],"recipeInstructions":[{"@type":"HowToStep","text":"# Pâte à choux - Petits choux - craquelin"},{"@type":"HowToStep","text":"### Préparer une pâte à choux parfaite"},{"@type":"HowToStep","text":"Le cours était donné par une des chefs pâtissières de la masterclass. Je n’ai pas eu le plaisir de croiser Christophe Michalak, mais nous avons aperçu Audrey dans les coulisses !"},{"@type":"HowToStep","text":"Je partage avec vous les astuces que j’ai apprise et la recette que j’ai refaite à la maison et modifiée pour l’adapter à mon four, mon matériel et mes ingrédients."},{"@type":"HowToStep","text":"#### Des ingrédients à température ambiante"},{"@type":"HowToStep","text":"Si vous y pensez, sortez tous les ingrédients (notamment le lait, le beurre et les oeufs) et laissez-les à température ambiante 30 à 60 min avant de commencer la recette."},{"@type":"HowToStep","text":"#### Dessécher la pâte 30 secondes sur feu vif"},{"@type":"HowToStep","text":"Pendant de longues années, je me fatiguais le poignet à remuer le mélange farine-eau-beurre sur le feu pour le faire dessécher. Chez Michalak, on ne dessèche la pâte que **30 secondes sur feu vif** ! C’est bien plus rapide et bien plus précis."},{"@type":"HowToStep","text":"#### Ne pas fouetter pour ne pas incorporer d’air"},{"@type":"HowToStep","text":"Après avoir lu Hervé This, il me semblait qu’il fallait fouetter la pâte à choux une fois les oeufs ajoutés pour bien lui incorporer de l’air et faciliter ici la pousse des choux pendant la cuisson. Mais hélas mes petits choux, et surtout mes éclairs, gonflaient de manière assez disgracieuses. Eh bien dans ce cours, nous avons appris à **ne surtout pas fouetter la pâte à choux**, justement pour **ne pas lui incorporer de l’air** ! En effet, après quelques essais, les petits choux gonflent d’une manière plus harmonieuse si l’on ne fouette pas la pâte. Reste plus qu’à tenter les éclairs…"},{"@type":"HowToStep","text":"#### Ajouter un craquelin"},{"@type":"HowToStep","text":"![](../_resources/unknown_filename.316.jpeg =600x258)"},{"@type":"HowToStep","text":"J’avais testé pour la première fois l’**ajout d’un craquelin** dans la recette des [petits choux exotiques chantilly mascarpone d’Amaury Guichon](http://www.odelices.com/recette/petits-choux-exotique-chantilly-au-mascarpone-d-amaury-guichon-emission-grand-patissier-r3583/). Mais j’ai pris une cassonade trop brune et l’effet esthétique ne m’avait pas convaincue. Dans ce cours, nous avons essayé plusieurs craquelins, de plusieurs couleurs : même en blanc avec de l’oxyde de titane. Et chose incroyable : **un petit chou gonfle davantage lorsqu’il a un craquelin posé sur le dessus avant cuisson**. Preuve à l’appui : vous voyez dans la photo ci-dessous un chou sans craquelin, tout petit, parmi d’autres choux avec craquelin."},{"@type":"HowToStep","text":"![](../_resources/unknown_filename.319.jpeg =600x302)"},{"@type":"HowToStep","text":"#### Préchauffez le four à 230°C"},{"@type":"HowToStep","text":"Dans cette Masterclass spéciale pâte à choux, les fours étaient préchauffés à 230°C. Le mode de cuisson étaient le suivant :"},{"@type":"HowToStep","text":"– préchauffez le four à 230°C – enfournez la plaque de petits choux et éteindre le four – laissez reposer 10 min (les choux gonflaient à la perfection) – rallumez le four à 180°C et poursuivez la cuisson 20 min pour bien dessécher l’intérieur du four"},{"@type":"HowToStep","text":"### Pâte à choux"},{"@type":"HowToStep","text":"Pour 20 à 25 petits choux Préparation : 25 min – Cuisson : 25 min"},{"@type":"HowToStep","text":"#### Ingrédients avec 3 oeufs"},{"@type":"HowToStep","text":"75 g de lait – 75 g d’eau – 1 pincée de sel – 1 pincée de sucre – 80 g de beurre doux – 160 g d’oeufs bio = 3 oeufs - 100 g de farine de blé T65 - `option zeste de citron pour aromatiser la pate`"},{"@type":"HowToStep","text":"#### Ingrédients avec 2 oeufs"},{"@type":"HowToStep","text":"50 g de lait – 50 g d’eau – 1 pincée de sel – 1 pincée de sucre – 45 g de beurre doux – 100 g d’oeufs bio = 2 oeufs - 60 g de farine de blé T65 - `option zeste de citron pour aromatiser la pate`"},{"@type":"HowToStep","text":"#### Préparation :"},{"@type":"HowToStep","text":"1. Faites chauffer le lait, l’eau, le sucre, le sel et le beurre coupé en petits dés sur feu vif dans une casserole, jusqu’à ce que le beurre soit fondu. 2. Retirez du feu et versez d’un coup la farine. Mélangez jusqu’à avoir une pâte homogène. 3. Remettez cette préparation 30 secondes sur feu vif pour la dessécher. La pâte doit rester souple et moelleuse. 4. Versez la pâte dans un robot et mélangez à la vitesse la plus lente (pour ne pas incorporer d’air) à l’aide d’un fouet plat. Remuez jusqu’à ce qu’il n’y ait plus de vapeur qui s’échappe du bol. 5. Battez les oeufs en omelette (vérifiez bien le poids total) et ajoutez-les petit à petit à la pâte, sans cesser de fouetter, toujours sur la vitesse minimum. La pâte doit être souple mais pas liquide. 6. Versez la pâte dans une poche munie d’une douille de 10 à 12 mm. Dressez les choux sur une plaque. 7. Préchauffez votre four à 230°C. Enfournez les petits choux, baissez à 180°C et faites cuire 25 à 30 min."},{"@type":"HowToStep","text":"**************************************************************************************"},{"@type":"HowToStep","text":"Recette **Les petits choux craquelins**"},{"@type":"HowToStep","text":"[![](../_resources/unknown_filename.318.jpeg =270x254)](http://icu.linter.fr/450/387810/2710378278/les-petits-choux-craquelins.jpg) **Pour** **4** **personnes ~ 20 choux**"},{"@type":"HowToStep","text":"Pour la pâte à choux:"},{"@type":"HowToStep","text":"– 125g d’eau (avec lait en poudre) – 50g de beurre – 80g de farine T55 – 2 œufs – 1 pincée de sucre – 1 pincée de sel"},{"@type":"HowToStep","text":"Pour le craquelin de Christophe Michalak:"},{"@type":"HowToStep","text":"– 40g de beurre demi-sel à T° ambiante – 50g de cassonade – 50g de farine"},{"@type":"HowToStep","text":"**Préparation**"},{"@type":"HowToStep","text":"**Pour le craquelin:**"},{"@type":"HowToStep","text":"Mettre le beurre coupé en petits morceaux dans un récipient, puis battre au fouet ou à l’aide de la feuille du robot pour obtenir un beurre pommade. Ajouter tous les ingrédients, puis malaxer à la main pour former une boule."},{"@type":"HowToStep","text":"Étaler le craquelin au rouleau à pâtisserie entre deux feuilles de papier sulfurisé sur 2/3cm d’épaisseur. Détailler la pâte en forme de cercles du même diamètre que les choux (6/7cm). Replacer la feuille sur le craquelin et laisser prendre au frais pendant le temps de réalisation de la pâte à choux."},{"@type":"HowToStep","text":"[![](../_resources/unknown_filename.317.jpeg =1158x865)](http://www.matoque.fr/1988/wp-content/uploads/2014/02/craquelin_douille_optimisation-image-wordpress-google-taille.jpg)"},{"@type":"HowToStep","text":"**Pour les choux:**"},{"@type":"HowToStep","text":"Dans une casserole verser l’eau, le sucre, le sel et le beurre préalablement coupé en petits morceaux. Porter le mélange à ébullition, puis retirer la casserole du feu et ajouter la farine en une seule fois. Toujours hors du feu et sans attendre, mélanger le liquide et la farine en battant rapidement à la spatule pour que le mélange forme une sorte de pâte épaisse et sans grumeaux."},{"@type":"HowToStep","text":"Replacer la casserole avec la pâte sur feu doux, et continuer à mélanger la pâte pour que l’humidité qu’elle contient s’échappe au maximum. Pour bien mélanger: écraser la pâte contre les parois de la casserole avec la spatule. Continuer à dessécher (chasser l’humidité) de la panade (pâte à choux sans les œufs) pendant quelques minutes."},{"@type":"HowToStep","text":"Pour savoir si la pâte est prête, il doit y avoir un film (une couche à peine visible) de pâte cuite au fond de la casserole, et la pâte doit aussi pouvoir former une boule qui se détache complètement des parois de la casserole."},{"@type":"HowToStep","text":"Lorsque la pâte a assez desséché, débarrasser rapidement dans un cul-de-poule pour arrêter sa cuisson et continuer à mélanger à la spatule pour la refroidir rapidement. Avec un robot: verser la pâte dans la cuve et refroidir à l’aide de la feuille."},{"@type":"HowToStep","text":"Ajouter le premier œuf à la préparation, puis mélanger jusqu’à ce qu’il soit entièrement incorporé. Au début l’œuf ne s’intègre pas facilement, mais il finit par être totalement incorporé dans la pâte. Ajouter ensuite le deuxième œuf et mélanger jusqu’à obtenir une préparation homogène."},{"@type":"HowToStep","text":"La pâte à choux doit être lisse et brillante avec une couleur satinée, elle doit aussi avoir de la tenue."},{"@type":"HowToStep","text":"Lorsqu’elle a une bonne consistance, la pâte reste collée au bout de la spatule ou de la feuille du robot pour finir en pointe, elle forme alors « un bec »."},{"@type":"HowToStep","text":"![](../_resources/Evernote_Camera_Roll_20141207_183413.jpg =608x494)"},{"@type":"HowToStep","text":"La pâte à choux ne doit pas trop être travaillée et doit être enfournée assez rapidement."},{"@type":"HowToStep","text":"Préchauffer le four à 200°."},{"@type":"HowToStep","text":"Verser la pâte à choux dans une poche munie d’une douille de 10, puis pocher sur une plaque recouverte de papier sulfurisé, avant de poser un craquelin au dessus de chaque choux en pressant légèrement (sans écraser) pour le coller."},{"@type":"HowToStep","text":"On peut les recouvrir de sucre glace pour une cuisson plus uniforme et dorée des choux'"},{"@type":"HowToStep","text":"[![](../_resources/unknown_filename.320.jpeg =670x461)](http://www.matoque.fr/1988/wp-content/uploads/2014/09/choux-citron-meringue-pate-craquelin-optimisation-image-wordpress-google-taille.jpg)"},{"@type":"HowToStep","text":"Enfourner pour **30/35 minutes** de cuisson, tout en surveillant la coloration des choux."},{"@type":"HowToStep","text":"Lorsque les choux sont dorés, entrouvrir légèrement la porte du four pendant 10 secondes pour laisser l’humidité s’échapper."},{"@type":"HowToStep","text":"La pâte à choux doit être assez colorée pour ne pas retomber après cuisson, elle sera ensuite humidifiée par sa garniture. Pour être sûre que la pâte à choux ne retombe pas, à la fin de la cuisson laisser les choux dans le four éteint pour les sécher."},{"@type":"HowToStep","text":"À la sortie du four, laisser les choux complètement refroidir, avant de percer le dessous."},{"@type":"HowToStep","text":"![](../_resources/Evernote_Camera_Roll_20141207_183352.jpg =675x599)"}]}</script>
+<div>
+    <nav class="mb-4 breadcrumb print:hidden">
+        <ol class="flex items-center space-x-2 text-sm text-muted">
+            <li><a href="/Food/index.html" class="hover:text-text">Recipes</a></li>
+            
+            <li class="flex items-center">
+                <span class="mx-2 text-faint">/</span>
+                
+                    <a href="/Food/directory/Recettes Sucrées.html" class="hover:text-text">Recettes Sucrées</a>
+                
+            </li>
+            
+            <li class="flex items-center">
+                <span class="mx-2 text-faint">/</span>
+                
+                    <span class="text-text">Pâte à choux - Petits choux - craquelin</span>
+                
+            </li>
+            
+        </ol>
+    </nav>
+
+    <div class="mb-8">
+        <!-- Recipe image if available -->
+        
+        <div class="mb-6 max-w-4xl mx-auto flex justify-center">
+            <img src="/Food/api/static/Recettes%20Sucr%C3%A9es/P%C3%A2te%20%C3%A0%20choux%20-%20Petits%20choux%20-%20craquelin.jpg" alt="Pâte à choux - Petits choux - craquelin" class="rounded-xl shadow-[var(--shadow-card)] max-w-full h-auto max-h-[500px]">
+        </div>
+        
+
+        <!-- Title bar with scale and shopping list button -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 print:flex-row print:items-center">
+            <h1 class="text-display font-bold text-text print:text-2xl">
+                Pâte à choux - Petits choux - craquelin
+            </h1>
+            
+            <div class="flex flex-wrap items-center gap-2 lg:gap-3 print:hidden">
+                
+                <button id="start-cooking-btn" onclick="startCookingMode()" class="btn btn-primary" title="Start Cooking">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span class="hidden lg:inline">Cook</span>
+                </button>
+                
+                <a href="/Food/recipe/Recettes Sucrées/Pâte à choux - Petits choux - craquelin.cook" download class="btn" title="Download .cook source">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"></path>
+                    </svg>
+                    <span class="hidden lg:inline">.cook</span>
+                </a>
+                
+            </div>
+        </div>
+
+        <!-- Recipe info section -->
+        <div class="space-y-4">
+            <!-- Tags row -->
+            
+            <div class="flex flex-wrap gap-2">
+                
+                <span class="tag">#Classique</span>
+                
+                <span class="tag">#dessert</span>
+                
+            </div>
+            
+
+            
+
+            <!-- Description if present -->
+            
+            
+
+            <!-- Metadata row -->
+            <div id="metadata-container" class="flex flex-wrap gap-3">
+                
+                
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                <!-- Custom metadata -->
+                
+                
+                <span class="metadata-pill metadata-custom">Created at: 2013-12-15</span>
+                
+                
+                
+                <span class="metadata-pill metadata-custom">Last updated at: 2016-08-11</span>
+                
+                
+            </div>
+
+            
+        </div>
+    </div>
+
+    <div id="recipe-body" class="grid md:grid-cols-3 gap-8 mb-8">
+        <div class="md:col-span-1">
+            <div class="card p-6">
+                <h2 class="text-title font-bold mb-4 text-accent-text">🥘 Ingredients</h2>
+                
+                <!-- Fallback to original flat list for recipes without sections -->
+                <ul class="ingredient-list space-y-3">
+                    
+                </ul>
+                
+
+                
+            </div>
+        </div>
+
+        <div class="md:col-span-2">
+            <div class="card p-6" data-recipe-path="Recettes Sucrées/Pâte à choux - Petits choux - craquelin">
+                
+                
+                
+                <ol class="step-list space-y-4 ">
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">1</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        # Pâte à choux - Petits choux - craquelin
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">2</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        #
+                                        #
+                                        # Préparer une pâte à choux parfaite
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">3</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Le cours était donné par une des chefs pâtissières de la masterclass. Je n’ai pas eu le plaisir de croiser Christophe Michalak, mais nous avons aperçu Audrey dans les coulisses !
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">4</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Je partage avec vous les astuces que j’ai apprise et la recette que j’ai refaite à la maison et modifiée pour l’adapter à mon four, mon matériel et mes ingrédients.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">5</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        #
+                                        #
+                                        #
+                                        # Des ingrédients à température ambiante
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">6</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Si vous y pensez, sortez tous les ingrédients (notamment le lait, le beurre et les oeufs) et laissez-les à température ambiante 30 à 60 min avant de commencer la recette.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">7</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        #
+                                        #
+                                        #
+                                        # Dessécher la pâte 30 secondes sur feu vif
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">8</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Pendant de longues années, je me fatiguais le poignet à remuer le mélange farine-eau-beurre sur le feu pour le faire dessécher. Chez Michalak, on ne dessèche la pâte que **30 secondes sur feu vif** ! C’est bien plus rapide et bien plus précis.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">9</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        #
+                                        #
+                                        #
+                                        # Ne pas fouetter pour ne pas incorporer d’air
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">10</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Après avoir lu Hervé This, il me semblait qu’il fallait fouetter la pâte à choux une fois les oeufs ajoutés pour bien lui incorporer de l’air et faciliter ici la pousse des choux pendant la cuisson. Mais hélas mes petits choux, et surtout mes éclairs, gonflaient de manière assez disgracieuses. Eh bien dans ce cours, nous avons appris à **ne surtout pas fouetter la pâte à choux**, justement pour **ne pas lui incorporer de l’air** ! En effet, après quelques essais, les petits choux gonflent d’une manière plus harmonieuse si l’on ne fouette pas la pâte. Reste plus qu’à tenter les éclairs…
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">11</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        #
+                                        #
+                                        #
+                                        # Ajouter un craquelin
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">12</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        ![](../_resources/unknown_filename.316.jpeg =600x258)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">13</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        J’avais testé pour la première fois l’**ajout d’un craquelin** dans la recette des [petits choux exotiques chantilly mascarpone d’Amaury Guichon](http://www.odelices.com/recette/petits-choux-exotique-chantilly-au-mascarpone-d-amaury-guichon-emission-grand-patissier-r3583/). Mais j’ai pris une cassonade trop brune et l’effet esthétique ne m’avait pas convaincue. Dans ce cours, nous avons essayé plusieurs craquelins, de plusieurs couleurs : même en blanc avec de l’oxyde de titane. Et chose incroyable : **un petit chou gonfle davantage lorsqu’il a un craquelin posé sur le dessus avant cuisson**. Preuve à l’appui : vous voyez dans la photo ci-dessous un chou sans craquelin, tout petit, parmi d’autres choux avec craquelin.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">14</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        ![](../_resources/unknown_filename.319.jpeg =600x302)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">15</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        #
+                                        #
+                                        #
+                                        # Préchauffez le four à 230°C
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">16</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Dans cette Masterclass spéciale pâte à choux, les fours étaient préchauffés à 230°C. Le mode de cuisson étaient le suivant :
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">17</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        – préchauffez le four à 230°C – enfournez la plaque de petits choux et éteindre le four – laissez reposer 10 min (les choux gonflaient à la perfection) – rallumez le four à 180°C et poursuivez la cuisson 20 min pour bien dessécher l’intérieur du four
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="recipe-note mb-3">
+                        <span>📝</span>
+                        <p class="m-0" style="white-space: pre-line">Cette étape n’a pas du tout fonctionné chez moi. Peut-être parce que mon four soufflait de l’air froid une fois éteint pour se refroidir tout seul. Je pense qu’il faut au contraire garder une température très haute pour que les choux gonflent à la perfection. Après plusieurs essais, j’ai finalement trouvé une technique qui fonctionne chez moi : `**préchauffer le four à 230°C, enfourner les choux et baissez la température à 180°C, cuire 25 min à 180°C = ca marche**`</p>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">18</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        #
+                                        #
+                                        # Pâte à choux
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">19</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Pour 20 à 25 petits choux Préparation : 25 min – Cuisson : 25 min
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">20</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        #
+                                        #
+                                        #
+                                        # Ingrédients avec 3 oeufs
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">21</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        75 g de lait – 75 g d’eau – 1 pincée de sel – 1 pincée de sucre – 80 g de beurre doux – 160 g d’oeufs bio = 3 oeufs - 100 g de farine de blé T65 - `option zeste de citron pour aromatiser la pate`
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">22</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        #
+                                        #
+                                        #
+                                        # Ingrédients avec 2 oeufs
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">23</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        50 g de lait – 50 g d’eau – 1 pincée de sel – 1 pincée de sucre – 45 g de beurre doux – 100 g d’oeufs bio = 2 oeufs - 60 g de farine de blé T65 - `option zeste de citron pour aromatiser la pate`
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">24</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        #
+                                        #
+                                        #
+                                        # Préparation :
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">25</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        1. Faites chauffer le lait, l’eau, le sucre, le sel et le beurre coupé en petits dés sur feu vif dans une casserole, jusqu’à ce que le beurre soit fondu. 2. Retirez du feu et versez d’un coup la farine. Mélangez jusqu’à avoir une pâte homogène. 3. Remettez cette préparation 30 secondes sur feu vif pour la dessécher. La pâte doit rester souple et moelleuse. 4. Versez la pâte dans un robot et mélangez à la vitesse la plus lente (pour ne pas incorporer d’air) à l’aide d’un fouet plat. Remuez jusqu’à ce qu’il n’y ait plus de vapeur qui s’échappe du bol. 5. Battez les oeufs en omelette (vérifiez bien le poids total) et ajoutez-les petit à petit à la pâte, sans cesser de fouetter, toujours sur la vitesse minimum. La pâte doit être souple mais pas liquide. 6. Versez la pâte dans une poche munie d’une douille de 10 à 12 mm. Dressez les choux sur une plaque. 7. Préchauffez votre four à 230°C. Enfournez les petits choux, baissez à 180°C et faites cuire 25 à 30 min.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">26</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **************************************************************************************
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">27</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Recette **Les petits choux craquelins**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">28</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        [![](../_resources/unknown_filename.318.jpeg =270x254)](http://icu.linter.fr/450/387810/2710378278/les-petits-choux-craquelins.jpg) **Pour** **4** **personnes 
+                                        ~ 20 choux**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">29</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Pour la pâte à choux:
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">30</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        – 125g d’eau (avec lait en poudre) – 50g de beurre – 80g de farine T55 – 2 œufs – 1 pincée de sucre – 1 pincée de sel
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">31</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Pour le craquelin de Christophe Michalak:
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">32</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        – 40g de beurre demi-sel à T° ambiante – 50g de cassonade – 50g de farine
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">33</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Préparation**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">34</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Pour le craquelin:**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">35</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Mettre le beurre coupé en petits morceaux dans un récipient, puis battre au fouet ou à l’aide de la feuille du robot pour obtenir un beurre pommade. Ajouter tous les ingrédients, puis malaxer à la main pour former une boule.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">36</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Étaler le craquelin au rouleau à pâtisserie entre deux feuilles de papier sulfurisé sur 2/3cm d’épaisseur. Détailler la pâte en forme de cercles du même diamètre que les choux (6/7cm). Replacer la feuille sur le craquelin et laisser prendre au frais pendant le temps de réalisation de la pâte à choux.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">37</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        [![](../_resources/unknown_filename.317.jpeg =1158x865)](http://www.matoque.fr/1988/wp-content/uploads/2014/02/craquelin_douille_optimisation-image-wordpress-google-taille.jpg)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">38</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Pour les choux:**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">39</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Dans une casserole verser l’eau, le sucre, le sel et le beurre préalablement coupé en petits morceaux. Porter le mélange à ébullition, puis retirer la casserole du feu et ajouter la farine en une seule fois. Toujours hors du feu et sans attendre, mélanger le liquide et la farine en battant rapidement à la spatule pour que le mélange forme une sorte de pâte épaisse et sans grumeaux.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">40</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Replacer la casserole avec la pâte sur feu doux, et continuer à mélanger la pâte pour que l’humidité qu’elle contient s’échappe au maximum. Pour bien mélanger: écraser la pâte contre les parois de la casserole avec la spatule. Continuer à dessécher (chasser l’humidité) de la panade (pâte à choux sans les œufs) pendant quelques minutes.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">41</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Pour savoir si la pâte est prête, il doit y avoir un film (une couche à peine visible) de pâte cuite au fond de la casserole, et la pâte doit aussi pouvoir former une boule qui se détache complètement des parois de la casserole.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">42</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Lorsque la pâte a assez desséché, débarrasser rapidement dans un cul-de-poule pour arrêter sa cuisson et continuer à mélanger à la spatule pour la refroidir rapidement. Avec un robot: verser la pâte dans la cuve et refroidir à l’aide de la feuille.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">43</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Ajouter le premier œuf à la préparation, puis mélanger jusqu’à ce qu’il soit entièrement incorporé. Au début l’œuf ne s’intègre pas facilement, mais il finit par être totalement incorporé dans la pâte. Ajouter ensuite le deuxième œuf et mélanger jusqu’à obtenir une préparation homogène.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">44</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        La pâte à choux doit être lisse et brillante avec une couleur satinée, elle doit aussi avoir de la tenue.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">45</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Lorsqu’elle a une bonne consistance, la pâte reste collée au bout de la spatule ou de la feuille du robot pour finir en pointe, elle forme alors « un bec ».
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">46</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        ![](../_resources/Evernote_Camera_Roll_20141207_183413.jpg =608x494)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">47</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        La pâte à choux ne doit pas trop être travaillée et doit être enfournée assez rapidement.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">48</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Préchauffer le four à 200°.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">49</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Verser la pâte à choux dans une poche munie d’une douille de 10, puis pocher sur une plaque recouverte de papier sulfurisé, avant de poser un craquelin au dessus de chaque choux en pressant légèrement (sans écraser) pour le coller.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">50</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        On peut les recouvrir de sucre glace pour une cuisson plus uniforme et dorée des choux&#x27;
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">51</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        [![](../_resources/unknown_filename.320.jpeg =670x461)](http://www.matoque.fr/1988/wp-content/uploads/2014/09/choux-citron-meringue-pate-craquelin-optimisation-image-wordpress-google-taille.jpg)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">52</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Enfourner pour **30/35 minutes** de cuisson, tout en surveillant la coloration des choux.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">53</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Lorsque les choux sont dorés, entrouvrir légèrement la porte du four pendant 10 secondes pour laisser l’humidité s’échapper.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">54</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        La pâte à choux doit être assez colorée pour ne pas retomber après cuisson, elle sera ensuite humidifiée par sa garniture. Pour être sûre que la pâte à choux ne retombe pas, à la fin de la cuisson laisser les choux dans le four éteint pour les sécher.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">55</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        À la sortie du four, laisser les choux complètement refroidir, avant de percer le dessous.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">56</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        ![](../_resources/Evernote_Camera_Roll_20141207_183352.jpg =675x599)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                </ol>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<script id="cooking-mode-data" type="application/json">
+{"image":"/Food/api/static/Recettes%20Sucr%C3%A9es/P%C3%A2te%20%C3%A0%20choux%20-%20Petits%20choux%20-%20craquelin.jpg","name":"Pâte à choux - Petits choux - craquelin","scale":1.0,"sections":[{"ingredients":[],"name":null,"stepOffset":0,"steps":[{"globalNumber":1,"image":null,"ingredients":[],"number":1,"type":"step"},{"globalNumber":2,"image":null,"ingredients":[],"number":2,"type":"step"},{"globalNumber":3,"image":null,"ingredients":[],"number":3,"type":"step"},{"globalNumber":4,"image":null,"ingredients":[],"number":4,"type":"step"},{"globalNumber":5,"image":null,"ingredients":[],"number":5,"type":"step"},{"globalNumber":6,"image":null,"ingredients":[],"number":6,"type":"step"},{"globalNumber":7,"image":null,"ingredients":[],"number":7,"type":"step"},{"globalNumber":8,"image":null,"ingredients":[],"number":8,"type":"step"},{"globalNumber":9,"image":null,"ingredients":[],"number":9,"type":"step"},{"globalNumber":10,"image":null,"ingredients":[],"number":10,"type":"step"},{"globalNumber":11,"image":null,"ingredients":[],"number":11,"type":"step"},{"globalNumber":12,"image":null,"ingredients":[],"number":12,"type":"step"},{"globalNumber":13,"image":null,"ingredients":[],"number":13,"type":"step"},{"globalNumber":14,"image":null,"ingredients":[],"number":14,"type":"step"},{"globalNumber":15,"image":null,"ingredients":[],"number":15,"type":"step"},{"globalNumber":16,"image":null,"ingredients":[],"number":16,"type":"step"},{"globalNumber":17,"image":null,"ingredients":[],"number":17,"type":"step"},{"globalNumber":18,"image":null,"ingredients":[],"number":18,"type":"step"},{"globalNumber":19,"image":null,"ingredients":[],"number":19,"type":"step"},{"globalNumber":20,"image":null,"ingredients":[],"number":20,"type":"step"},{"globalNumber":21,"image":null,"ingredients":[],"number":21,"type":"step"},{"globalNumber":22,"image":null,"ingredients":[],"number":22,"type":"step"},{"globalNumber":23,"image":null,"ingredients":[],"number":23,"type":"step"},{"globalNumber":24,"image":null,"ingredients":[],"number":24,"type":"step"},{"globalNumber":25,"image":null,"ingredients":[],"number":25,"type":"step"},{"globalNumber":26,"image":null,"ingredients":[],"number":26,"type":"step"},{"globalNumber":27,"image":null,"ingredients":[],"number":27,"type":"step"},{"globalNumber":28,"image":null,"ingredients":[],"number":28,"type":"step"},{"globalNumber":29,"image":null,"ingredients":[],"number":29,"type":"step"},{"globalNumber":30,"image":null,"ingredients":[],"number":30,"type":"step"},{"globalNumber":31,"image":null,"ingredients":[],"number":31,"type":"step"},{"globalNumber":32,"image":null,"ingredients":[],"number":32,"type":"step"},{"globalNumber":33,"image":null,"ingredients":[],"number":33,"type":"step"},{"globalNumber":34,"image":null,"ingredients":[],"number":34,"type":"step"},{"globalNumber":35,"image":null,"ingredients":[],"number":35,"type":"step"},{"globalNumber":36,"image":null,"ingredients":[],"number":36,"type":"step"},{"globalNumber":37,"image":null,"ingredients":[],"number":37,"type":"step"},{"globalNumber":38,"image":null,"ingredients":[],"number":38,"type":"step"},{"globalNumber":39,"image":null,"ingredients":[],"number":39,"type":"step"},{"globalNumber":40,"image":null,"ingredients":[],"number":40,"type":"step"},{"globalNumber":41,"image":null,"ingredients":[],"number":41,"type":"step"},{"globalNumber":42,"image":null,"ingredients":[],"number":42,"type":"step"},{"globalNumber":43,"image":null,"ingredients":[],"number":43,"type":"step"},{"globalNumber":44,"image":null,"ingredients":[],"number":44,"type":"step"},{"globalNumber":45,"image":null,"ingredients":[],"number":45,"type":"step"},{"globalNumber":46,"image":null,"ingredients":[],"number":46,"type":"step"},{"globalNumber":47,"image":null,"ingredients":[],"number":47,"type":"step"},{"globalNumber":48,"image":null,"ingredients":[],"number":48,"type":"step"},{"globalNumber":49,"image":null,"ingredients":[],"number":49,"type":"step"},{"globalNumber":50,"image":null,"ingredients":[],"number":50,"type":"step"},{"globalNumber":51,"image":null,"ingredients":[],"number":51,"type":"step"},{"globalNumber":52,"image":null,"ingredients":[],"number":52,"type":"step"},{"globalNumber":53,"image":null,"ingredients":[],"number":53,"type":"step"},{"globalNumber":54,"image":null,"ingredients":[],"number":54,"type":"step"},{"globalNumber":55,"image":null,"ingredients":[],"number":55,"type":"step"},{"globalNumber":56,"image":null,"ingredients":[],"number":56,"type":"step"}]}]}
+</script>
+
+
+
+        </main>
+
+        
+        <footer class="mt-12 mb-6 text-center text-sm text-faint print:hidden">
+            Built with
+            <a href="https://cooklang.org/cli/" class="text-accent-text hover:underline" target="_blank" rel="noopener">CookCLI</a>
+            
+            &middot;
+            <a href="https://github.com/S3v3r1n3/Food" class="text-accent-text hover:underline" target="_blank" rel="noopener">View source</a>
+            
+        </footer>
+        
+    </div>
+
+    <script>
+        // Theme toggle function
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.classList.contains('dark') ? 'dark' : 'light';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+            html.classList.toggle('dark');
+            localStorage.setItem('theme', newTheme);
+        }
+    </script>
+
+    
+    <script>window.__PREFIX__ = "/Food";</script>
+    <script src="/Food/static/js/search.js"></script>
+    
+
+    <!-- URL prefix for JavaScript -->
+    <script>
+        window.__PREFIX__ = "/Food";
+        window.__STATIC_MODE__ = true;
+        window.__STRINGS__ = { close: "Close" };
+        // Bring the visitor back to this page after signing in.
+        document.querySelectorAll('[data-login-link]').forEach((link) => {
+            const prefix = window.__PREFIX__;
+            const path = location.pathname.startsWith(prefix)
+                ? location.pathname.slice(prefix.length)
+                : location.pathname;
+            if (path === '/login') return;
+            link.href = `${prefix}/login?next=${encodeURIComponent((path || '/') + location.search)}`;
+        });
+    </script>
+
+    <!-- Keyboard shortcuts -->
+    <script src="/Food/static/js/keyboard-shortcuts.js"></script>
+    <!-- Expose showShortcutsHelp globally for the help button -->
+    <script>
+        // showShortcutsHelp is defined in keyboard-shortcuts.js
+        // This ensures it's available for the onclick handler
+        if (typeof showShortcutsHelp === 'undefined') {
+            window.showShortcutsHelp = function() {
+                console.warn('Keyboard shortcuts not loaded');
+            };
+        }
+    </script>
+
+    
+<link rel="stylesheet" href="/Food/static/css/cooking-mode.css">
+<script src="/Food/static/js/cooking-mode.js"></script>
+<script src="/Food/static/js/timers.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en-US" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarte aux pommes façon Jacques Génin - Cook</title>
+    <link rel="icon" type="image/x-icon" href="/Food/static/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/Food/static/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/Food/static/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/Food/static/apple-touch-icon.png">
+    <link rel="manifest" href="/Food/static/site.webmanifest">
+    
+    <link href="/Food/static/css/output.css" rel="stylesheet">
+    <script>
+        // Check for saved theme preference, or check for prefers-color-scheme, or default to light
+        const theme = localStorage.getItem('theme')
+            || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.classList.toggle('dark', theme === 'dark');
+        // False for a guest, or a role below shopper, on a server that requires signing in.
+        window.__CAN_EDIT_LISTS__ = true;
+        // `--recipes-only` and nobody signed in: no shopping list or pantry.
+        window.__RECIPES_ONLY__ = false;
+    </script>
+    <style>
+        .viewport {
+            width: 100%;
+            max-width: 72rem;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        /* Search result keyboard selection. --surface-sunk alone is barely
+           visible against --surface in dark mode, so the accent bar carries
+           the signal. */
+        #search-results a.search-selected {
+            background: var(--accent-soft);
+            box-shadow: inset 3px 0 0 var(--accent);
+        }
+
+        @media print {
+            /* Token values are reset to light in input.css; this resets the
+               browser's own defaults so unstyled text is dark too. */
+            html.dark, html {
+                color-scheme: light !important;
+            }
+
+            * {
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+
+            body {
+                background: white !important;
+                margin: 0;
+                padding: 0;
+            }
+
+            .viewport {
+                max-width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            /* Hide navigation and non-essential elements */
+            nav, #search-container, #search-input, #search-results, .print\:hidden, .breadcrumb {
+                display: none !important;
+            }
+
+            /* Hide all navigation links */
+            a[href="/Food/"] {
+                display: none !important;
+            }
+
+            /* Recipe layout for print: one column */
+            .grid {
+                display: block !important;
+            }
+
+            .md\:col-span-1, .md\:col-span-2 {
+                page-break-inside: avoid;
+                width: 100% !important;
+            }
+
+            /* Square corners on paper */
+            .card, .step-box, .ingredient-row, .recipe-note, .rounded-xl {
+                border-radius: 0 !important;
+            }
+
+            /* Step numbers */
+            .step-number {
+                background: #000 !important;
+                color: #fff !important;
+            }
+
+            /* Images */
+            img {
+                max-height: 300px !important;
+                max-width: 100% !important;
+                height: auto !important;
+                object-fit: contain !important;
+                page-break-inside: avoid;
+                page-break-after: avoid;
+            }
+
+            /* Recipe sections on same page if possible */
+            h2, h3 {
+                page-break-after: avoid;
+            }
+
+            ol, ul {
+                page-break-inside: avoid;
+            }
+
+            /* Compact spacing */
+            .mb-8, .mb-6, .mb-4 {
+                margin-bottom: 0.5rem !important;
+            }
+
+            .p-6 {
+                padding: 0.5rem !important;
+            }
+
+            /* Recipe header */
+            h1 {
+                color: #000 !important;
+                font-size: 1.5rem !important;
+                margin-bottom: 0 !important;
+            }
+
+            /* Shopping list print styles */
+            .lg\:w-2\/5, .xl\:w-1\/3 {
+                display: none !important;
+            }
+
+            #shopping-list-results {
+                font-size: 11pt !important;
+                line-height: 1.2 !important;
+            }
+
+            #shopping-list-results input[type="checkbox"] {
+                display: none !important;
+            }
+
+            #shopping-list-results li .flex-1 {
+                width: auto !important;
+                flex: 1 1 0% !important;
+            }
+
+            #shopping-list-results label {
+                cursor: default !important;
+            }
+
+            #shopping-list-results h2 {
+                font-size: 11pt !important;
+                color: #000 !important;
+                margin-bottom: 0 !important;
+            }
+
+            #shopping-list-results .space-y-2 > * + *,
+            #shopping-list-results ul > * + * {
+                margin-top: 0 !important;
+            }
+
+            #shopping-list-results li {
+                padding: 0 !important;
+                line-height: 1.3 !important;
+                border-bottom: 1px dotted #ccc;
+            }
+
+            #shopping-list-results .card {
+                margin-bottom: 0.15rem !important;
+                padding: 0 !important;
+                border: none !important;
+            }
+
+            /* Menu print styles */
+            #menu-content {
+                font-size: 10pt !important;
+                line-height: 1.4 !important;
+            }
+
+            #menu-content h1 {
+                font-size: 14pt !important;
+                margin-bottom: 0.25rem !important;
+                color: #000 !important;
+            }
+
+            #menu-content .space-y-6 > * + * {
+                margin-top: 0.3rem !important;
+            }
+
+            #menu-content .menu-section {
+                border: 1px solid #ccc !important;
+                border-radius: 0 !important;
+                page-break-inside: avoid;
+            }
+
+            #menu-content .menu-section-header {
+                background: #eee !important;
+                color: #000 !important;
+                padding: 0.15rem 0.5rem !important;
+            }
+
+            #menu-content .menu-section-header h2 {
+                font-size: 11pt !important;
+                color: #000 !important;
+            }
+
+            #menu-content .menu-section-body {
+                padding: 0.25rem 0.5rem !important;
+            }
+
+            #menu-content .menu-section-body .space-y-2 > * + *,
+            #menu-content .menu-section-body > * + * {
+                margin-top: 0.05rem !important;
+            }
+
+            #menu-content .menu-section-body h3 {
+                font-size: 10pt !important;
+                margin-top: 0.2rem !important;
+                margin-bottom: 0 !important;
+            }
+
+            #menu-content .menu-section-body .pl-6 {
+                padding-left: 1rem !important;
+            }
+
+            /* Preserve word spacing in flex lines */
+            #menu-content .menu-section-body .flex {
+                gap: 0.25em !important;
+            }
+
+            #menu-content .ingredient-badge {
+                font-weight: bold !important;
+                color: #000 !important;
+            }
+
+            #menu-content a {
+                color: #000 !important;
+                text-decoration: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-bg text-text">
+    <div class="viewport">
+        <nav class="nav-card relative">
+            <div class="px-3 lg:px-6 py-4 relative">
+                <div class="flex items-center justify-between flex-wrap gap-y-3">
+                    <a href="/Food/index.html" class="order-1 hidden md:flex items-center space-x-2">
+                        <img src="/Food/static/android-chrome-192x192.png" alt="Cook" class="brand-mark h-8 w-8 rounded-md" width="32" height="32">
+                    </a>
+
+                    <div class="relative z-50 order-2 flex-1 min-w-0 mr-2 md:ml-2 md:mr-4" id="search-container">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-faint" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        <input type="text"
+                               id="search-input"
+                               placeholder="Search recipes..."
+                               class="search-input">
+                        <div id="search-results"
+                             class="absolute top-full mt-2 w-full card shadow-[var(--shadow-overlay)] hidden max-h-96 overflow-y-auto"
+                             style="z-index: 9999;">
+                        </div>
+                    </div>
+
+                    <div class="order-3 flex items-center gap-1 lg:gap-2">
+                        
+                        <div class="hidden md:flex items-center gap-1 mr-2 lg:mr-4">
+                            <a href="/Food/index.html"
+                               class="nav-pill active">
+                                Recipes
+                            </a>
+                            
+                            
+                        </div>
+                        
+                        <!-- Inline buttons on md+ screens -->
+                        
+                        <button onclick="showShortcutsHelp()" class="icon-btn hidden md:inline-flex ml-2 print:hidden" aria-label="Keyboard shortcuts" title="Keyboard shortcuts (?)">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </button>
+                        <button onclick="toggleTheme()" class="icon-btn hidden md:inline-flex ml-2 print:hidden" aria-label="Toggle theme">
+                            <svg class="hidden dark:block" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
+                            </svg>
+                            <svg class="block dark:hidden" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                            </svg>
+                        </button>
+                        
+                        <!-- Overflow menu for small screens -->
+                        <div class="relative md:hidden ml-auto" id="more-menu-container">
+                            <button onclick="document.getElementById('more-dropdown').classList.toggle('hidden')" class="icon-btn" aria-label="More options">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+                                </svg>
+                            </button>
+                            <div id="more-dropdown" class="hidden absolute right-0 mt-2 w-56 card shadow-[var(--shadow-overlay)] z-50 py-1">
+                                
+                                <a href="/Food/index.html" class="menu-item active">
+                                    <span>🍳</span> <span>Recipes</span>
+                                </a>
+                                
+                                
+                                <div class="border-t border-line my-1"></div>
+                                
+                                
+                                
+                                <button onclick="showShortcutsHelp(); document.getElementById('more-dropdown').classList.add('hidden');" class="menu-item">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    <span>Keyboard Shortcuts</span>
+                                </button>
+                                <button onclick="toggleTheme(); document.getElementById('more-dropdown').classList.add('hidden');" class="menu-item">
+                                    <svg class="w-4 h-4 hidden dark:block" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path></svg>
+                                    <svg class="w-4 h-4 block dark:hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                                    <span>Toggle Theme</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main>
+            
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Recipe","keywords":"Joli, chef, dessert, recette, tester","name":"Tarte aux pommes façon Jacques Génin","recipeIngredient":[],"recipeInstructions":[{"@type":"HowToStep","text":"# Tarte aux pommes façon Jacques Génin"},{"@type":"HowToStep","text":"La tarte aux pommes de Jacques Génin ![](../_resources/IMG_2271.JPG =720x)"},{"@type":"HowToStep","text":"Elle réunit toutes les qualités qu'une tarte aux pommes peut avoir à mes yeux : - extraordinairement délicieuse - facile et rapide à faire (si on a déjà la pâte feuilletée !) - à la fois croquante et ultra fondante - visuellement magnifique - originale Lorsque je parle de croquant, je fais allusion à la fine couche de caramel que Jacques Génin a eu l'idée de déposer dessus. Et oui ! Ce n'est pas du nappage ou autre marmelade de chépaquoi, c'est un vrai caramel qui croque sous la dent ! Comme une pomme d'amour en quelque sorte. C'est G-É-N-I-A-L !!! **RÉALISATION : Pour 6 tartelettes de 8cm :** **1) La pâte feuilletée inversée (la Roll's de la pâte feuilletée) :** 204g de farine type 55 36g de farine de gruau (ou 45) 180g de beurre de tourage (ou de beurre des Charentes) 54g de beurre fondu refroidi 6g de sel 1,2 cl de vinaigre 72g d'eau **Voici le texte exact du magazine Fou de pâtisserie, page 125 :** Préparez la première détrempe : Dans le bol d'un robot, rassemblez 36g de farine T55, la farine de gruau et 180g de beurre. Travaillez au crochet (ou à la main) jusqu'à obtenir une pâte collante mais homogène. Etalez la pâte sur une épaisseur de 1cm, et de manière à former un rectangle dont la largeur doit être égale aux 2/3 de la longueur (ex : 40 x 60 cm). Filmez et mettez au frais. Préparez la deuxième détrempe : Diluez le sel dans l'eau. Puis mélangez-la avec les autres ingrédients jusqu'à obtenir une consistance souple. Etalez la pâte obtenue sur une épaisseur de 2cm et en formant un rectangle de la même largeur que le précédent, mais deux fois moins longue. Filmez et mettez au frais 2h. Posez la deuxième détrempe au centre de la première. Repliez la première détrempe de part et d'autre de manière à enferme la deuxième. Retournez et étalez la pâte en longueur sur votre plan de travail fariné. Rabattez les deux extrémités vers le centre, puis pliez en deux (pliage en portefeuille). Le premier double tour est fait. Réservez au frais 1h. Faites un second double tour et remettez 1h au réfrigérateur. Etalez la pâte en longueur et pliez-la en 3. Remettez au moins 30mn au réfrigérateur. (vous comprenez maintenant pourquoi je suis allée chez Picard...) **2) La crème d'amande (je n'ai pas fait cette version !) :** **(j'ai multiplié par 3 les proportions du magazine, suite aux commentaires que j'ai reçu, mais je n'ai pas essayé) :** **60g de beurre** **60g de sucre glace** **60g de poudre d'amandes** **45g d'oeuf** **18g de rhum** **30g de crème pâtissière (oui, il faut faire une crème pâtissière !)** Travaillez le beurre, le sucre et la poudre d'amande au batteur. Incorporez l'oeuf petit à petit. Dans un bol, mélangez la crème pâtissière avec le rhum, puis incorporez au mélange précédent. Versez dans une poche à douille 10 et mettez au frais (texte exact du magazine). **2 bis) La compote (version que j'ai choisie) :** 3 golden d'excellente qualité (les meilleures sont les \"Tentation\") 1 gousse de vanille 20g de cassonade (ou de sucre en poudre) (vous pouvez ajouter un filet de jus de citron) **ON PRÉCHAUFFE MAINTENANT LE FOUR À 240° CHALEUR TOURNANTE AVEC UNE GRILLE AU MILIEU (c'est chaud c'est normal, on baissera ensuite le thermostat).** Alors là rien de plus facile ! Pelez les pommes, coupez-les en petits morceaux, ajoutez le sucre et les grains de la gousse de vanille, mélangez bien et filmez parfaitement (il faut du film micro ondable). Sinon utilisez un récipient hermétique qui passe au micro-onde :"},{"@type":"HowToStep","text":"Faîtes cuire 5mn à 800W. Voici les pommes après cuisson :"},{"@type":"HowToStep","text":"Un p'tit coup de mixeur plongeant et c'est fini ! (Vous verrez qu'il y aura pas mal d'eau dans le récipient. Je me suis posée la question de la garder ou de la jeter avant de dessécher la compote. Il me paraissait illogique de conserver cette eau alors qu'on allait ensuite essayer de l'éliminer. Puis je me suis dit qu'elle devait contenir de la vanille et du sucre, je l'ai donc finalement conservée)"},{"@type":"HowToStep","text":"Ensuite, comme il est précisé dans le reportage de \"raids pâtisserie\", il faut bien dessécher la compote, comme le fait Jacques Génin. Pour cela je l'ai mise pendant exactement 5mn sur ma plaque à induction, sur le feu à la puissance 7(il faut remuer sans arrêt). Ce temps m'a semblé être suffisant (on fait comme on le sent quand on n'a pas la recette...) :"},{"@type":"HowToStep","text":"On obtient une compote bien desséchée. Elle est délicieuse, très concentrée en goût, et bien vanillée. J'ai adoré cette idée de dessécher une compote avant de l'utiliser pour une tarte. Ca concentre les saveurs et ça ne détrempe pas du tout la pâte à la cuisson. Il va de soi que plus les pommes seront goûteuses, puis la compote (et la tarte d'ailleurs !) le sera :"},{"@type":"HowToStep","text":"Mettez-la tout de suite dans un récipient bien plat et étalez-la, sinon la chaleur va lui redonner de l'humidité ! On ne la met surtout pas dans un petit récipient creux ! Laissez-la refroidir à température ambiante :"},{"@type":"HowToStep","text":"**3) Le montage :** 3 golden 6 disques de pâte feuilletée Ensuite il faut faire attention. En effet, les cercles que vous allez détailler dans votre pâte devront être de la même taille que les disques de pommes ! Pour cela évaluez bien la taille de vos pommes avant de détailler. J'avais des golden assez grandes, j'ai donc pris un emporte-pièce de 8cm et c'était parfait : ![](../_resources/IMG_2274.JPG =300x) Vos cercles sont détaillés. La compote refroidit. Le four chauffe. Il ne reste plus qu'à peler les pommes, les vider..."},{"@type":"HowToStep","text":"...et les couper très finement à la mandoline. Je vous conseille de faire comme moi, de ne pas vous casser la tête, et de compter une demi-pomme par tarte ! Coupez la moitié d'une pomme, faites un petit tas pour une première tarte, puis coupez l'autre moitié, faites un second tas pour une seconde tarte etc... Le fait de procéder ainsi donnera en plus une forme harmonieuse à la tarte, car vous disposerez les plus grandes tranches en bas, en terminant pas les plus petites, ce qui sera plus joli et plus stable ! ![](../_resources/IMG_2273.JPG =400x)"},{"@type":"HowToStep","text":"Ajoutez la compote de pommes en vous arrêtant à 1cm du bord (inutile de sortir la poche à douille, avec la cuillère ça marche très bien !). Si vous avez choisi l'option crème d'amandes, faites une spirale avec la poche à douille, de la même façon que pour la compote :"},{"@type":"HowToStep","text":"Ajoutez les rondelles de pommes en commençant à chaque fois par la plus grande ! Les tranches sont vraiment très fines, on voit à travers : ![](../_resources/IMG_2275.JPG =400x)"},{"@type":"HowToStep","text":"![](../_resources/IMG_2276.JPG =400x)"},{"@type":"HowToStep","text":"Vous obtenez donc une sorte de demi-pomme reconstituée !"},{"@type":"HowToStep","text":"Enfournez pour **10mn à 240°** (les tartes sont déposées sur du papier sulfurisé, lui-méme déposé sur une plaque). **Au bout de ces 10mn, baissez le thermostat à 180°** (la recette orginale dit 200° mais je trouve que c'est bien trop fort !), et poursuivez la cuisson pour **20mn** (17mn pour moi). **4) Le caramel :** 50g de sucre 10g d'eau 12g de sirop de glucose (à défaut, du sucre en poudre) Si vous n'avez pas de glucose ce n'est pas très grave. Il est là pour empêcher le sucre de masser. Il suffira d'éviter de remuer et ça se passera bien. Quelques minutes avant la fin de la cuisson, réunissez tous les ingrédients dans une petite casserole à fond épais, en mettant d'abord l'eau : Une minute avant la fin de la cuisson, faites chauffer le caramel. Dès qu'il bout, sortez vos tartes du four, et laissez-les à côté de la casserole. Le but du jeu est de déposer le caramel sur les tartes chaudes :"},{"@type":"HowToStep","text":"Lorsque le caramel commence à devenir à peine ambré aux bords (exactement comme sur la photo), retirez la casserole du feu !"},{"@type":"HowToStep","text":"Vous verrez que le caramel va continuer à colorer en dehors du feu. Il faut aller très vite pour ne pas qu'il fige. Avec un pinceau, badigeonnez le dessus des tartes chaudes. Essayez de faire une couche de caramel assez fine (avec un pinceau silicone c'est pas évident...) : C'est là que, si vous avez comme moi un pinceau en silicone de couleur claire, vous pourrez dire adieu à sa couleur d'origine...(en s'en fout, c'est pour la bonne cause !) : ![](../_resources/IMG_2277.JPG =400x) Le poids des mots. Le choc des photos...surtout... ![](../_resources/IMG_2272.JPG =640x)"},{"@type":"HowToStep","text":"**Remarques :** - Si vous vous lancez dans la pâte feuilletée inversée, pensez à en faire une grande quantité et à la congeler. - Pour faire cette tarte à l'avance pas de problème : vous ferez simplement le caramel à la dernière minute, en réchauffant légèrement les tartes au four. - Je ne sais pas combien de temps le caramel peut garder son croquant si on décide de tout faire à l'avance. Je n'ai pas essayé mais je pense que ça devrait être jouable sur plusieurs heures, sinon comment Jacques Génin ferait-il pour les vendre ? (pensez à les réchauffer un peu avant de servir). - Pour la faire en grand format il faut superposer plusieurs étages de rosaces de pommes...bonjour la galère... (et modifier la cuisson, qui devra être moins forte et plus longue). - Pour gagner du temps, vous pourrez bien sûr faire la compote la veille. - J'ai préféré cuire les tartes à 180° en deuxième partie de cuisson, car sinon la pâte serait brûlée (je me demande s'il ne vaut pas mieux mettre deux feuilles de papier sulfu). - Vous pourrez éventuellement remplacer ce caramel croquant par une sauce caramel beurre salé, mais je trouverais vraiment dommage de passer à côté de cette sensation régressive de pomme d'amour de notre enfance (ou de choux à la crème !). Je trouve même que c'est ce caramel qui fait tout le charme de cette tarte."}]}</script>
+<div>
+    <nav class="mb-4 breadcrumb print:hidden">
+        <ol class="flex items-center space-x-2 text-sm text-muted">
+            <li><a href="/Food/index.html" class="hover:text-text">Recipes</a></li>
+            
+            <li class="flex items-center">
+                <span class="mx-2 text-faint">/</span>
+                
+                    <a href="/Food/directory/Recettes Sucrées.html" class="hover:text-text">Recettes Sucrées</a>
+                
+            </li>
+            
+            <li class="flex items-center">
+                <span class="mx-2 text-faint">/</span>
+                
+                    <span class="text-text">Tarte aux pommes façon Jacques Génin</span>
+                
+            </li>
+            
+        </ol>
+    </nav>
+
+    <div class="mb-8">
+        <!-- Recipe image if available -->
+        
+        
+
+        <!-- Title bar with scale and shopping list button -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 print:flex-row print:items-center">
+            <h1 class="text-display font-bold text-text print:text-2xl">
+                Tarte aux pommes façon Jacques Génin
+            </h1>
+            
+            <div class="flex flex-wrap items-center gap-2 lg:gap-3 print:hidden">
+                
+                <button id="start-cooking-btn" onclick="startCookingMode()" class="btn btn-primary" title="Start Cooking">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span class="hidden lg:inline">Cook</span>
+                </button>
+                
+                <a href="/Food/recipe/Recettes Sucrées/Tarte aux pommes façon Jacques Génin.cook" download class="btn" title="Download .cook source">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"></path>
+                    </svg>
+                    <span class="hidden lg:inline">.cook</span>
+                </a>
+                
+            </div>
+        </div>
+
+        <!-- Recipe info section -->
+        <div class="space-y-4">
+            <!-- Tags row -->
+            
+            <div class="flex flex-wrap gap-2">
+                
+                <span class="tag">#Joli</span>
+                
+                <span class="tag">#chef</span>
+                
+                <span class="tag">#dessert</span>
+                
+                <span class="tag">#recette</span>
+                
+                <span class="tag">#tester</span>
+                
+            </div>
+            
+
+            
+
+            <!-- Description if present -->
+            
+            
+
+            <!-- Metadata row -->
+            <div id="metadata-container" class="flex flex-wrap gap-3">
+                
+                
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                <!-- Custom metadata -->
+                
+                
+                <span class="metadata-pill metadata-custom">Created at: 2019-05-08</span>
+                
+                
+                
+                <span class="metadata-pill metadata-custom">Last updated at: 2019-05-08</span>
+                
+                
+            </div>
+
+            
+        </div>
+    </div>
+
+    <div id="recipe-body" class="grid md:grid-cols-3 gap-8 mb-8">
+        <div class="md:col-span-1">
+            <div class="card p-6">
+                <h2 class="text-title font-bold mb-4 text-accent-text">🥘 Ingredients</h2>
+                
+                <!-- Fallback to original flat list for recipes without sections -->
+                <ul class="ingredient-list space-y-3">
+                    
+                </ul>
+                
+
+                
+            </div>
+        </div>
+
+        <div class="md:col-span-2">
+            <div class="card p-6" data-recipe-path="Recettes Sucrées/Tarte aux pommes façon Jacques Génin">
+                
+                
+                
+                <ol class="step-list space-y-4 ">
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">1</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        # Tarte aux pommes façon Jacques Génin
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">2</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        La tarte aux pommes de Jacques Génin ![](../_resources/IMG_2271.JPG =720x)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">3</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Elle réunit toutes les qualités qu&#x27;une tarte aux pommes peut avoir à mes yeux : - extraordinairement délicieuse - facile et rapide à faire (si on a déjà la pâte feuilletée !) - à la fois croquante et ultra fondante - visuellement magnifique - originale Lorsque je parle de croquant, je fais allusion à la fine couche de caramel que Jacques Génin a eu l&#x27;idée de déposer dessus. Et oui ! Ce n&#x27;est pas du nappage ou autre marmelade de chépaquoi, c&#x27;est un vrai caramel qui croque sous la dent ! Comme une pomme d&#x27;amour en quelque sorte. C&#x27;est G-É-N-I-A-L !!! **RÉALISATION : Pour 6 tartelettes de 8cm :** **1) La pâte feuilletée inversée (la Roll&#x27;s de la pâte feuilletée) :** 204g de farine type 55 36g de farine de gruau (ou 45) 180g de beurre de tourage (ou de beurre des Charentes) 54g de beurre fondu refroidi 6g de sel 1,2 cl de vinaigre 72g d&#x27;eau **Voici le texte exact du magazine Fou de pâtisserie, page 125 :** Préparez la première détrempe : Dans le bol d&#x27;un robot, rassemblez 36g de farine T55, la farine de gruau et 180g de beurre. Travaillez au crochet (ou à la main) jusqu&#x27;à obtenir une pâte collante mais homogène. Etalez la pâte sur une épaisseur de 1cm, et de manière à former un rectangle dont la largeur doit être égale aux 2/3 de la longueur (ex : 40 x 60 cm). Filmez et mettez au frais. Préparez la deuxième détrempe : Diluez le sel dans l&#x27;eau. Puis mélangez-la avec les autres ingrédients jusqu&#x27;à obtenir une consistance souple. Etalez la pâte obtenue sur une épaisseur de 2cm et en formant un rectangle de la même largeur que le précédent, mais deux fois moins longue. Filmez et mettez au frais 2h. Posez la deuxième détrempe au centre de la première. Repliez la première détrempe de part et d&#x27;autre de manière à enferme la deuxième. Retournez et étalez la pâte en longueur sur votre plan de travail fariné. Rabattez les deux extrémités vers le centre, puis pliez en deux (pliage en portefeuille). Le premier double tour est fait. Réservez au frais 1h. Faites un second double tour et remettez 1h au réfrigérateur. Etalez la pâte en longueur et pliez-la en 3. Remettez au moins 30mn au réfrigérateur. (vous comprenez maintenant pourquoi je suis allée chez Picard...) **2) La crème d&#x27;amande (je n&#x27;ai pas fait cette version !) :** **(j&#x27;ai multiplié par 3 les proportions du magazine, suite aux commentaires que j&#x27;ai reçu, mais je n&#x27;ai pas essayé) :** **60g de beurre** **60g de sucre glace** **60g de poudre d&#x27;amandes** **45g d&#x27;oeuf** **18g de rhum** **30g de crème pâtissière (oui, il faut faire une crème pâtissière !)** Travaillez le beurre, le sucre et la poudre d&#x27;amande au batteur. Incorporez l&#x27;oeuf petit à petit. Dans un bol, mélangez la crème pâtissière avec le rhum, puis incorporez au mélange précédent. Versez dans une poche à douille 10 et mettez au frais (texte exact du magazine). **2 bis) La compote (version que j&#x27;ai choisie) :** 3 golden d&#x27;excellente qualité (les meilleures sont les &quot;Tentation&quot;) 1 gousse de vanille 20g de cassonade (ou de sucre en poudre) (vous pouvez ajouter un filet de jus de citron) **ON PRÉCHAUFFE MAINTENANT LE FOUR À 240° CHALEUR TOURNANTE AVEC UNE GRILLE AU MILIEU (c&#x27;est chaud c&#x27;est normal, on baissera ensuite le thermostat).** Alors là rien de plus facile ! Pelez les pommes, coupez-les en petits morceaux, ajoutez le sucre et les grains de la gousse de vanille, mélangez bien et filmez parfaitement (il faut du film micro ondable). Sinon utilisez un récipient hermétique qui passe au micro-onde :
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">4</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Faîtes cuire 5mn à 800W. Voici les pommes après cuisson :
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">5</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Un p&#x27;tit coup de mixeur plongeant et c&#x27;est fini ! (Vous verrez qu&#x27;il y aura pas mal d&#x27;eau dans le récipient. Je me suis posée la question de la garder ou de la jeter avant de dessécher la compote. Il me paraissait illogique de conserver cette eau alors qu&#x27;on allait ensuite essayer de l&#x27;éliminer. Puis je me suis dit qu&#x27;elle devait contenir de la vanille et du sucre, je l&#x27;ai donc finalement conservée) 
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">6</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Ensuite, comme il est précisé dans le reportage de &quot;raids pâtisserie&quot;, il faut bien dessécher la compote, comme le fait Jacques Génin.  Pour cela je l&#x27;ai mise pendant exactement 5mn sur ma plaque à induction, sur le feu à la puissance 7(il faut remuer sans arrêt). Ce temps m&#x27;a semblé être suffisant (on fait comme on le sent quand on n&#x27;a pas la recette...) :
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">7</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        On obtient une compote bien desséchée. Elle est délicieuse, très concentrée en goût, et bien vanillée. J&#x27;ai adoré cette idée de dessécher une compote avant de l&#x27;utiliser pour une tarte. Ca concentre les saveurs et ça ne détrempe pas du tout la pâte à la cuisson. Il va de soi que plus les pommes seront goûteuses, puis la compote (et la tarte d&#x27;ailleurs !) le sera :
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">8</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Mettez-la tout de suite dans un récipient bien plat et étalez-la, sinon la chaleur va lui redonner de l&#x27;humidité ! On ne la met surtout pas dans un petit récipient creux ! Laissez-la refroidir à température ambiante :
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">9</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **3) Le montage :** 3 golden 6 disques de pâte feuilletée Ensuite il faut faire attention. En effet, les cercles que vous allez détailler dans votre pâte devront être de la même taille que les disques de pommes ! Pour cela évaluez bien la taille de vos pommes avant de détailler. J&#x27;avais des golden assez grandes, j&#x27;ai donc pris un emporte-pièce de 8cm et c&#x27;était parfait : ![](../_resources/IMG_2274.JPG =300x) Vos cercles sont détaillés. La compote refroidit. Le four chauffe. Il ne reste plus qu&#x27;à peler les pommes, les vider...
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">10</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        ...et les couper très finement à la mandoline. Je vous conseille de faire comme moi, de ne pas vous casser la tête, et de compter une demi-pomme par tarte ! Coupez la moitié d&#x27;une pomme, faites un petit tas pour une première tarte, puis coupez l&#x27;autre moitié, faites un second tas pour une seconde tarte etc... Le fait de procéder ainsi donnera en plus une forme harmonieuse à la tarte, car vous disposerez les plus grandes tranches en bas, en terminant pas les plus petites, ce qui sera plus joli et plus stable ! ![](../_resources/IMG_2273.JPG =400x)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">11</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Ajoutez la compote de pommes en vous arrêtant à 1cm du bord (inutile de sortir la poche à douille, avec la cuillère ça marche très bien !). Si vous avez choisi l&#x27;option crème d&#x27;amandes, faites une spirale avec la poche à douille, de la même façon que pour la compote :
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">12</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Ajoutez les rondelles de pommes en commençant à chaque fois par la plus grande ! Les tranches sont vraiment très fines, on voit à travers : ![](../_resources/IMG_2275.JPG =400x)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">13</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        ![](../_resources/IMG_2276.JPG =400x)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">14</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Vous obtenez donc une sorte de demi-pomme reconstituée !
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">15</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Enfournez pour **10mn à 240°** (les tartes sont déposées sur du papier sulfurisé, lui-méme déposé sur une plaque). **Au bout de ces 10mn, baissez le thermostat à 180°** (la recette orginale dit 200° mais je trouve que c&#x27;est bien trop fort !), et poursuivez la cuisson pour **20mn** (17mn pour moi). **4) Le caramel :** 50g de sucre 10g d&#x27;eau 12g de sirop de glucose (à défaut, du sucre en poudre) Si vous n&#x27;avez pas de glucose ce n&#x27;est pas très grave. Il est là pour empêcher le sucre de masser. Il suffira d&#x27;éviter de remuer et ça se passera bien. Quelques minutes avant la fin de la cuisson, réunissez tous les ingrédients dans une petite casserole à fond épais, en mettant d&#x27;abord l&#x27;eau : Une minute avant la fin de la cuisson, faites chauffer le caramel. Dès qu&#x27;il bout, sortez vos tartes du four, et laissez-les à côté de la casserole. Le but du jeu est de déposer le caramel sur les tartes chaudes :
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">16</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Lorsque le caramel commence à devenir à peine ambré aux bords (exactement comme sur la photo), retirez la casserole du feu !
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">17</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Vous verrez que le caramel va continuer à colorer en dehors du feu. Il faut aller très vite pour ne pas qu&#x27;il fige. Avec un pinceau, badigeonnez le dessus des tartes chaudes. Essayez de faire une couche de caramel assez fine (avec un pinceau silicone c&#x27;est pas évident...) : C&#x27;est là que, si vous avez comme moi un pinceau en silicone de couleur claire, vous pourrez dire adieu à sa couleur d&#x27;origine...(en s&#x27;en fout, c&#x27;est pour la bonne cause !) : ![](../_resources/IMG_2277.JPG =400x) Le poids des mots. Le choc des photos...surtout... ![](../_resources/IMG_2272.JPG =640x)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">18</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Remarques :** - Si vous vous lancez dans la pâte feuilletée inversée, pensez à en faire une grande quantité et à la congeler. - Pour faire cette tarte à l&#x27;avance pas de problème : vous ferez simplement le caramel à la dernière minute, en réchauffant légèrement les tartes au four. - Je ne sais pas combien de temps le caramel peut garder son croquant si on décide de tout faire à l&#x27;avance. Je n&#x27;ai pas essayé mais je pense que ça devrait être jouable sur plusieurs heures, sinon comment Jacques Génin ferait-il pour les vendre ? (pensez à les réchauffer un peu avant de servir). - Pour la faire en grand format il faut superposer plusieurs étages de rosaces de pommes...bonjour la galère... (et modifier la cuisson, qui devra être moins forte et plus longue). - Pour gagner du temps, vous pourrez bien sûr faire la compote la veille. - J&#x27;ai préféré cuire les tartes à 180° en deuxième partie de cuisson, car sinon la pâte serait brûlée (je me demande s&#x27;il ne vaut pas mieux mettre deux feuilles de papier sulfu). - Vous pourrez éventuellement remplacer ce caramel croquant par une sauce caramel beurre salé, mais je trouverais vraiment dommage de passer à côté de cette sensation régressive de pomme d&#x27;amour de notre enfance (ou de choux à la crème !). Je trouve même que c&#x27;est ce caramel qui fait tout le charme de cette tarte.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                </ol>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<script id="cooking-mode-data" type="application/json">
+{"image":null,"name":"Tarte aux pommes façon Jacques Génin","scale":1.0,"sections":[{"ingredients":[],"name":null,"stepOffset":0,"steps":[{"globalNumber":1,"image":null,"ingredients":[],"number":1,"type":"step"},{"globalNumber":2,"image":null,"ingredients":[],"number":2,"type":"step"},{"globalNumber":3,"image":null,"ingredients":[],"number":3,"type":"step"},{"globalNumber":4,"image":null,"ingredients":[],"number":4,"type":"step"},{"globalNumber":5,"image":null,"ingredients":[],"number":5,"type":"step"},{"globalNumber":6,"image":null,"ingredients":[],"number":6,"type":"step"},{"globalNumber":7,"image":null,"ingredients":[],"number":7,"type":"step"},{"globalNumber":8,"image":null,"ingredients":[],"number":8,"type":"step"},{"globalNumber":9,"image":null,"ingredients":[],"number":9,"type":"step"},{"globalNumber":10,"image":null,"ingredients":[],"number":10,"type":"step"},{"globalNumber":11,"image":null,"ingredients":[],"number":11,"type":"step"},{"globalNumber":12,"image":null,"ingredients":[],"number":12,"type":"step"},{"globalNumber":13,"image":null,"ingredients":[],"number":13,"type":"step"},{"globalNumber":14,"image":null,"ingredients":[],"number":14,"type":"step"},{"globalNumber":15,"image":null,"ingredients":[],"number":15,"type":"step"},{"globalNumber":16,"image":null,"ingredients":[],"number":16,"type":"step"},{"globalNumber":17,"image":null,"ingredients":[],"number":17,"type":"step"},{"globalNumber":18,"image":null,"ingredients":[],"number":18,"type":"step"}]}]}
+</script>
+
+
+
+        </main>
+
+        
+        <footer class="mt-12 mb-6 text-center text-sm text-faint print:hidden">
+            Built with
+            <a href="https://cooklang.org/cli/" class="text-accent-text hover:underline" target="_blank" rel="noopener">CookCLI</a>
+            
+            &middot;
+            <a href="https://github.com/S3v3r1n3/Food" class="text-accent-text hover:underline" target="_blank" rel="noopener">View source</a>
+            
+        </footer>
+        
+    </div>
+
+    <script>
+        // Theme toggle function
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.classList.contains('dark') ? 'dark' : 'light';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+            html.classList.toggle('dark');
+            localStorage.setItem('theme', newTheme);
+        }
+    </script>
+
+    
+    <script>window.__PREFIX__ = "/Food";</script>
+    <script src="/Food/static/js/search.js"></script>
+    
+
+    <!-- URL prefix for JavaScript -->
+    <script>
+        window.__PREFIX__ = "/Food";
+        window.__STATIC_MODE__ = true;
+        window.__STRINGS__ = { close: "Close" };
+        // Bring the visitor back to this page after signing in.
+        document.querySelectorAll('[data-login-link]').forEach((link) => {
+            const prefix = window.__PREFIX__;
+            const path = location.pathname.startsWith(prefix)
+                ? location.pathname.slice(prefix.length)
+                : location.pathname;
+            if (path === '/login') return;
+            link.href = `${prefix}/login?next=${encodeURIComponent((path || '/') + location.search)}`;
+        });
+    </script>
+
+    <!-- Keyboard shortcuts -->
+    <script src="/Food/static/js/keyboard-shortcuts.js"></script>
+    <!-- Expose showShortcutsHelp globally for the help button -->
+    <script>
+        // showShortcutsHelp is defined in keyboard-shortcuts.js
+        // This ensures it's available for the onclick handler
+        if (typeof showShortcutsHelp === 'undefined') {
+            window.showShortcutsHelp = function() {
+                console.warn('Keyboard shortcuts not loaded');
+            };
+        }
+    </script>
+
+    
+<link rel="stylesheet" href="/Food/static/css/cooking-mode.css">
+<script src="/Food/static/js/cooking-mode.js"></script>
+<script src="/Food/static/js/timers.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en-US" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cake marocain de Sophie dudemaine - Cook</title>
+    <link rel="icon" type="image/x-icon" href="/Food/static/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/Food/static/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/Food/static/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/Food/static/apple-touch-icon.png">
+    <link rel="manifest" href="/Food/static/site.webmanifest">
+    
+    <link href="/Food/static/css/output.css" rel="stylesheet">
+    <script>
+        // Check for saved theme preference, or check for prefers-color-scheme, or default to light
+        const theme = localStorage.getItem('theme')
+            || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.classList.toggle('dark', theme === 'dark');
+        // False for a guest, or a role below shopper, on a server that requires signing in.
+        window.__CAN_EDIT_LISTS__ = true;
+        // `--recipes-only` and nobody signed in: no shopping list or pantry.
+        window.__RECIPES_ONLY__ = false;
+    </script>
+    <style>
+        .viewport {
+            width: 100%;
+            max-width: 72rem;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        /* Search result keyboard selection. --surface-sunk alone is barely
+           visible against --surface in dark mode, so the accent bar carries
+           the signal. */
+        #search-results a.search-selected {
+            background: var(--accent-soft);
+            box-shadow: inset 3px 0 0 var(--accent);
+        }
+
+        @media print {
+            /* Token values are reset to light in input.css; this resets the
+               browser's own defaults so unstyled text is dark too. */
+            html.dark, html {
+                color-scheme: light !important;
+            }
+
+            * {
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+
+            body {
+                background: white !important;
+                margin: 0;
+                padding: 0;
+            }
+
+            .viewport {
+                max-width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            /* Hide navigation and non-essential elements */
+            nav, #search-container, #search-input, #search-results, .print\:hidden, .breadcrumb {
+                display: none !important;
+            }
+
+            /* Hide all navigation links */
+            a[href="/Food/"] {
+                display: none !important;
+            }
+
+            /* Recipe layout for print: one column */
+            .grid {
+                display: block !important;
+            }
+
+            .md\:col-span-1, .md\:col-span-2 {
+                page-break-inside: avoid;
+                width: 100% !important;
+            }
+
+            /* Square corners on paper */
+            .card, .step-box, .ingredient-row, .recipe-note, .rounded-xl {
+                border-radius: 0 !important;
+            }
+
+            /* Step numbers */
+            .step-number {
+                background: #000 !important;
+                color: #fff !important;
+            }
+
+            /* Images */
+            img {
+                max-height: 300px !important;
+                max-width: 100% !important;
+                height: auto !important;
+                object-fit: contain !important;
+                page-break-inside: avoid;
+                page-break-after: avoid;
+            }
+
+            /* Recipe sections on same page if possible */
+            h2, h3 {
+                page-break-after: avoid;
+            }
+
+            ol, ul {
+                page-break-inside: avoid;
+            }
+
+            /* Compact spacing */
+            .mb-8, .mb-6, .mb-4 {
+                margin-bottom: 0.5rem !important;
+            }
+
+            .p-6 {
+                padding: 0.5rem !important;
+            }
+
+            /* Recipe header */
+            h1 {
+                color: #000 !important;
+                font-size: 1.5rem !important;
+                margin-bottom: 0 !important;
+            }
+
+            /* Shopping list print styles */
+            .lg\:w-2\/5, .xl\:w-1\/3 {
+                display: none !important;
+            }
+
+            #shopping-list-results {
+                font-size: 11pt !important;
+                line-height: 1.2 !important;
+            }
+
+            #shopping-list-results input[type="checkbox"] {
+                display: none !important;
+            }
+
+            #shopping-list-results li .flex-1 {
+                width: auto !important;
+                flex: 1 1 0% !important;
+            }
+
+            #shopping-list-results label {
+                cursor: default !important;
+            }
+
+            #shopping-list-results h2 {
+                font-size: 11pt !important;
+                color: #000 !important;
+                margin-bottom: 0 !important;
+            }
+
+            #shopping-list-results .space-y-2 > * + *,
+            #shopping-list-results ul > * + * {
+                margin-top: 0 !important;
+            }
+
+            #shopping-list-results li {
+                padding: 0 !important;
+                line-height: 1.3 !important;
+                border-bottom: 1px dotted #ccc;
+            }
+
+            #shopping-list-results .card {
+                margin-bottom: 0.15rem !important;
+                padding: 0 !important;
+                border: none !important;
+            }
+
+            /* Menu print styles */
+            #menu-content {
+                font-size: 10pt !important;
+                line-height: 1.4 !important;
+            }
+
+            #menu-content h1 {
+                font-size: 14pt !important;
+                margin-bottom: 0.25rem !important;
+                color: #000 !important;
+            }
+
+            #menu-content .space-y-6 > * + * {
+                margin-top: 0.3rem !important;
+            }
+
+            #menu-content .menu-section {
+                border: 1px solid #ccc !important;
+                border-radius: 0 !important;
+                page-break-inside: avoid;
+            }
+
+            #menu-content .menu-section-header {
+                background: #eee !important;
+                color: #000 !important;
+                padding: 0.15rem 0.5rem !important;
+            }
+
+            #menu-content .menu-section-header h2 {
+                font-size: 11pt !important;
+                color: #000 !important;
+            }
+
+            #menu-content .menu-section-body {
+                padding: 0.25rem 0.5rem !important;
+            }
+
+            #menu-content .menu-section-body .space-y-2 > * + *,
+            #menu-content .menu-section-body > * + * {
+                margin-top: 0.05rem !important;
+            }
+
+            #menu-content .menu-section-body h3 {
+                font-size: 10pt !important;
+                margin-top: 0.2rem !important;
+                margin-bottom: 0 !important;
+            }
+
+            #menu-content .menu-section-body .pl-6 {
+                padding-left: 1rem !important;
+            }
+
+            /* Preserve word spacing in flex lines */
+            #menu-content .menu-section-body .flex {
+                gap: 0.25em !important;
+            }
+
+            #menu-content .ingredient-badge {
+                font-weight: bold !important;
+                color: #000 !important;
+            }
+
+            #menu-content a {
+                color: #000 !important;
+                text-decoration: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-bg text-text">
+    <div class="viewport">
+        <nav class="nav-card relative">
+            <div class="px-3 lg:px-6 py-4 relative">
+                <div class="flex items-center justify-between flex-wrap gap-y-3">
+                    <a href="/Food/index.html" class="order-1 hidden md:flex items-center space-x-2">
+                        <img src="/Food/static/android-chrome-192x192.png" alt="Cook" class="brand-mark h-8 w-8 rounded-md" width="32" height="32">
+                    </a>
+
+                    <div class="relative z-50 order-2 flex-1 min-w-0 mr-2 md:ml-2 md:mr-4" id="search-container">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-faint" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        <input type="text"
+                               id="search-input"
+                               placeholder="Search recipes..."
+                               class="search-input">
+                        <div id="search-results"
+                             class="absolute top-full mt-2 w-full card shadow-[var(--shadow-overlay)] hidden max-h-96 overflow-y-auto"
+                             style="z-index: 9999;">
+                        </div>
+                    </div>
+
+                    <div class="order-3 flex items-center gap-1 lg:gap-2">
+                        
+                        <div class="hidden md:flex items-center gap-1 mr-2 lg:mr-4">
+                            <a href="/Food/index.html"
+                               class="nav-pill active">
+                                Recipes
+                            </a>
+                            
+                            
+                        </div>
+                        
+                        <!-- Inline buttons on md+ screens -->
+                        
+                        <button onclick="showShortcutsHelp()" class="icon-btn hidden md:inline-flex ml-2 print:hidden" aria-label="Keyboard shortcuts" title="Keyboard shortcuts (?)">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </button>
+                        <button onclick="toggleTheme()" class="icon-btn hidden md:inline-flex ml-2 print:hidden" aria-label="Toggle theme">
+                            <svg class="hidden dark:block" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
+                            </svg>
+                            <svg class="block dark:hidden" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                            </svg>
+                        </button>
+                        
+                        <!-- Overflow menu for small screens -->
+                        <div class="relative md:hidden ml-auto" id="more-menu-container">
+                            <button onclick="document.getElementById('more-dropdown').classList.toggle('hidden')" class="icon-btn" aria-label="More options">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+                                </svg>
+                            </button>
+                            <div id="more-dropdown" class="hidden absolute right-0 mt-2 w-56 card shadow-[var(--shadow-overlay)] z-50 py-1">
+                                
+                                <a href="/Food/index.html" class="menu-item active">
+                                    <span>🍳</span> <span>Recipes</span>
+                                </a>
+                                
+                                
+                                <div class="border-t border-line my-1"></div>
+                                
+                                
+                                
+                                <button onclick="showShortcutsHelp(); document.getElementById('more-dropdown').classList.add('hidden');" class="menu-item">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    <span>Keyboard Shortcuts</span>
+                                </button>
+                                <button onclick="toggleTheme(); document.getElementById('more-dropdown').classList.add('hidden');" class="menu-item">
+                                    <svg class="w-4 h-4 hidden dark:block" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path></svg>
+                                    <svg class="w-4 h-4 block dark:hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                                    <span>Toggle Theme</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main>
+            
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Recipe","image":"/Food/api/static/Recettes%20Sucr%C3%A9es/Cake%20marocain%20de%20Sophie%20dudemaine.jpeg","keywords":"Afrique, cake, recette","name":"Cake marocain de Sophie dudemaine","recipeIngredient":[],"recipeInstructions":[{"@type":"HowToStep","text":"# Cake marocain de Sophie dudemaine"},{"@type":"HowToStep","text":"Cake marocain de Sophie dudemaine"},{"@type":"HowToStep","text":"**RÉALISATION : POUR** [UN MOULE À CAKE DE 18CM](https://www.cuisineshop.fr/cuisson-boulangerie-moules-a-pains/moule-a-pain-complet-exopanr.html%23.WRsV9VKmuRs) **:**"},{"@type":"HowToStep","text":"* 4 oeufs (200g) * 100g de poudre d'amandes * 50g de chapelure fine ou farine * 100g de sucre (180g dans la recette originale) * 150g d'huile neutre (pépins de raisin, colza ou tournesol) (la recette originale préconise 150g d'huile mais avec on peut le faire avec `75g` pour une version plus légère, il sera quand même très bon !) * 4g de levure chimique (pas plus) * 2g de cannelle moulue * Les zestes d'un citron et d'une orange (non traités)"},{"@type":"HowToStep","text":"**Pour le sirop (obligatoire ! ce n'est pas une option !) :**"},{"@type":"HowToStep","text":"* 90g de jus d'orange (le jus d'une grosse orange à jus) * 60g jus de citron (le jus d'un gros citron à jus) * 50g de sucre en poudre * Préchauffez le four à **150° chaleur tournante.**"},{"@type":"HowToStep","text":"On commence par bien mélanger 100g de poudre d'amande, 50g de chapelure fine, 140g de sucre, 2g de cannelle, 4g de levure chimique et les zestes d'un citron et d'une orange (zestés à la [microplane](https://www.cuisineshop.fr/decoupe-decoupe-rapes/rapes-premium.html%23.WRsS-FKmuRs)). Pour les petites quantités comme la levure et la cannelle il faut [une balance de précision](https://www.amazon.fr/gp/product/B01J7OYUJQ/ref=as_li_tl?ie=UTF8&tag=wwwcestmafour-21&camp=1642&creative=6746&linkCode=as2&creativeASIN=B01J7OYUJQ&linkId=12846183e43fb3e7275f7eef6b9ed20a). Mélangez bien avec [une cuillère magique](https://www.cuisineshop.fr/ustensiles-ustensiles-de-cuisine-decoration/cuillere-magique-inox-20cm.html%23.WRsTtlKmuRs) (ou un fouet) :"},{"@type":"HowToStep","text":"[![](../_resources/unknown_filename.45.jpeg =400x)](https://4.bp.blogspot.com/-Lnp4lR7QbHU/WRsCbUr7scI/AAAAAAAAiCc/RTyvp99mY14AlypnFWfkMl8BSqIqexIzACEw/s1600/CAKE+MAROCAIN+SOPHIE+DUDEMAINE4689.jpg)"},{"@type":"HowToStep","text":"[![](../_resources/unknown_filename.48.jpeg =400x)](https://2.bp.blogspot.com/-EmZc1NoVbSg/WRsCbysxEVI/AAAAAAAAiCc/-N1tyslRqMcpZXJu6vFHborPSajTy_uAgCEw/s1600/CAKE+MAROCAIN+SOPHIE+DUDEMAINE468b.jpg) Mélangez ensuite (sans chercher à incorporer d'air), 4 oeufs et 150g d'huile : [![](../_resources/unknown_filename.47.jpeg =400x)](https://4.bp.blogspot.com/-SpXlc2L20YE/WRsCbgVRqZI/AAAAAAAAiCc/wROV6_HEsEw6movLq8Tie0jsCSJw8tUmwCEw/s1600/CAKE+MAROCAIN+SOPHIE+DUDEMAINE468a.jpg) Ajoutez les poudres et mélangez encore, sans insister : [![](../_resources/unknown_filename.43.jpeg =400x)](https://4.bp.blogspot.com/-ofJlRjbVksc/WRsCbz7PWQI/AAAAAAAAiCc/GFiNFxVWzbsad3AA8QKJJW59VHyG33MggCEw/s1600/CAKE+MAROCAIN+SOPHIE+DUDEMAINE468c.jpg) Graissez bien votre moule avec [une bombe de graisse alimentaire](https://www.cuisineshop.fr/patisserie-ustensiles-patisserie-bombes-de-graisse/bombe-de-graisse-alimentaire.html%23.WRsSvFKmuRs) si vous en avez une (sinon il faudra bien beurrer et fariner c'est important sinon il attache). **Enfournez pour 45mn** Voici le cake après cuisson. Ce n'est pas un cake qui va lever énormément, c'est normal. A ce moment-là il est affreux : [![](../_resources/unknown_filename.42.jpeg =400x)](https://2.bp.blogspot.com/-G2pUOE_pD6E/WRsCcabwoTI/AAAAAAAAiCc/0v9jSXvSKJYcECyzZGj8tuvz644cNJPSgCEw/s1600/CAKE+MAROCAIN+SOPHIE+DUDEMAINE468f.jpg) Mais quand on le démoule il est trop bô-gosse ! Démoulez-le et retournez-le sur une grille. C'est donc un cake que l'on présente \"à l'envers\", ce qui le rend parfait pour s'adapter dans tous les moules avec des reliefs (comme ceux en silicone par exemple) car les motifs seront bien apparents après cuisson. La recette s'y prête vraiment. [![](../_resources/unknown_filename.44.jpeg =400x)](https://4.bp.blogspot.com/-uj1H4O4UtAg/WRsCcn6HlwI/AAAAAAAAiCc/c7LnLzwKpHsffI6L1wdLEUY3Wv7lxc3JgCEw/s1600/CAKE+MAROCAIN+SOPHIE+DUDEMAINE4690.jpg) Pendant ce temps préparez le sirop. Rien de plus simple, il suffit simplement de porter à ébullition 90g de jus d'orange, 60g de jus de citron et 50g de sucre. Pressez les fruits au presse-agrume pour bien récupérer tout le jus. Normalement avec une grosse orange et un gros citron vous devriez avoir ces quantités. Ensuite il s'agit simplement de chauffer le sirop pour dissoudre les grains de sucre, c'est tout. Dès que vous voyez que le sucre a fondu retirez la casserole du feu : [![](https://4.bp.blogspot.com/-eVczoHwKlKo/WRsOo27u4lI/AAAAAAAAiCs/dOAgZ_c89ucutSeeGwoQ38jRAyKl5IFBgCEw/s400/yirtKolOToCPI6oH9v%252BgQQ_thumb_4609.jpg =400x300)](https://4.bp.blogspot.com/-eVczoHwKlKo/WRsOo27u4lI/AAAAAAAAiCs/dOAgZ_c89ucutSeeGwoQ38jRAyKl5IFBgCEw/s1600/yirtKolOToCPI6oH9v%252BgQQ_thumb_4609.jpg) `Filtrez` le sirop : [![](../_resources/unknown_filename.46.jpeg =400x)](https://2.bp.blogspot.com/-cxbjpHjLYY4/WRsOo7Q9IQI/AAAAAAAAiCo/aGNlS606S68s7asHG5s6jRVB7WiZlXXjACEw/s1600/rgvLRdlMQByxd2K0qRD3Wg_thumb_460d.jpg) Puis imbibez généreusement le cake à l'aide d'un pinceau, partout partout (sauf en dessous). Il faut mettre TOUT le sirop sur le cake. N'oubliez pas de mettre un récipient sous la grille pour ne pas salir votre plan de travail :"},{"@type":"HowToStep","text":"[![](../_resources/unknown_filename.49.jpeg =400x)](https://1.bp.blogspot.com/-TIcIQUvJbXw/WRsOpOli3DI/AAAAAAAAiCw/OGuo3W_8ARgWL6_2zL_zqkpBq88gIe86gCLcB/s1600/sguxNKEnS4a9AICSZnU6WA_thumb_460f.jpg)"},{"@type":"HowToStep","text":"`Très bon`"}]}</script>
+<div>
+    <nav class="mb-4 breadcrumb print:hidden">
+        <ol class="flex items-center space-x-2 text-sm text-muted">
+            <li><a href="/Food/index.html" class="hover:text-text">Recipes</a></li>
+            
+            <li class="flex items-center">
+                <span class="mx-2 text-faint">/</span>
+                
+                    <a href="/Food/directory/Recettes Sucrées.html" class="hover:text-text">Recettes Sucrées</a>
+                
+            </li>
+            
+            <li class="flex items-center">
+                <span class="mx-2 text-faint">/</span>
+                
+                    <span class="text-text">Cake marocain de Sophie dudemaine</span>
+                
+            </li>
+            
+        </ol>
+    </nav>
+
+    <div class="mb-8">
+        <!-- Recipe image if available -->
+        
+        <div class="mb-6 max-w-4xl mx-auto flex justify-center">
+            <img src="/Food/api/static/Recettes%20Sucr%C3%A9es/Cake%20marocain%20de%20Sophie%20dudemaine.jpeg" alt="Cake marocain de Sophie dudemaine" class="rounded-xl shadow-[var(--shadow-card)] max-w-full h-auto max-h-[500px]">
+        </div>
+        
+
+        <!-- Title bar with scale and shopping list button -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 print:flex-row print:items-center">
+            <h1 class="text-display font-bold text-text print:text-2xl">
+                Cake marocain de Sophie dudemaine
+            </h1>
+            
+            <div class="flex flex-wrap items-center gap-2 lg:gap-3 print:hidden">
+                
+                <button id="start-cooking-btn" onclick="startCookingMode()" class="btn btn-primary" title="Start Cooking">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span class="hidden lg:inline">Cook</span>
+                </button>
+                
+                <a href="/Food/recipe/Recettes Sucrées/Cake marocain de Sophie dudemaine.cook" download class="btn" title="Download .cook source">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"></path>
+                    </svg>
+                    <span class="hidden lg:inline">.cook</span>
+                </a>
+                
+            </div>
+        </div>
+
+        <!-- Recipe info section -->
+        <div class="space-y-4">
+            <!-- Tags row -->
+            
+            <div class="flex flex-wrap gap-2">
+                
+                <span class="tag">#Afrique</span>
+                
+                <span class="tag">#cake</span>
+                
+                <span class="tag">#recette</span>
+                
+            </div>
+            
+
+            
+
+            <!-- Description if present -->
+            
+            
+
+            <!-- Metadata row -->
+            <div id="metadata-container" class="flex flex-wrap gap-3">
+                
+                
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                <!-- Custom metadata -->
+                
+                
+                <span class="metadata-pill metadata-custom">Created at: 2019-01-13</span>
+                
+                
+                
+                <span class="metadata-pill metadata-custom">Last updated at: 2019-01-13</span>
+                
+                
+            </div>
+
+            
+        </div>
+    </div>
+
+    <div id="recipe-body" class="grid md:grid-cols-3 gap-8 mb-8">
+        <div class="md:col-span-1">
+            <div class="card p-6">
+                <h2 class="text-title font-bold mb-4 text-accent-text">🥘 Ingredients</h2>
+                
+                <!-- Fallback to original flat list for recipes without sections -->
+                <ul class="ingredient-list space-y-3">
+                    
+                </ul>
+                
+
+                
+            </div>
+        </div>
+
+        <div class="md:col-span-2">
+            <div class="card p-6" data-recipe-path="Recettes Sucrées/Cake marocain de Sophie dudemaine">
+                
+                
+                
+                <ol class="step-list space-y-4 ">
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">1</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        # Cake marocain de Sophie dudemaine
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">2</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Cake marocain de Sophie dudemaine
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">3</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **RÉALISATION : POUR** [UN MOULE À CAKE DE 18CM](https://www.cuisineshop.fr/cuisson-boulangerie-moules-a-pains/moule-a-pain-complet-exopanr.html%23.WRsV9VKmuRs) **:**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">4</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 4 oeufs (200g) * 100g de poudre d&#x27;amandes * 50g de chapelure fine ou farine  * 100g de sucre (180g dans la recette originale) * 150g d&#x27;huile neutre (pépins de raisin, colza ou tournesol) (la recette originale préconise 150g d&#x27;huile mais avec on peut le faire avec `75g` pour une version plus légère, il sera quand même très bon !) * 4g de levure chimique (pas plus) * 2g de cannelle moulue * Les zestes d&#x27;un citron et d&#x27;une orange (non traités)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">5</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Pour le sirop (obligatoire ! ce n&#x27;est pas une option !) :**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">6</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 90g de jus d&#x27;orange (le jus d&#x27;une grosse orange à jus) * 60g jus de citron (le jus d&#x27;un gros citron à jus) * 50g de sucre en poudre * Préchauffez le four à **150° chaleur tournante.**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">7</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        On commence par bien mélanger 100g de poudre d&#x27;amande, 50g de chapelure fine, 140g de sucre, 2g de cannelle, 4g de levure chimique et les zestes d&#x27;un citron et d&#x27;une orange (zestés à la [microplane](https://www.cuisineshop.fr/decoupe-decoupe-rapes/rapes-premium.html%23.WRsS-FKmuRs)). Pour les petites quantités comme la levure et la cannelle il faut [une balance de précision](https://www.amazon.fr/gp/product/B01J7OYUJQ/ref=as_li_tl?ie=UTF8&amp;tag=wwwcestmafour-21&amp;camp=1642&amp;creative=6746&amp;linkCode=as2&amp;creativeASIN=B01J7OYUJQ&amp;linkId=12846183e43fb3e7275f7eef6b9ed20a). Mélangez bien avec [une cuillère magique](https://www.cuisineshop.fr/ustensiles-ustensiles-de-cuisine-decoration/cuillere-magique-inox-20cm.html%23.WRsTtlKmuRs) (ou un fouet) :
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">8</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        [![](../_resources/unknown_filename.45.jpeg =400x)](https://4.bp.blogspot.com/-Lnp4lR7QbHU/WRsCbUr7scI/AAAAAAAAiCc/RTyvp99mY14AlypnFWfkMl8BSqIqexIzACEw/s1600/CAKE+MAROCAIN+SOPHIE+DUDEMAINE4689.jpg)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">9</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        [![](../_resources/unknown_filename.48.jpeg =400x)](https://2.bp.blogspot.com/-EmZc1NoVbSg/WRsCbysxEVI/AAAAAAAAiCc/-N1tyslRqMcpZXJu6vFHborPSajTy_uAgCEw/s1600/CAKE+MAROCAIN+SOPHIE+DUDEMAINE468b.jpg) Mélangez ensuite (sans chercher à incorporer d&#x27;air), 4 oeufs et 150g d&#x27;huile : [![](../_resources/unknown_filename.47.jpeg =400x)](https://4.bp.blogspot.com/-SpXlc2L20YE/WRsCbgVRqZI/AAAAAAAAiCc/wROV6_HEsEw6movLq8Tie0jsCSJw8tUmwCEw/s1600/CAKE+MAROCAIN+SOPHIE+DUDEMAINE468a.jpg) Ajoutez les poudres et mélangez encore, sans insister : [![](../_resources/unknown_filename.43.jpeg =400x)](https://4.bp.blogspot.com/-ofJlRjbVksc/WRsCbz7PWQI/AAAAAAAAiCc/GFiNFxVWzbsad3AA8QKJJW59VHyG33MggCEw/s1600/CAKE+MAROCAIN+SOPHIE+DUDEMAINE468c.jpg) Graissez bien votre moule avec [une bombe de graisse alimentaire](https://www.cuisineshop.fr/patisserie-ustensiles-patisserie-bombes-de-graisse/bombe-de-graisse-alimentaire.html%23.WRsSvFKmuRs) si vous en avez une (sinon il faudra bien beurrer et fariner c&#x27;est important sinon il attache). **Enfournez pour 45mn**  Voici le cake après cuisson. Ce n&#x27;est pas un cake qui va lever énormément, c&#x27;est normal. A ce moment-là il est affreux : [![](../_resources/unknown_filename.42.jpeg =400x)](https://2.bp.blogspot.com/-G2pUOE_pD6E/WRsCcabwoTI/AAAAAAAAiCc/0v9jSXvSKJYcECyzZGj8tuvz644cNJPSgCEw/s1600/CAKE+MAROCAIN+SOPHIE+DUDEMAINE468f.jpg) Mais quand on le démoule il est trop bô-gosse ! Démoulez-le et retournez-le sur une grille. C&#x27;est donc un cake que l&#x27;on présente &quot;à l&#x27;envers&quot;, ce qui le rend parfait pour s&#x27;adapter dans tous les moules avec des reliefs (comme ceux en silicone par exemple) car les motifs seront bien apparents après cuisson. La recette s&#x27;y prête vraiment. [![](../_resources/unknown_filename.44.jpeg =400x)](https://4.bp.blogspot.com/-uj1H4O4UtAg/WRsCcn6HlwI/AAAAAAAAiCc/c7LnLzwKpHsffI6L1wdLEUY3Wv7lxc3JgCEw/s1600/CAKE+MAROCAIN+SOPHIE+DUDEMAINE4690.jpg) Pendant ce temps préparez le sirop. Rien de plus simple, il suffit simplement de porter à ébullition 90g de jus d&#x27;orange, 60g de jus de citron et 50g de sucre. Pressez les fruits au presse-agrume pour bien récupérer tout le jus. Normalement avec une grosse orange et un gros citron vous devriez avoir ces quantités. Ensuite il s&#x27;agit simplement de chauffer le sirop pour dissoudre les grains de sucre, c&#x27;est tout. Dès que vous voyez que le sucre a fondu retirez la casserole du feu : [![](https://4.bp.blogspot.com/-eVczoHwKlKo/WRsOo27u4lI/AAAAAAAAiCs/dOAgZ_c89ucutSeeGwoQ38jRAyKl5IFBgCEw/s400/yirtKolOToCPI6oH9v%252BgQQ_thumb_4609.jpg =400x300)](https://4.bp.blogspot.com/-eVczoHwKlKo/WRsOo27u4lI/AAAAAAAAiCs/dOAgZ_c89ucutSeeGwoQ38jRAyKl5IFBgCEw/s1600/yirtKolOToCPI6oH9v%252BgQQ_thumb_4609.jpg) `Filtrez` le sirop : [![](../_resources/unknown_filename.46.jpeg =400x)](https://2.bp.blogspot.com/-cxbjpHjLYY4/WRsOo7Q9IQI/AAAAAAAAiCo/aGNlS606S68s7asHG5s6jRVB7WiZlXXjACEw/s1600/rgvLRdlMQByxd2K0qRD3Wg_thumb_460d.jpg) Puis imbibez généreusement le cake à l&#x27;aide d&#x27;un pinceau, partout partout (sauf en dessous). Il faut mettre TOUT le sirop sur le cake. N&#x27;oubliez pas de mettre un récipient sous la grille pour ne pas salir votre plan de travail :
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">10</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        [![](../_resources/unknown_filename.49.jpeg =400x)](https://1.bp.blogspot.com/-TIcIQUvJbXw/WRsOpOli3DI/AAAAAAAAiCw/OGuo3W_8ARgWL6_2zL_zqkpBq88gIe86gCLcB/s1600/sguxNKEnS4a9AICSZnU6WA_thumb_460f.jpg)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">11</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        `Très bon`
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                </ol>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<script id="cooking-mode-data" type="application/json">
+{"image":"/Food/api/static/Recettes%20Sucr%C3%A9es/Cake%20marocain%20de%20Sophie%20dudemaine.jpeg","name":"Cake marocain de Sophie dudemaine","scale":1.0,"sections":[{"ingredients":[],"name":null,"stepOffset":0,"steps":[{"globalNumber":1,"image":null,"ingredients":[],"number":1,"type":"step"},{"globalNumber":2,"image":null,"ingredients":[],"number":2,"type":"step"},{"globalNumber":3,"image":null,"ingredients":[],"number":3,"type":"step"},{"globalNumber":4,"image":null,"ingredients":[],"number":4,"type":"step"},{"globalNumber":5,"image":null,"ingredients":[],"number":5,"type":"step"},{"globalNumber":6,"image":null,"ingredients":[],"number":6,"type":"step"},{"globalNumber":7,"image":null,"ingredients":[],"number":7,"type":"step"},{"globalNumber":8,"image":null,"ingredients":[],"number":8,"type":"step"},{"globalNumber":9,"image":null,"ingredients":[],"number":9,"type":"step"},{"globalNumber":10,"image":null,"ingredients":[],"number":10,"type":"step"},{"globalNumber":11,"image":null,"ingredients":[],"number":11,"type":"step"}]}]}
+</script>
+
+
+
+        </main>
+
+        
+        <footer class="mt-12 mb-6 text-center text-sm text-faint print:hidden">
+            Built with
+            <a href="https://cooklang.org/cli/" class="text-accent-text hover:underline" target="_blank" rel="noopener">CookCLI</a>
+            
+            &middot;
+            <a href="https://github.com/S3v3r1n3/Food" class="text-accent-text hover:underline" target="_blank" rel="noopener">View source</a>
+            
+        </footer>
+        
+    </div>
+
+    <script>
+        // Theme toggle function
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.classList.contains('dark') ? 'dark' : 'light';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+            html.classList.toggle('dark');
+            localStorage.setItem('theme', newTheme);
+        }
+    </script>
+
+    
+    <script>window.__PREFIX__ = "/Food";</script>
+    <script src="/Food/static/js/search.js"></script>
+    
+
+    <!-- URL prefix for JavaScript -->
+    <script>
+        window.__PREFIX__ = "/Food";
+        window.__STATIC_MODE__ = true;
+        window.__STRINGS__ = { close: "Close" };
+        // Bring the visitor back to this page after signing in.
+        document.querySelectorAll('[data-login-link]').forEach((link) => {
+            const prefix = window.__PREFIX__;
+            const path = location.pathname.startsWith(prefix)
+                ? location.pathname.slice(prefix.length)
+                : location.pathname;
+            if (path === '/login') return;
+            link.href = `${prefix}/login?next=${encodeURIComponent((path || '/') + location.search)}`;
+        });
+    </script>
+
+    <!-- Keyboard shortcuts -->
+    <script src="/Food/static/js/keyboard-shortcuts.js"></script>
+    <!-- Expose showShortcutsHelp globally for the help button -->
+    <script>
+        // showShortcutsHelp is defined in keyboard-shortcuts.js
+        // This ensures it's available for the onclick handler
+        if (typeof showShortcutsHelp === 'undefined') {
+            window.showShortcutsHelp = function() {
+                console.warn('Keyboard shortcuts not loaded');
+            };
+        }
+    </script>
+
+    
+<link rel="stylesheet" href="/Food/static/css/cooking-mode.css">
+<script src="/Food/static/js/cooking-mode.js"></script>
+<script src="/Food/static/js/timers.js"></script>
+
+</body>
+</html>

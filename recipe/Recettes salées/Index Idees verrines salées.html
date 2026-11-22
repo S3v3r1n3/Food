@@ -1,0 +1,1845 @@
+<!DOCTYPE html>
+<html lang="en-US" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Index Idees verrines salées - Cook</title>
+    <link rel="icon" type="image/x-icon" href="/Food/static/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/Food/static/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/Food/static/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/Food/static/apple-touch-icon.png">
+    <link rel="manifest" href="/Food/static/site.webmanifest">
+    
+    <link href="/Food/static/css/output.css" rel="stylesheet">
+    <script>
+        // Check for saved theme preference, or check for prefers-color-scheme, or default to light
+        const theme = localStorage.getItem('theme')
+            || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.classList.toggle('dark', theme === 'dark');
+        // False for a guest, or a role below shopper, on a server that requires signing in.
+        window.__CAN_EDIT_LISTS__ = true;
+        // `--recipes-only` and nobody signed in: no shopping list or pantry.
+        window.__RECIPES_ONLY__ = false;
+    </script>
+    <style>
+        .viewport {
+            width: 100%;
+            max-width: 72rem;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        /* Search result keyboard selection. --surface-sunk alone is barely
+           visible against --surface in dark mode, so the accent bar carries
+           the signal. */
+        #search-results a.search-selected {
+            background: var(--accent-soft);
+            box-shadow: inset 3px 0 0 var(--accent);
+        }
+
+        @media print {
+            /* Token values are reset to light in input.css; this resets the
+               browser's own defaults so unstyled text is dark too. */
+            html.dark, html {
+                color-scheme: light !important;
+            }
+
+            * {
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+
+            body {
+                background: white !important;
+                margin: 0;
+                padding: 0;
+            }
+
+            .viewport {
+                max-width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            /* Hide navigation and non-essential elements */
+            nav, #search-container, #search-input, #search-results, .print\:hidden, .breadcrumb {
+                display: none !important;
+            }
+
+            /* Hide all navigation links */
+            a[href="/Food/"] {
+                display: none !important;
+            }
+
+            /* Recipe layout for print: one column */
+            .grid {
+                display: block !important;
+            }
+
+            .md\:col-span-1, .md\:col-span-2 {
+                page-break-inside: avoid;
+                width: 100% !important;
+            }
+
+            /* Square corners on paper */
+            .card, .step-box, .ingredient-row, .recipe-note, .rounded-xl {
+                border-radius: 0 !important;
+            }
+
+            /* Step numbers */
+            .step-number {
+                background: #000 !important;
+                color: #fff !important;
+            }
+
+            /* Images */
+            img {
+                max-height: 300px !important;
+                max-width: 100% !important;
+                height: auto !important;
+                object-fit: contain !important;
+                page-break-inside: avoid;
+                page-break-after: avoid;
+            }
+
+            /* Recipe sections on same page if possible */
+            h2, h3 {
+                page-break-after: avoid;
+            }
+
+            ol, ul {
+                page-break-inside: avoid;
+            }
+
+            /* Compact spacing */
+            .mb-8, .mb-6, .mb-4 {
+                margin-bottom: 0.5rem !important;
+            }
+
+            .p-6 {
+                padding: 0.5rem !important;
+            }
+
+            /* Recipe header */
+            h1 {
+                color: #000 !important;
+                font-size: 1.5rem !important;
+                margin-bottom: 0 !important;
+            }
+
+            /* Shopping list print styles */
+            .lg\:w-2\/5, .xl\:w-1\/3 {
+                display: none !important;
+            }
+
+            #shopping-list-results {
+                font-size: 11pt !important;
+                line-height: 1.2 !important;
+            }
+
+            #shopping-list-results input[type="checkbox"] {
+                display: none !important;
+            }
+
+            #shopping-list-results li .flex-1 {
+                width: auto !important;
+                flex: 1 1 0% !important;
+            }
+
+            #shopping-list-results label {
+                cursor: default !important;
+            }
+
+            #shopping-list-results h2 {
+                font-size: 11pt !important;
+                color: #000 !important;
+                margin-bottom: 0 !important;
+            }
+
+            #shopping-list-results .space-y-2 > * + *,
+            #shopping-list-results ul > * + * {
+                margin-top: 0 !important;
+            }
+
+            #shopping-list-results li {
+                padding: 0 !important;
+                line-height: 1.3 !important;
+                border-bottom: 1px dotted #ccc;
+            }
+
+            #shopping-list-results .card {
+                margin-bottom: 0.15rem !important;
+                padding: 0 !important;
+                border: none !important;
+            }
+
+            /* Menu print styles */
+            #menu-content {
+                font-size: 10pt !important;
+                line-height: 1.4 !important;
+            }
+
+            #menu-content h1 {
+                font-size: 14pt !important;
+                margin-bottom: 0.25rem !important;
+                color: #000 !important;
+            }
+
+            #menu-content .space-y-6 > * + * {
+                margin-top: 0.3rem !important;
+            }
+
+            #menu-content .menu-section {
+                border: 1px solid #ccc !important;
+                border-radius: 0 !important;
+                page-break-inside: avoid;
+            }
+
+            #menu-content .menu-section-header {
+                background: #eee !important;
+                color: #000 !important;
+                padding: 0.15rem 0.5rem !important;
+            }
+
+            #menu-content .menu-section-header h2 {
+                font-size: 11pt !important;
+                color: #000 !important;
+            }
+
+            #menu-content .menu-section-body {
+                padding: 0.25rem 0.5rem !important;
+            }
+
+            #menu-content .menu-section-body .space-y-2 > * + *,
+            #menu-content .menu-section-body > * + * {
+                margin-top: 0.05rem !important;
+            }
+
+            #menu-content .menu-section-body h3 {
+                font-size: 10pt !important;
+                margin-top: 0.2rem !important;
+                margin-bottom: 0 !important;
+            }
+
+            #menu-content .menu-section-body .pl-6 {
+                padding-left: 1rem !important;
+            }
+
+            /* Preserve word spacing in flex lines */
+            #menu-content .menu-section-body .flex {
+                gap: 0.25em !important;
+            }
+
+            #menu-content .ingredient-badge {
+                font-weight: bold !important;
+                color: #000 !important;
+            }
+
+            #menu-content a {
+                color: #000 !important;
+                text-decoration: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-bg text-text">
+    <div class="viewport">
+        <nav class="nav-card relative">
+            <div class="px-3 lg:px-6 py-4 relative">
+                <div class="flex items-center justify-between flex-wrap gap-y-3">
+                    <a href="/Food/index.html" class="order-1 hidden md:flex items-center space-x-2">
+                        <img src="/Food/static/android-chrome-192x192.png" alt="Cook" class="brand-mark h-8 w-8 rounded-md" width="32" height="32">
+                    </a>
+
+                    <div class="relative z-50 order-2 flex-1 min-w-0 mr-2 md:ml-2 md:mr-4" id="search-container">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-faint" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        <input type="text"
+                               id="search-input"
+                               placeholder="Search recipes..."
+                               class="search-input">
+                        <div id="search-results"
+                             class="absolute top-full mt-2 w-full card shadow-[var(--shadow-overlay)] hidden max-h-96 overflow-y-auto"
+                             style="z-index: 9999;">
+                        </div>
+                    </div>
+
+                    <div class="order-3 flex items-center gap-1 lg:gap-2">
+                        
+                        <div class="hidden md:flex items-center gap-1 mr-2 lg:mr-4">
+                            <a href="/Food/index.html"
+                               class="nav-pill active">
+                                Recipes
+                            </a>
+                            
+                            
+                        </div>
+                        
+                        <!-- Inline buttons on md+ screens -->
+                        
+                        <button onclick="showShortcutsHelp()" class="icon-btn hidden md:inline-flex ml-2 print:hidden" aria-label="Keyboard shortcuts" title="Keyboard shortcuts (?)">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </button>
+                        <button onclick="toggleTheme()" class="icon-btn hidden md:inline-flex ml-2 print:hidden" aria-label="Toggle theme">
+                            <svg class="hidden dark:block" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
+                            </svg>
+                            <svg class="block dark:hidden" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                            </svg>
+                        </button>
+                        
+                        <!-- Overflow menu for small screens -->
+                        <div class="relative md:hidden ml-auto" id="more-menu-container">
+                            <button onclick="document.getElementById('more-dropdown').classList.toggle('hidden')" class="icon-btn" aria-label="More options">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+                                </svg>
+                            </button>
+                            <div id="more-dropdown" class="hidden absolute right-0 mt-2 w-56 card shadow-[var(--shadow-overlay)] z-50 py-1">
+                                
+                                <a href="/Food/index.html" class="menu-item active">
+                                    <span>🍳</span> <span>Recipes</span>
+                                </a>
+                                
+                                
+                                <div class="border-t border-line my-1"></div>
+                                
+                                
+                                
+                                <button onclick="showShortcutsHelp(); document.getElementById('more-dropdown').classList.add('hidden');" class="menu-item">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    <span>Keyboard Shortcuts</span>
+                                </button>
+                                <button onclick="toggleTheme(); document.getElementById('more-dropdown').classList.add('hidden');" class="menu-item">
+                                    <svg class="w-4 h-4 hidden dark:block" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path></svg>
+                                    <svg class="w-4 h-4 block dark:hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                                    <span>Toggle Theme</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main>
+            
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Recipe","image":"/Food/api/static/Recettes%20sal%C3%A9es/Index%20Idees%20verrines%20sal%C3%A9es.jpeg","keywords":"Apero, Verrine, recette","name":"Index Idees verrines salées","recipeIngredient":[],"recipeInstructions":[{"@type":"HowToStep","text":"# Index Idees verrines salées"},{"@type":"HowToStep","text":"**Verrines** **salées**"},{"@type":"HowToStep","text":"- soupes diverses - concombres, fromage blanc et menthe - houmous et tacos"},{"@type":"HowToStep","text":"**Verrines salées ****"},{"@type":"HowToStep","text":"**Ingrédients -** **Base**"},{"@type":"HowToStep","text":"* 4 à 8 verrines"},{"@type":"HowToStep","text":"_**Version betterave, chèvre et lardons ***_"},{"@type":"HowToStep","text":"* 1/2 sachet de 500 g de betteraves cuites * 1/2 chèvre frais * 1/2 poivron rouge * 1/2 poivron jaune * 100 g de lardons * sel et poivre * option: ail, piment d'Espelette, vinaigre balsamique, ciboulette * Mixez finement les betteraves et le chèvre au blender, salez et poivrez. * Coupez les poivrons en lanières et les faire revenir dans de l’huile d’olive pendant 5 minutes. * Faites revenir les lardons jusqu’à ce qu’ils soient dorés. * Servez la crème dans un verre transparent pour profiter de la belle couleur de la crème ! * Puis ajoutez les lanières de poivron et les lardons bien chauds."},{"@type":"HowToStep","text":"_**Version soleil**_"},{"@type":"HowToStep","text":"* 1 échalote * 1 gousse d'ail * 1 courgette * 1/2 poivron rouge * 1/2 poivron jaune * 2 tomates * 300 g de crevettes décortiquées * 1 yaourt (ou équivalent en fromage blanc ou crème épaisse) * 150 g de fromage de chèvre frais type Chavroux * 2 càs de miel liquide * herbes (basilic, origan, romarin...) * 1 càs de Pastis ou Ricard * 2 càs d'huile d'olive * Mixez finement les betteraves et le chèvre au blender, salez et poivrez. * Détailler les légumes en brunoise (= petits cubes réguliers) en ôtant le centre (la pulpe et les pépins). * Emincer finement l'échalote et l'ail. * Dans une poêle, faire revenir l'échalote avec 1 cuillère à soupe d'huile. Ajouter ensuite l'ail et le poivrons. Après 2 min, ajouter la courgette puis les tomates. * Assaisonner de sel, poivre, piment d'Espelette (facultatif) et herbes du soleil (herbes de Provence, basilic, romarin). Les légumes doivent garder un certain croquant, ne pas les cuire trop longtemps. Réserver. * Pendant que les légumes refroidissent, faire sauter rapidement les crevettes (soient petites soient coupées en petits morceaux) avec 1 cuillère à soupe d'huile d'olive. Déglacer avec le pastis et réserver. * Mélanger le yaourt avec le miel et le chèvre (suivant les goûts, on mettra plus ou moins de chèvre et de miel). Saler, poivrer. * Lorsque les préparations sont froides, dresser les verrines : 1 couche de légumes, 1 couche de crème et 1 couche de crevettes. Réserver au réfrigérateur. * Pour ajouter un peu de croustillant, on peut saupoudrer au moment de servir des croûtons grossièrement écrasés sur chaque verrine. * Cette entrée peut être préparée 24 h à l'avance."},{"@type":"HowToStep","text":"Commentaires: approuvée, on peut ajouter des tomates séchées"},{"@type":"HowToStep","text":"_**Version poivrons, chèvre**_"},{"@type":"HowToStep","text":"* 1 poivron rouge * 1 poivron jaune * 1 poivron vert * 100 g de chèvre frais * 6 càs d'huile d'olive * 2 càs de crème liquide allégée * 1 pc de piment d'Espelette * 2 càs de vinaigre balsamique * 1/4 de gousse d'ail * 2 brins de ciboulette * 2 gressins aux graines de sésame * sel et poivre * Faites griller les poivrons sous le gril du four en les retournant régulièrement. En fin de cuisson, déglacez le plat avec le vinaigre balsamique. * Une fois grillés et cuits, placez-les dans un saladier recouvert de film alimentaire pendant 10 minutes, vous les pèlerez plus facilement. Conservez le jus qu'ils vont lâcher en les pelant. * Dans un bol, écrasez puis fouettez le chèvre avec la crème, l'huile d'olive, l'ail haché, le piment et un peu de sel. * Mixez séparément les 3 poivrons, additionnés d'une cuillère à café du déglaçage au vinaigre et d'une cuillère à soupe de leur jus. Salez et poivrez. * Montez les verrines: une 1ère couleur de poivron, suivie de la crème au chèvre, puis une 2ème couleur de poivron, suivie de nouveau de crème au fromage, et pour finir la dernière couleur de poivron. * Laissez reposer au frais pendant 2 heures minimum recouvert de film alimentaire. Au moment de servir, ajoutez quelques brins de ciboulette ciselés et un gressin en décoration. * Pour finir. Dégustez bien frais à la cuillère, avec des tranches de pain de campagne grillées. Cette recette peut se préparer la veille et se conserver au frais sous film alimentaire."},{"@type":"HowToStep","text":"_**Version fraîcheur**_"},{"@type":"HowToStep","text":"* 400 g de brousse * 2 petites tomates * 1 càs de ciboulette ciselée * 1 càs de menthe ciselée * 1 petit concombre en dés * 80 g de tomates séchées à l'huile * 1 càc de basilic haché * 1 pointe de piment d'Espelette * 1 filet d'huile d'olive * sel, poivre et tranches de pain grillées pour la déco * Écrasez la brousse à la fourchette dans un saladier, ajoutez la ciboulette et la menthe, salez, poivrez, mélangez bien le tout. * Sortez les tomates séchées de l'huile, épongez-les un peu et coupez-les en petits morceaux. Après les avoir lavées, détaillez les tomates en petits dés. Ajoutez-les aux tomates séchées ainsi que le basilic, du sel, le piment d'Espelette et un filet d'huile d'olives. Mélangez bien. * Dans un verre, placez une couche de brousse, des concombres, une couche de tomates. Renouvelez une fois cette opération. Décorez avec une tranche de pain grillé et quelques herbes fraîches. * Servez bien frais. * Pour finir... Cette verrine est une entrée mais vous pouvez la servir dans des récipients plus petits pour l'apéritif. Si vous ne trouvez pas de brousse, vous pouvez utiliser de la ricotta ou du fromage de chèvre frais."},{"@type":"HowToStep","text":"Commentaires : Très bon avec ricotta à la place de la brousse"},{"@type":"HowToStep","text":"_**Version courgettes croquantes**_"},{"@type":"HowToStep","text":"* 2 courgettes * 30 g de noix de cajou * 2 càs d'huile de noix * 1 càs d'huile de noisette * 1 pc d'ail * 1 càs de vinaigre balsamique * 1 càs de jus de citron * Lavez les courgettes et râpez-les en assez grosses lanières. * Concassez les noix de cajou et incorporez-les aux courgettes. Ajoutez les huiles, le vinaigre, le citron et l’ail. * Mélangez bien le tout. * Disposez la préparation dans des verrines et placez au frais 1 heure. * Pour finir... Servez accompagné de pain frotté à l'ail."},{"@type":"HowToStep","text":"Commentaires : très bon, marche aussi avec courgettes cuites et huiles normales et mélange de noix"},{"@type":"HowToStep","text":"_**Version thon et mikado de pommes ***_"},{"@type":"HowToStep","text":"* 1 boite de 140 g de thon * 2 petits-suisses * 1 petite échalote * 1 càc de moutarde * jus de citron * du persil frais * des baies roses * 1 petite pomme verte * Commencez par préparer les rillettes de thon. Mélangez le thon avec les petits-suisses, l'échalote émincée, la moutarde et le persil (une bonne cuillère à café, ciselé). * Ajoutez du jus de citron selon vos goûts. Salez et poivrez. * Disposez les rillettes dans le fond des verrines. * Coupez la pomme verte en petits bâtonnets et disposez-les sur les rillettes. * Saupoudrez de persil ciselé et de baies roses."},{"@type":"HowToStep","text":"_**Version crabe et fromage frais**_"},{"@type":"HowToStep","text":"* 1 fromage frais St-Moret * 3 càs de lait * qq gouttes de citron ou Tabasco * 50 g de pousses de soja * 30 g de crabe * 60 g de noix de cajou concassées * persil, ciboulette, menthe * Assouplissez le fromage avec les pousses de soja, le lait, le Tabasco. Déposez 1 cuillère à café dans le fond de verrines * Mélangez le crabe, les herbes et les noix de cajou. Mettez une petite poignée par dessus, recouvrez à nouveau de fromage et de mélange au crabe. Un tour de moulin de poivre et ça y est, une petite verrine de faite !"},{"@type":"HowToStep","text":"Commentaires : c'est frais, partir sur du crabe de qualité – en fait ce type de verrine est originale mais pas très convaincante au niveau goût."},{"@type":"HowToStep","text":"_**Version pommes carottes**_"},{"@type":"HowToStep","text":"* 8 carottes en bâtonnets, 2 pommes Granny en dés * 2 càs de persil frais haché + 2 càs de ciboulette fraîche ciselé * Vinaigrette: 2 càs de vinaigre de vin blanc + 1 càs de poudre de curry + 2 càc de miel + 1 càc de sel + ¼ càc de poivre du moulin +¼ tasse d'huile d'argan (ou d'olive) * Combinez les carottes, les pommes, le persil et la ciboulette. * Préparez la vinaigrette en mélangeant le vin blanc, le curry, le miel, le sel et le poivre dans le bol d'un mixeur. Mixez. Pendant qu'il tourne, ajoutez l'huile en un fin filet et mixez jusqu'à ce qu'elle soit bien amalgamée et que la vinaigrette ait pris un peu de consistance. Versez sur les légumes et mélangez délicatement pour les en imprégner. Répartissez dans des verrines,"},{"@type":"HowToStep","text":"Commentaires : c'est frais et très bon"},{"@type":"HowToStep","text":"_**Version pâtes et noisettes ***_"},{"@type":"HowToStep","text":"* 250 g de pennes cuites, 2 tomates coupées en dès, 1 carotte pelée coupée en petits dès, 1 tasse de petits pois (surgelés), 1 grosse poignée de noisettes légèrement concassées puis torréfiées * vinaigrette : 1 càs de moutarde à l'ancienne, 1 càs d'huile de noix, 1 càs de vinaigre de noix, 1 à 2 càc de sauce soja, sel, poivre * Préparez les légumes : coupez les tomates et la carotte, versez de l'eau bouillante sur les petits pois, et laissez les décongeler 5 min, ils resteront ainsi un peu croquants. * Torréfiez les noisettes dans une poêle, à sec. Dans le saladier, mélangez les éléments de l'assaisonnement, puis ajoutez les pates, les légumes, et les noisettes. Mélangez, et servez !"},{"@type":"HowToStep","text":"_**Version gratin de crabes et courgettes**_"},{"@type":"HowToStep","text":"* 400 g de chair de crabe * 2 courgettes * 2 càs de crème fraîche épaisse * 1 càc de curcuma * 60 g de parmesan râpé * Sel et poivre du moulin * Préchauffer le four en mode grill. * Essuyer les courgettes avec du papier absorbant. Retirer les extrémités. Couper en petits dés. Les ébouillanter dans une casserole d’eau salée environ 5 mn puis les mettre immédiatement dans de l’eau glacée à l’aide d’une écumoire. Egoutter. * Dans un récipient : mélanger les courgettes avec le curcuma et une cuillère à soupe de crème fraîche. * Dans un autre récipient : mélanger le crabe, préalablement égoutté, avec une cuillère à soupe de crème fraîche, sel et poivre. * Verser la préparation au crabe dans les ramequins. Recouvrir de celle aux courgettes. Saupoudrer de parmesan. * Mettre à gratiner environ 10 mn. Servir à votre convenance."},{"@type":"HowToStep","text":"Pour finir... Je n'ai pas de courgettes : remplacez par des poireaux émincés fins et sautés 10 à 15 min à la poêle avec un peu de beurre et le curcuma puis ajoutez la crème fraîche à la fin. Le truc qui change tout : 1 càs de gingembre râpé dans les courgettes et le zeste râpé d’un demi-citron vert dans la chair de crabe. Astuce : surveillez la cuisson des courgettes qui doivent rester un peu croquantes."},{"@type":"HowToStep","text":"_**Version semoule à la marocaine ***_"},{"@type":"HowToStep","text":"* 125 g de semoule * 12 tranches de magret de canard séché * 1 oignon nouveau * 20 g de raisin secs * 25 g de pruneaux * 20 g de pignons * 1 càc de ras el hanout * du sel * Émincez l’oignon en petits dés. Faites le revenir dans un peu d’huile. * Coupez les fruits secs en petits morceaux. * Versez la semoule dans un saladier avec les épices, du sel et les fruits secs. Portez à ébullition une petite casserole d’eau et versez à hauteur sur la semoule. Laissez cuire 5 min puis égrainez la semoule. * Laissez refroidir. * Coupez le magret en petits morceaux et ajoutez-les à la semoule avec l’oignon. * Répartissez dans les verrines et gardez-les au frais jusqu’au moment de servir."},{"@type":"HowToStep","text":"_**Version saumon fumé et ricotta * pour 4 verrines**_"},{"@type":"HowToStep","text":"* 1 tranche de saumon fumé * 2 càs de crème fraîche * 3 càs de ricotta * Brins de ciboulette * Branches d’aneth * Jus de citron * Détaillez en lamelles puis en petits rectangles le saumon fumé. Ciselez la ciboulette ainsi que l'aneth. * Mélangez dans un bol le jus de citron, la ricotta, la crème fraîche, les herbes. Si vous le souhaitez, poivrez un peu. Ajoutez le saumon fumé en en gardant pour le décor. Mélangez bien. * A l'aide d'une poche à douille à embout large, remplissez les verres à cocktail de la préparation. C'est ce qui fait l'élégance de la verrine. Puis terminez par deux rectangles de saumon fumé et une pluche d'aneth. Servez ou réserver 1h au frais."},{"@type":"HowToStep","text":"_**Version crevettes et patate douce pour 4 personnes**_"},{"@type":"HowToStep","text":"* 2 patates douces * 4 càs de crème fraîche * 12 crevettes crues * Racine de gingembre frais * 2 citrons verts * Tandorii en poudre * Sel, poivre * Huile d’olive * Epluchez les patates douces, coupez en gros morceaux, recouvrez d’eau froide dans une casserole, salez * Portez à ébullition et cuire jusqu’à ce que les patates soient fondantes * Les mixer avec leur jus de cuisson (purée pas trop épaisse) * Râper le gingembre dans votre purée, mixer, salez et poivrez au goût. * Déposer les crevettes dans une jatte et saupoudrez de tandorii et citron et mettre au frais * Tranchez le citron vert pour la déco en rondelles * Au moment de servir, réchauffer la purée avec la crème * Chauffer dans une poêle l’huile d’olive et faire revenir les crevettes (5 min environ) * Remplissez les verrines avec un peu de purée, surmontez la avec les crevettes, décorez avec les zestes et les rondelles de citron verts. Servez chaud...."},{"@type":"HowToStep","text":"_**Version citron, artichaut et poissons pour 4 personnes**_"},{"@type":"HowToStep","text":"* 2 filets de poissons fins * 4 fonds d’artichauts * 1 ou 2 citrons verts * 30 g de biscottes * 20 g de beurre demi-sel * 8 càc d’huile d’olive * 1 càs de fleur de sel, poivre du moulin * graines de sésame dorées / coriandre et basilic * Zester et presser le citron*. Réserver 1cc de zestes. * Mélanger le reste à la chapelure, ajouter éventuellement quelques feuilles de basilic ciselées. * Cuire 12 mn à l’eau bouillante citronnée les fonds d’artichauts, les égoutter, les couper en dés. * Saisir les filets de poisson à feu vif dans une poêle vaporisée avec un peu d’huile d’olive pour qu’ils soient juste dorés de chaque côté. Les assaisonner et les émietter grossièrement. * Répartir poisson et dés d’artichauts dans des verres à tapas ou dans des assiettes creuses. * Parsemer de quelques grains de coriandre et de sésame doré. * Fouetter l’huile d’olive et le jus du citron, assaisonner à convenance et répartir sur les verres/ assiettes. * Fondre le beurre demi sel à la poêle y ajouter la chapelure aromatisée et en saupoudrer les verres/assiettes au dernier moment. * Décorer avec le zeste réservé, une 1/2 rondelle de citron vert pelé à vif et une feuille de basilic."},{"@type":"HowToStep","text":"_**Version crème de maïs à la mexicaine * pour 4 verrines**_"},{"@type":"HowToStep","text":"* 2 boîtes de maïs * 4 grosses tomates * 1 avocat * ½ citron vert * 2 branche de coriandre / persil plat * 10 brins de ciboulette * 2 càs d’huile d’olive * Sel / poivre * Option : tortillas, chips … * Egouttez une boite de maïs et mixez-la jusqu’à obtention d’une crème lisse, salez et poivrez. * Répartissez cette crème dans les verres et réservez au frais. * Mélangez le zeste et le jus de citron et réservez. * Coupez la chair des tomates évidées en petits dés, assaisonnez, ajoutez les herbes ciselées et réservez. * Coupez la chair de l’avocat en petits dés, arrosez du jus de citron vert, salez, poivrez, mélangez et réservez. * Egouttez et versez la seconde boite de maïs dans un récipient, assaisonnez avec un peu de poivre et d’huile d’olive. * Réservez au frais. * Versez délicatement les garnitures sur la crème de maïs en réalisant des couches de couleurs, commencez et terminez par les tomates. * Décorez les verres avec des branches de ciboulette."},{"@type":"HowToStep","text":"**Verrines à la Betterave Marinées à l'Huile de Noix Chèvre Pistaches**"},{"@type":"HowToStep","text":"![](../_resources/unknown_filename.406.jpeg)"},{"@type":"HowToStep","text":"Verrines à la Betterave Marinées à l'Huile de Noix Chèvre-Pistaches (pour 6 personnes)"},{"@type":"HowToStep","text":"Ingrédients: 1 betterave cuite 160 gr de fromage de chèvre (ici en bûche) ou ricotta 1 poignée de pistaches salées ou noix 3 càs d'huile de noix 1 càs de vinaigre de Xérès 2 gouttes de Tabasco 1 tour de moulin à poivre"},{"@type":"HowToStep","text":"![](../_resources/unknown_filename.408.jpeg)"},{"@type":"HowToStep","text":"![](../_resources/unknown_filename.407.jpeg)"},{"@type":"HowToStep","text":"Verrines artichauts, parmesan et jambon *** [![](http://3.bp.blogspot.com/-zjvmS6iV4kM/UMCY7NA5HVI/AAAAAAAACTc/SGDb4VQ-9vQ/s640/Artichauts+confits+,cre%CC%80me+de+parmesan,+copeaux+de+jambon+cru+Aoste.jpg =424x640)](http://3.bp.blogspot.com/-zjvmS6iV4kM/UMCY7NA5HVI/AAAAAAAACTc/SGDb4VQ-9vQ/s1600/Artichauts+confits+,cre%CC%80me+de+parmesan,+copeaux+de+jambon+cru+Aoste.jpg)"},{"@type":"HowToStep","text":"Ingrédients"},{"@type":"HowToStep","text":"Pour 6 personnes"},{"@type":"HowToStep","text":"12 fonds d’artichaut surgelés"},{"@type":"HowToStep","text":"2 échalotes"},{"@type":"HowToStep","text":"20 cl de crème liquide"},{"@type":"HowToStep","text":"1 morceau de parmesan (100 g)"},{"@type":"HowToStep","text":"1 cuillère à soupe d’huite d’olive"},{"@type":"HowToStep","text":"3 brins de persil plat"},{"@type":"HowToStep","text":"6 petites tranches de jambon cru Aoste"},{"@type":"HowToStep","text":"sel poivre"},{"@type":"HowToStep","text":"Préparation"},{"@type":"HowToStep","text":"6 copeaux de parmesan avec un économe. Réserver. Détailler le reste du parmesan en dés Mettre les dés de parmesan dans une casserole avec la crème. Faire fondre doucement en remuant Laisser tiédir Plonger les artichauts dans une casserole d’eau bouillante salée. Comptez 10 mn de cuisson dès la reprise de l’ébulition. Egoutter puis couper les fonds d’artichauts en dés Peler & émincer les échalotes,les faire revenir doucement avec l’huile dans une petite cocotte Au bout de 5 mn ajoutez les dés d’artichauts Saler poivrer, mélanger et laisser mijoter 15 mn pour que les artichauts soient confits."},{"@type":"HowToStep","text":"Ciseler le persil, et l’ajouter au confit d’artichauts."},{"@type":"HowToStep","text":"Préchauffer le four à 200 °C. Placer les tranches de jambon cru entre 2 plaques garnies de papier sulfurisé et les cuire pendant 8 min environ et en les retournant à mi cuisson(surveiller). A la sortie du four, ôter la plaque du dessus et laisser le jambon finir de sécher à température ambiante. Tailler ensuite des copeaux de jambon"},{"@type":"HowToStep","text":"Répartissez le confit dans des petits verres hauts, compléter avec de la crème au parmesan Décorer d’un copeau de parmesan, de chips de jambon cru et servir immédiatement"}]}</script>
+<div>
+    <nav class="mb-4 breadcrumb print:hidden">
+        <ol class="flex items-center space-x-2 text-sm text-muted">
+            <li><a href="/Food/index.html" class="hover:text-text">Recipes</a></li>
+            
+            <li class="flex items-center">
+                <span class="mx-2 text-faint">/</span>
+                
+                    <a href="/Food/directory/Recettes salées.html" class="hover:text-text">Recettes salées</a>
+                
+            </li>
+            
+            <li class="flex items-center">
+                <span class="mx-2 text-faint">/</span>
+                
+                    <span class="text-text">Index Idees verrines salées</span>
+                
+            </li>
+            
+        </ol>
+    </nav>
+
+    <div class="mb-8">
+        <!-- Recipe image if available -->
+        
+        <div class="mb-6 max-w-4xl mx-auto flex justify-center">
+            <img src="/Food/api/static/Recettes%20sal%C3%A9es/Index%20Idees%20verrines%20sal%C3%A9es.jpeg" alt="Index Idees verrines salées" class="rounded-xl shadow-[var(--shadow-card)] max-w-full h-auto max-h-[500px]">
+        </div>
+        
+
+        <!-- Title bar with scale and shopping list button -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 print:flex-row print:items-center">
+            <h1 class="text-display font-bold text-text print:text-2xl">
+                Index Idees verrines salées
+            </h1>
+            
+            <div class="flex flex-wrap items-center gap-2 lg:gap-3 print:hidden">
+                
+                <button id="start-cooking-btn" onclick="startCookingMode()" class="btn btn-primary" title="Start Cooking">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span class="hidden lg:inline">Cook</span>
+                </button>
+                
+                <a href="/Food/recipe/Recettes salées/Index Idees verrines salées.cook" download class="btn" title="Download .cook source">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"></path>
+                    </svg>
+                    <span class="hidden lg:inline">.cook</span>
+                </a>
+                
+            </div>
+        </div>
+
+        <!-- Recipe info section -->
+        <div class="space-y-4">
+            <!-- Tags row -->
+            
+            <div class="flex flex-wrap gap-2">
+                
+                <span class="tag">#Apero</span>
+                
+                <span class="tag">#Verrine</span>
+                
+                <span class="tag">#recette</span>
+                
+            </div>
+            
+
+            
+
+            <!-- Description if present -->
+            
+            
+
+            <!-- Metadata row -->
+            <div id="metadata-container" class="flex flex-wrap gap-3">
+                
+                
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                <!-- Custom metadata -->
+                
+                
+                <span class="metadata-pill metadata-custom">Created at: 2015-12-17</span>
+                
+                
+                
+                <span class="metadata-pill metadata-custom">Last updated at: 2019-05-08</span>
+                
+                
+            </div>
+
+            
+        </div>
+    </div>
+
+    <div id="recipe-body" class="grid md:grid-cols-3 gap-8 mb-8">
+        <div class="md:col-span-1">
+            <div class="card p-6">
+                <h2 class="text-title font-bold mb-4 text-accent-text">🥘 Ingredients</h2>
+                
+                <!-- Fallback to original flat list for recipes without sections -->
+                <ul class="ingredient-list space-y-3">
+                    
+                </ul>
+                
+
+                
+            </div>
+        </div>
+
+        <div class="md:col-span-2">
+            <div class="card p-6" data-recipe-path="Recettes salées/Index Idees verrines salées">
+                
+                
+                
+                <ol class="step-list space-y-4 ">
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">1</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        # Index Idees verrines salées
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">2</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Verrines** **salées**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">3</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        - soupes diverses - concombres, fromage blanc et menthe - houmous et tacos
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">4</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Verrines salées ****
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">5</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Ingrédients -** **Base**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">6</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 4 à 8 verrines
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">7</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _**Version betterave, chèvre et lardons ***_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">8</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 1/2 sachet de 500 g de betteraves cuites * 1/2 chèvre frais * 1/2 poivron rouge * 1/2 poivron jaune * 100 g de lardons * sel et poivre * option: ail, piment d&#x27;Espelette, vinaigre balsamique, ciboulette * Mixez finement les betteraves et le chèvre au blender, salez et poivrez. * Coupez les poivrons en lanières et les faire revenir dans de l’huile d’olive pendant 5 minutes. * Faites revenir les lardons jusqu’à ce qu’ils soient dorés. * Servez la crème dans un verre transparent pour profiter de la belle couleur de la crème ! * Puis ajoutez les lanières de poivron et les lardons bien chauds.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">9</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _**Version soleil**_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">10</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 1 échalote * 1 gousse d&#x27;ail * 1 courgette * 1/2 poivron rouge * 1/2 poivron jaune * 2 tomates * 300 g de crevettes décortiquées * 1 yaourt (ou équivalent en fromage blanc ou crème épaisse) * 150 g de fromage de chèvre frais type Chavroux * 2 càs de miel liquide * herbes (basilic, origan, romarin...) * 1 càs de Pastis ou Ricard * 2 càs d&#x27;huile d&#x27;olive * Mixez finement les betteraves et le chèvre au blender, salez et poivrez. * Détailler les légumes en brunoise (= petits cubes réguliers) en ôtant le centre (la pulpe et les pépins). * Emincer finement l&#x27;échalote et l&#x27;ail. * Dans une poêle, faire revenir l&#x27;échalote avec 1 cuillère à soupe d&#x27;huile. Ajouter ensuite l&#x27;ail et le poivrons. Après 2 min, ajouter la courgette puis les tomates. * Assaisonner de sel, poivre, piment d&#x27;Espelette (facultatif) et herbes du soleil (herbes de Provence, basilic, romarin). Les légumes doivent garder un certain croquant, ne pas les cuire trop longtemps. Réserver. * Pendant que les légumes refroidissent, faire sauter rapidement les crevettes (soient petites soient coupées en petits morceaux) avec 1 cuillère à soupe d&#x27;huile d&#x27;olive. Déglacer avec le pastis et réserver. * Mélanger le yaourt avec le miel et le chèvre (suivant les goûts, on mettra plus ou moins de chèvre et de miel). Saler, poivrer. * Lorsque les préparations sont froides, dresser les verrines : 1 couche de légumes, 1 couche de crème et 1 couche de crevettes. Réserver au réfrigérateur. * Pour ajouter un peu de croustillant, on peut saupoudrer au moment de servir des croûtons grossièrement écrasés sur chaque verrine. * Cette entrée peut être préparée 24 h à l&#x27;avance.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">11</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Commentaires: approuvée, on peut ajouter des tomates séchées
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">12</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _**Version poivrons, chèvre**_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">13</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 1 poivron rouge * 1 poivron jaune * 1 poivron vert * 100 g de chèvre frais * 6 càs d&#x27;huile d&#x27;olive * 2 càs de crème liquide allégée * 1 pc de piment d&#x27;Espelette * 2 càs de vinaigre balsamique * 1/4 de gousse d&#x27;ail * 2 brins de ciboulette * 2 gressins aux graines de sésame * sel et poivre * Faites griller les poivrons sous le gril du four en les retournant régulièrement. En fin de cuisson, déglacez le plat avec le vinaigre balsamique. * Une fois grillés et cuits, placez-les dans un saladier recouvert de film alimentaire pendant 10 minutes, vous les pèlerez plus facilement. Conservez le jus qu&#x27;ils vont lâcher en les pelant. * Dans un bol, écrasez puis fouettez le chèvre avec la crème, l&#x27;huile d&#x27;olive, l&#x27;ail haché, le piment et un peu de sel. * Mixez séparément les 3 poivrons, additionnés d&#x27;une cuillère à café du déglaçage au vinaigre et d&#x27;une cuillère à soupe de leur jus. Salez et poivrez. * Montez les verrines: une 1ère couleur de poivron, suivie de la crème au chèvre, puis une 2ème couleur de poivron, suivie de nouveau de crème au fromage, et pour finir la dernière couleur de poivron. * Laissez reposer au frais pendant 2 heures minimum recouvert de film alimentaire. Au moment de servir, ajoutez quelques brins de ciboulette ciselés et un gressin en décoration. * Pour finir. Dégustez bien frais à la cuillère, avec des tranches de pain de campagne grillées. Cette recette peut se préparer la veille et se conserver au frais sous film alimentaire.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">14</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _**Version fraîcheur**_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">15</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 400 g de brousse * 2 petites tomates * 1 càs de ciboulette ciselée * 1 càs de menthe ciselée * 1 petit concombre en dés * 80 g de tomates séchées à l&#x27;huile * 1 càc de basilic haché * 1 pointe de piment d&#x27;Espelette * 1 filet d&#x27;huile d&#x27;olive * sel, poivre et tranches de pain grillées pour la déco * Écrasez la brousse à la fourchette dans un saladier, ajoutez la ciboulette et la menthe, salez, poivrez, mélangez bien le tout. * Sortez les tomates séchées de l&#x27;huile, épongez-les un peu et coupez-les en petits morceaux. Après les avoir lavées, détaillez les tomates en petits dés. Ajoutez-les aux tomates séchées ainsi que le basilic, du sel, le piment d&#x27;Espelette et un filet d&#x27;huile d&#x27;olives. Mélangez bien. * Dans un verre, placez une couche de brousse, des concombres, une couche de tomates. Renouvelez une fois cette opération. Décorez avec une tranche de pain grillé et quelques herbes fraîches. * Servez bien frais. * Pour finir... Cette verrine est une entrée mais vous pouvez la servir dans des récipients plus petits pour l&#x27;apéritif. Si vous ne trouvez pas de brousse, vous pouvez utiliser de la ricotta ou du fromage de chèvre frais.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">16</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Commentaires : Très bon avec ricotta à la place de la brousse
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">17</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _**Version courgettes croquantes**_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">18</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 2 courgettes * 30 g de noix de cajou * 2 càs d&#x27;huile de noix * 1 càs d&#x27;huile de noisette * 1 pc d&#x27;ail * 1 càs de vinaigre balsamique * 1 càs de jus de citron * Lavez les courgettes et râpez-les en assez grosses lanières. * Concassez les noix de cajou et incorporez-les aux courgettes. Ajoutez les huiles, le vinaigre, le citron et l’ail. * Mélangez bien le tout. * Disposez la préparation dans des verrines et placez au frais 1 heure. * Pour finir... Servez accompagné de pain frotté à l&#x27;ail.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">19</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Commentaires : très bon, marche aussi avec courgettes cuites et huiles normales et mélange de noix
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">20</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _**Version thon et mikado de pommes ***_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">21</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 1 boite de 140 g de thon * 2 petits-suisses * 1 petite échalote * 1 càc de moutarde * jus de citron * du persil frais * des baies roses * 1 petite pomme verte * Commencez par préparer les rillettes de thon. Mélangez le thon avec les petits-suisses, l&#x27;échalote émincée, la moutarde et le persil (une bonne cuillère à café, ciselé). * Ajoutez du jus de citron selon vos goûts. Salez et poivrez. * Disposez les rillettes dans le fond des verrines. * Coupez la pomme verte en petits bâtonnets et disposez-les sur les rillettes. * Saupoudrez de persil ciselé et de baies roses.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">22</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _**Version crabe et fromage frais**_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">23</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 1 fromage frais St-Moret * 3 càs de lait * qq gouttes de citron ou Tabasco * 50 g de pousses de soja * 30 g de crabe * 60 g de noix de cajou concassées * persil, ciboulette, menthe * Assouplissez le fromage avec les pousses de soja, le lait, le Tabasco. Déposez 1 cuillère à café dans le fond de verrines * Mélangez le crabe, les herbes et les noix de cajou. Mettez une petite poignée par dessus, recouvrez à nouveau de fromage et de mélange au crabe. Un tour de moulin de poivre et ça y est, une petite verrine de faite !
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">24</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Commentaires : c&#x27;est frais, partir sur du crabe de qualité – en fait ce type de verrine est originale mais pas très convaincante au niveau goût.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">25</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _**Version pommes carottes**_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">26</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 8 carottes en bâtonnets, 2 pommes Granny en dés * 2 càs de persil frais haché + 2 càs de ciboulette fraîche ciselé * Vinaigrette: 2 càs de vinaigre de vin blanc + 1 càs de poudre de curry + 2 càc de miel + 1 càc de sel + ¼ càc de poivre du moulin +¼ tasse d&#x27;huile d&#x27;argan (ou d&#x27;olive) * Combinez les carottes, les pommes, le persil et la ciboulette. * Préparez la vinaigrette en mélangeant le vin blanc, le curry, le miel, le sel et le poivre dans le bol d&#x27;un mixeur. Mixez. Pendant qu&#x27;il tourne, ajoutez l&#x27;huile en un fin filet et mixez jusqu&#x27;à ce qu&#x27;elle soit bien amalgamée et que la vinaigrette ait pris un peu de consistance. Versez sur les légumes et mélangez délicatement pour les en imprégner. Répartissez dans des verrines,
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">27</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Commentaires : c&#x27;est frais et très bon
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">28</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _**Version pâtes et noisettes ***_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">29</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 250 g de pennes cuites, 2 tomates coupées en dès, 1 carotte pelée coupée en petits dès, 1 tasse de petits pois (surgelés), 1 grosse poignée de noisettes légèrement concassées puis torréfiées * vinaigrette : 1 càs de moutarde à l&#x27;ancienne, 1 càs d&#x27;huile de noix, 1 càs de vinaigre de noix, 1 à 2 càc de sauce soja, sel, poivre * Préparez les légumes : coupez les tomates et la carotte, versez de l&#x27;eau bouillante sur les petits pois, et laissez les décongeler 5 min, ils resteront ainsi un peu croquants. * Torréfiez les noisettes dans une poêle, à sec. Dans le saladier, mélangez les éléments de l&#x27;assaisonnement, puis ajoutez les pates, les légumes, et les noisettes. Mélangez, et servez !
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">30</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _**Version gratin de crabes et courgettes**_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">31</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 400 g de chair de crabe * 2 courgettes * 2 càs de crème fraîche épaisse * 1 càc de curcuma * 60 g de parmesan râpé * Sel et poivre du moulin * Préchauffer le four en mode grill. * Essuyer les courgettes avec du papier absorbant. Retirer les extrémités. Couper en petits dés. Les ébouillanter dans une casserole d’eau salée environ 5 mn puis les mettre immédiatement dans de l’eau glacée à l’aide d’une écumoire. Egoutter. * Dans un récipient : mélanger les courgettes avec le curcuma et une cuillère à soupe de crème fraîche. * Dans un autre récipient : mélanger le crabe, préalablement égoutté, avec une cuillère à soupe de crème fraîche, sel et poivre. * Verser la préparation au crabe dans les ramequins. Recouvrir de celle aux courgettes. Saupoudrer de parmesan. * Mettre à gratiner environ 10 mn. Servir à votre convenance.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">32</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Pour finir... Je n&#x27;ai pas de courgettes : remplacez par des poireaux émincés fins et sautés 10 à 15 min à la poêle avec un peu de beurre et le curcuma puis ajoutez la crème fraîche à la fin. Le truc qui change tout : 1 càs de gingembre râpé dans les courgettes et le zeste râpé d’un demi-citron vert dans la chair de crabe. Astuce : surveillez la cuisson des courgettes qui doivent rester un peu croquantes.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">33</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _**Version semoule à la marocaine ***_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">34</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 125 g de semoule * 12 tranches de magret de canard séché * 1 oignon nouveau * 20 g de raisin secs * 25 g de pruneaux * 20 g de pignons * 1 càc de ras el hanout * du sel * Émincez l’oignon en petits dés. Faites le revenir dans un peu d’huile. * Coupez les fruits secs en petits morceaux. * Versez la semoule dans un saladier avec les épices, du sel et les fruits secs. Portez à ébullition une petite casserole d’eau et versez à hauteur sur la semoule. Laissez cuire 5 min puis égrainez la semoule. * Laissez refroidir. * Coupez le magret en petits morceaux et ajoutez-les à la semoule avec l’oignon. * Répartissez dans les verrines et gardez-les au frais jusqu’au moment de servir.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">35</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _**Version saumon fumé et ricotta * pour 4 verrines**_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">36</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 1 tranche de saumon fumé * 2 càs de crème fraîche * 3 càs de ricotta * Brins de ciboulette * Branches d’aneth * Jus de citron * Détaillez en lamelles puis en petits rectangles le saumon fumé. Ciselez la ciboulette ainsi que l&#x27;aneth. * Mélangez dans un bol le jus de citron, la ricotta, la crème fraîche, les herbes. Si vous le souhaitez, poivrez un peu. Ajoutez le saumon fumé en en gardant pour le décor. Mélangez bien. * A l&#x27;aide d&#x27;une poche à douille à embout large, remplissez les verres à cocktail de la préparation. C&#x27;est ce qui fait l&#x27;élégance de la verrine. Puis terminez par deux rectangles de saumon fumé et une pluche d&#x27;aneth. Servez ou réserver 1h au frais.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">37</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _**Version crevettes et patate douce pour 4 personnes**_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">38</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 2 patates douces * 4 càs de crème fraîche * 12 crevettes crues * Racine de gingembre frais * 2 citrons verts * Tandorii en poudre * Sel, poivre * Huile d’olive * Epluchez les patates douces, coupez en gros morceaux, recouvrez d’eau froide dans une casserole, salez * Portez à ébullition et cuire jusqu’à ce que les patates soient fondantes * Les mixer avec leur jus de cuisson (purée pas trop épaisse) * Râper le gingembre dans votre purée, mixer, salez et poivrez au goût. * Déposer les crevettes dans une jatte et saupoudrez de tandorii et citron et mettre au frais * Tranchez le citron vert pour la déco en rondelles * Au moment de servir, réchauffer la purée avec la crème * Chauffer dans une poêle l’huile d’olive et faire revenir les crevettes (5 min environ) * Remplissez les verrines avec un peu de purée, surmontez la avec les crevettes, décorez avec les zestes et les rondelles de citron verts. Servez chaud....
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">39</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _**Version citron, artichaut et poissons pour 4 personnes**_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">40</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 2 filets de poissons fins * 4 fonds d’artichauts * 1 ou 2 citrons verts * 30 g de biscottes * 20 g de beurre demi-sel * 8 càc d’huile d’olive * 1 càs de fleur de sel, poivre du moulin * graines de sésame dorées / coriandre et basilic * Zester et presser le citron*. Réserver 1cc de zestes. * Mélanger le reste à la chapelure, ajouter éventuellement quelques feuilles de basilic ciselées. * Cuire 12 mn à l’eau bouillante citronnée les fonds d’artichauts, les égoutter, les couper en dés. * Saisir les filets de poisson à feu vif dans une poêle vaporisée avec un peu d’huile d’olive pour qu’ils soient juste dorés de chaque côté. Les assaisonner et les émietter grossièrement. * Répartir poisson et dés d’artichauts dans des verres à tapas ou dans des assiettes creuses. * Parsemer de quelques grains de coriandre et de sésame doré. * Fouetter l’huile d’olive et le jus du citron, assaisonner à convenance et répartir sur les verres/ assiettes. * Fondre le beurre demi sel à la poêle y ajouter la chapelure aromatisée et en saupoudrer les verres/assiettes au dernier moment. * Décorer avec le zeste réservé, une 1/2 rondelle de citron vert pelé à vif et une feuille de basilic.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">41</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _**Version crème de maïs à la mexicaine * pour 4 verrines**_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">42</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 2 boîtes de maïs * 4 grosses tomates * 1 avocat * ½ citron vert * 2 branche de coriandre / persil plat * 10 brins de ciboulette * 2 càs d’huile d’olive * Sel / poivre * Option : tortillas, chips … * Egouttez une boite de maïs et mixez-la jusqu’à obtention d’une crème lisse, salez et poivrez. * Répartissez cette crème dans les verres et réservez au frais. * Mélangez le zeste et le jus de citron et réservez. * Coupez la chair des tomates évidées en petits dés, assaisonnez, ajoutez les herbes ciselées et réservez. * Coupez la chair de l’avocat en petits dés, arrosez du jus de citron vert, salez, poivrez, mélangez et réservez. * Egouttez et versez la seconde boite de maïs dans un récipient, assaisonnez avec un peu de poivre et d’huile d’olive. * Réservez au frais. * Versez délicatement les garnitures sur la crème de maïs en réalisant des couches de couleurs, commencez et terminez par les tomates. * Décorez les verres avec des branches de ciboulette.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">43</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Verrines à la Betterave Marinées à l&#x27;Huile de Noix Chèvre Pistaches**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">44</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        ![](../_resources/unknown_filename.406.jpeg)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">45</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Verrines à la Betterave Marinées à l&#x27;Huile de Noix Chèvre-Pistaches (pour 6 personnes)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">46</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Ingrédients: 1 betterave cuite 160 gr de fromage de chèvre (ici en bûche) ou ricotta 1 poignée de pistaches salées ou noix 3 càs d&#x27;huile de noix 1 càs de vinaigre de Xérès 2 gouttes de Tabasco 1 tour de moulin à poivre
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">47</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        ![](../_resources/unknown_filename.408.jpeg)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">48</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        ![](../_resources/unknown_filename.407.jpeg)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">49</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Verrines artichauts, parmesan et jambon *** [![](http://3.bp.blogspot.com/-zjvmS6iV4kM/UMCY7NA5HVI/AAAAAAAACTc/SGDb4VQ-9vQ/s640/Artichauts+confits+,cre%CC%80me+de+parmesan,+copeaux+de+jambon+cru+Aoste.jpg =424x640)](http://3.bp.blogspot.com/-zjvmS6iV4kM/UMCY7NA5HVI/AAAAAAAACTc/SGDb4VQ-9vQ/s1600/Artichauts+confits+,cre%CC%80me+de+parmesan,+copeaux+de+jambon+cru+Aoste.jpg)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">50</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Ingrédients
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">51</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Pour 6 personnes
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">52</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        	12 fonds d’artichaut surgelés
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">53</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        	2  échalotes 
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">54</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        	20 cl de crème liquide
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">55</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        	1 morceau de parmesan (100 g)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">56</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        	1 cuillère à soupe d’huite d’olive
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">57</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        	3 brins de persil plat
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">58</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        	6 petites tranches de jambon cru Aoste
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">59</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        	sel poivre
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">60</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Préparation
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">61</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        6 copeaux de parmesan avec un économe. Réserver. Détailler le reste du parmesan en dés Mettre les dés de parmesan dans une casserole avec la crème. Faire fondre doucement en remuant Laisser tiédir Plonger les artichauts dans une casserole d’eau bouillante salée. Comptez 10 mn de cuisson dès la reprise de l’ébulition. Egoutter puis couper les fonds d’artichauts en dés Peler &amp; émincer les échalotes,les faire  revenir doucement avec l’huile  dans une petite cocotte Au  bout de 5 mn ajoutez les dés d’artichauts Saler poivrer, mélanger et laisser mijoter 15 mn pour que les artichauts soient confits.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">62</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Ciseler le persil, et l’ajouter au confit d’artichauts.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">63</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Préchauffer le four à 200 °C.  Placer les tranches de jambon cru entre 2 plaques garnies de papier sulfurisé et les cuire pendant 8 min environ et en les retournant à mi cuisson(surveiller). A la sortie du four, ôter la plaque du dessus et laisser le jambon finir de sécher à température ambiante. Tailler ensuite des copeaux de jambon 
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">64</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Répartissez le confit dans des petits verres hauts, compléter avec de la crème au parmesan  Décorer d’un copeau de parmesan, de chips de jambon cru et servir immédiatement
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                </ol>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<script id="cooking-mode-data" type="application/json">
+{"image":"/Food/api/static/Recettes%20sal%C3%A9es/Index%20Idees%20verrines%20sal%C3%A9es.jpeg","name":"Index Idees verrines salées","scale":1.0,"sections":[{"ingredients":[],"name":null,"stepOffset":0,"steps":[{"globalNumber":1,"image":null,"ingredients":[],"number":1,"type":"step"},{"globalNumber":2,"image":null,"ingredients":[],"number":2,"type":"step"},{"globalNumber":3,"image":null,"ingredients":[],"number":3,"type":"step"},{"globalNumber":4,"image":null,"ingredients":[],"number":4,"type":"step"},{"globalNumber":5,"image":null,"ingredients":[],"number":5,"type":"step"},{"globalNumber":6,"image":null,"ingredients":[],"number":6,"type":"step"},{"globalNumber":7,"image":null,"ingredients":[],"number":7,"type":"step"},{"globalNumber":8,"image":null,"ingredients":[],"number":8,"type":"step"},{"globalNumber":9,"image":null,"ingredients":[],"number":9,"type":"step"},{"globalNumber":10,"image":null,"ingredients":[],"number":10,"type":"step"},{"globalNumber":11,"image":null,"ingredients":[],"number":11,"type":"step"},{"globalNumber":12,"image":null,"ingredients":[],"number":12,"type":"step"},{"globalNumber":13,"image":null,"ingredients":[],"number":13,"type":"step"},{"globalNumber":14,"image":null,"ingredients":[],"number":14,"type":"step"},{"globalNumber":15,"image":null,"ingredients":[],"number":15,"type":"step"},{"globalNumber":16,"image":null,"ingredients":[],"number":16,"type":"step"},{"globalNumber":17,"image":null,"ingredients":[],"number":17,"type":"step"},{"globalNumber":18,"image":null,"ingredients":[],"number":18,"type":"step"},{"globalNumber":19,"image":null,"ingredients":[],"number":19,"type":"step"},{"globalNumber":20,"image":null,"ingredients":[],"number":20,"type":"step"},{"globalNumber":21,"image":null,"ingredients":[],"number":21,"type":"step"},{"globalNumber":22,"image":null,"ingredients":[],"number":22,"type":"step"},{"globalNumber":23,"image":null,"ingredients":[],"number":23,"type":"step"},{"globalNumber":24,"image":null,"ingredients":[],"number":24,"type":"step"},{"globalNumber":25,"image":null,"ingredients":[],"number":25,"type":"step"},{"globalNumber":26,"image":null,"ingredients":[],"number":26,"type":"step"},{"globalNumber":27,"image":null,"ingredients":[],"number":27,"type":"step"},{"globalNumber":28,"image":null,"ingredients":[],"number":28,"type":"step"},{"globalNumber":29,"image":null,"ingredients":[],"number":29,"type":"step"},{"globalNumber":30,"image":null,"ingredients":[],"number":30,"type":"step"},{"globalNumber":31,"image":null,"ingredients":[],"number":31,"type":"step"},{"globalNumber":32,"image":null,"ingredients":[],"number":32,"type":"step"},{"globalNumber":33,"image":null,"ingredients":[],"number":33,"type":"step"},{"globalNumber":34,"image":null,"ingredients":[],"number":34,"type":"step"},{"globalNumber":35,"image":null,"ingredients":[],"number":35,"type":"step"},{"globalNumber":36,"image":null,"ingredients":[],"number":36,"type":"step"},{"globalNumber":37,"image":null,"ingredients":[],"number":37,"type":"step"},{"globalNumber":38,"image":null,"ingredients":[],"number":38,"type":"step"},{"globalNumber":39,"image":null,"ingredients":[],"number":39,"type":"step"},{"globalNumber":40,"image":null,"ingredients":[],"number":40,"type":"step"},{"globalNumber":41,"image":null,"ingredients":[],"number":41,"type":"step"},{"globalNumber":42,"image":null,"ingredients":[],"number":42,"type":"step"},{"globalNumber":43,"image":null,"ingredients":[],"number":43,"type":"step"},{"globalNumber":44,"image":null,"ingredients":[],"number":44,"type":"step"},{"globalNumber":45,"image":null,"ingredients":[],"number":45,"type":"step"},{"globalNumber":46,"image":null,"ingredients":[],"number":46,"type":"step"},{"globalNumber":47,"image":null,"ingredients":[],"number":47,"type":"step"},{"globalNumber":48,"image":null,"ingredients":[],"number":48,"type":"step"},{"globalNumber":49,"image":null,"ingredients":[],"number":49,"type":"step"},{"globalNumber":50,"image":null,"ingredients":[],"number":50,"type":"step"},{"globalNumber":51,"image":null,"ingredients":[],"number":51,"type":"step"},{"globalNumber":52,"image":null,"ingredients":[],"number":52,"type":"step"},{"globalNumber":53,"image":null,"ingredients":[],"number":53,"type":"step"},{"globalNumber":54,"image":null,"ingredients":[],"number":54,"type":"step"},{"globalNumber":55,"image":null,"ingredients":[],"number":55,"type":"step"},{"globalNumber":56,"image":null,"ingredients":[],"number":56,"type":"step"},{"globalNumber":57,"image":null,"ingredients":[],"number":57,"type":"step"},{"globalNumber":58,"image":null,"ingredients":[],"number":58,"type":"step"},{"globalNumber":59,"image":null,"ingredients":[],"number":59,"type":"step"},{"globalNumber":60,"image":null,"ingredients":[],"number":60,"type":"step"},{"globalNumber":61,"image":null,"ingredients":[],"number":61,"type":"step"},{"globalNumber":62,"image":null,"ingredients":[],"number":62,"type":"step"},{"globalNumber":63,"image":null,"ingredients":[],"number":63,"type":"step"},{"globalNumber":64,"image":null,"ingredients":[],"number":64,"type":"step"}]}]}
+</script>
+
+
+
+        </main>
+
+        
+        <footer class="mt-12 mb-6 text-center text-sm text-faint print:hidden">
+            Built with
+            <a href="https://cooklang.org/cli/" class="text-accent-text hover:underline" target="_blank" rel="noopener">CookCLI</a>
+            
+            &middot;
+            <a href="https://github.com/S3v3r1n3/Food" class="text-accent-text hover:underline" target="_blank" rel="noopener">View source</a>
+            
+        </footer>
+        
+    </div>
+
+    <script>
+        // Theme toggle function
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.classList.contains('dark') ? 'dark' : 'light';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+            html.classList.toggle('dark');
+            localStorage.setItem('theme', newTheme);
+        }
+    </script>
+
+    
+    <script>window.__PREFIX__ = "/Food";</script>
+    <script src="/Food/static/js/search.js"></script>
+    
+
+    <!-- URL prefix for JavaScript -->
+    <script>
+        window.__PREFIX__ = "/Food";
+        window.__STATIC_MODE__ = true;
+        window.__STRINGS__ = { close: "Close" };
+        // Bring the visitor back to this page after signing in.
+        document.querySelectorAll('[data-login-link]').forEach((link) => {
+            const prefix = window.__PREFIX__;
+            const path = location.pathname.startsWith(prefix)
+                ? location.pathname.slice(prefix.length)
+                : location.pathname;
+            if (path === '/login') return;
+            link.href = `${prefix}/login?next=${encodeURIComponent((path || '/') + location.search)}`;
+        });
+    </script>
+
+    <!-- Keyboard shortcuts -->
+    <script src="/Food/static/js/keyboard-shortcuts.js"></script>
+    <!-- Expose showShortcutsHelp globally for the help button -->
+    <script>
+        // showShortcutsHelp is defined in keyboard-shortcuts.js
+        // This ensures it's available for the onclick handler
+        if (typeof showShortcutsHelp === 'undefined') {
+            window.showShortcutsHelp = function() {
+                console.warn('Keyboard shortcuts not loaded');
+            };
+        }
+    </script>
+
+    
+<link rel="stylesheet" href="/Food/static/css/cooking-mode.css">
+<script src="/Food/static/js/cooking-mode.js"></script>
+<script src="/Food/static/js/timers.js"></script>
+
+</body>
+</html>

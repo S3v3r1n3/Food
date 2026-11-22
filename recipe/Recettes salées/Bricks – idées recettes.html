@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="en-US" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bricks – idées recettes - Cook</title>
+    <link rel="icon" type="image/x-icon" href="/Food/static/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/Food/static/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/Food/static/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/Food/static/apple-touch-icon.png">
+    <link rel="manifest" href="/Food/static/site.webmanifest">
+    
+    <link href="/Food/static/css/output.css" rel="stylesheet">
+    <script>
+        // Check for saved theme preference, or check for prefers-color-scheme, or default to light
+        const theme = localStorage.getItem('theme')
+            || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.classList.toggle('dark', theme === 'dark');
+        // False for a guest, or a role below shopper, on a server that requires signing in.
+        window.__CAN_EDIT_LISTS__ = true;
+        // `--recipes-only` and nobody signed in: no shopping list or pantry.
+        window.__RECIPES_ONLY__ = false;
+    </script>
+    <style>
+        .viewport {
+            width: 100%;
+            max-width: 72rem;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        /* Search result keyboard selection. --surface-sunk alone is barely
+           visible against --surface in dark mode, so the accent bar carries
+           the signal. */
+        #search-results a.search-selected {
+            background: var(--accent-soft);
+            box-shadow: inset 3px 0 0 var(--accent);
+        }
+
+        @media print {
+            /* Token values are reset to light in input.css; this resets the
+               browser's own defaults so unstyled text is dark too. */
+            html.dark, html {
+                color-scheme: light !important;
+            }
+
+            * {
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+
+            body {
+                background: white !important;
+                margin: 0;
+                padding: 0;
+            }
+
+            .viewport {
+                max-width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            /* Hide navigation and non-essential elements */
+            nav, #search-container, #search-input, #search-results, .print\:hidden, .breadcrumb {
+                display: none !important;
+            }
+
+            /* Hide all navigation links */
+            a[href="/Food/"] {
+                display: none !important;
+            }
+
+            /* Recipe layout for print: one column */
+            .grid {
+                display: block !important;
+            }
+
+            .md\:col-span-1, .md\:col-span-2 {
+                page-break-inside: avoid;
+                width: 100% !important;
+            }
+
+            /* Square corners on paper */
+            .card, .step-box, .ingredient-row, .recipe-note, .rounded-xl {
+                border-radius: 0 !important;
+            }
+
+            /* Step numbers */
+            .step-number {
+                background: #000 !important;
+                color: #fff !important;
+            }
+
+            /* Images */
+            img {
+                max-height: 300px !important;
+                max-width: 100% !important;
+                height: auto !important;
+                object-fit: contain !important;
+                page-break-inside: avoid;
+                page-break-after: avoid;
+            }
+
+            /* Recipe sections on same page if possible */
+            h2, h3 {
+                page-break-after: avoid;
+            }
+
+            ol, ul {
+                page-break-inside: avoid;
+            }
+
+            /* Compact spacing */
+            .mb-8, .mb-6, .mb-4 {
+                margin-bottom: 0.5rem !important;
+            }
+
+            .p-6 {
+                padding: 0.5rem !important;
+            }
+
+            /* Recipe header */
+            h1 {
+                color: #000 !important;
+                font-size: 1.5rem !important;
+                margin-bottom: 0 !important;
+            }
+
+            /* Shopping list print styles */
+            .lg\:w-2\/5, .xl\:w-1\/3 {
+                display: none !important;
+            }
+
+            #shopping-list-results {
+                font-size: 11pt !important;
+                line-height: 1.2 !important;
+            }
+
+            #shopping-list-results input[type="checkbox"] {
+                display: none !important;
+            }
+
+            #shopping-list-results li .flex-1 {
+                width: auto !important;
+                flex: 1 1 0% !important;
+            }
+
+            #shopping-list-results label {
+                cursor: default !important;
+            }
+
+            #shopping-list-results h2 {
+                font-size: 11pt !important;
+                color: #000 !important;
+                margin-bottom: 0 !important;
+            }
+
+            #shopping-list-results .space-y-2 > * + *,
+            #shopping-list-results ul > * + * {
+                margin-top: 0 !important;
+            }
+
+            #shopping-list-results li {
+                padding: 0 !important;
+                line-height: 1.3 !important;
+                border-bottom: 1px dotted #ccc;
+            }
+
+            #shopping-list-results .card {
+                margin-bottom: 0.15rem !important;
+                padding: 0 !important;
+                border: none !important;
+            }
+
+            /* Menu print styles */
+            #menu-content {
+                font-size: 10pt !important;
+                line-height: 1.4 !important;
+            }
+
+            #menu-content h1 {
+                font-size: 14pt !important;
+                margin-bottom: 0.25rem !important;
+                color: #000 !important;
+            }
+
+            #menu-content .space-y-6 > * + * {
+                margin-top: 0.3rem !important;
+            }
+
+            #menu-content .menu-section {
+                border: 1px solid #ccc !important;
+                border-radius: 0 !important;
+                page-break-inside: avoid;
+            }
+
+            #menu-content .menu-section-header {
+                background: #eee !important;
+                color: #000 !important;
+                padding: 0.15rem 0.5rem !important;
+            }
+
+            #menu-content .menu-section-header h2 {
+                font-size: 11pt !important;
+                color: #000 !important;
+            }
+
+            #menu-content .menu-section-body {
+                padding: 0.25rem 0.5rem !important;
+            }
+
+            #menu-content .menu-section-body .space-y-2 > * + *,
+            #menu-content .menu-section-body > * + * {
+                margin-top: 0.05rem !important;
+            }
+
+            #menu-content .menu-section-body h3 {
+                font-size: 10pt !important;
+                margin-top: 0.2rem !important;
+                margin-bottom: 0 !important;
+            }
+
+            #menu-content .menu-section-body .pl-6 {
+                padding-left: 1rem !important;
+            }
+
+            /* Preserve word spacing in flex lines */
+            #menu-content .menu-section-body .flex {
+                gap: 0.25em !important;
+            }
+
+            #menu-content .ingredient-badge {
+                font-weight: bold !important;
+                color: #000 !important;
+            }
+
+            #menu-content a {
+                color: #000 !important;
+                text-decoration: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-bg text-text">
+    <div class="viewport">
+        <nav class="nav-card relative">
+            <div class="px-3 lg:px-6 py-4 relative">
+                <div class="flex items-center justify-between flex-wrap gap-y-3">
+                    <a href="/Food/index.html" class="order-1 hidden md:flex items-center space-x-2">
+                        <img src="/Food/static/android-chrome-192x192.png" alt="Cook" class="brand-mark h-8 w-8 rounded-md" width="32" height="32">
+                    </a>
+
+                    <div class="relative z-50 order-2 flex-1 min-w-0 mr-2 md:ml-2 md:mr-4" id="search-container">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-faint" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        <input type="text"
+                               id="search-input"
+                               placeholder="Search recipes..."
+                               class="search-input">
+                        <div id="search-results"
+                             class="absolute top-full mt-2 w-full card shadow-[var(--shadow-overlay)] hidden max-h-96 overflow-y-auto"
+                             style="z-index: 9999;">
+                        </div>
+                    </div>
+
+                    <div class="order-3 flex items-center gap-1 lg:gap-2">
+                        
+                        <div class="hidden md:flex items-center gap-1 mr-2 lg:mr-4">
+                            <a href="/Food/index.html"
+                               class="nav-pill active">
+                                Recipes
+                            </a>
+                            
+                            
+                        </div>
+                        
+                        <!-- Inline buttons on md+ screens -->
+                        
+                        <button onclick="showShortcutsHelp()" class="icon-btn hidden md:inline-flex ml-2 print:hidden" aria-label="Keyboard shortcuts" title="Keyboard shortcuts (?)">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </button>
+                        <button onclick="toggleTheme()" class="icon-btn hidden md:inline-flex ml-2 print:hidden" aria-label="Toggle theme">
+                            <svg class="hidden dark:block" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
+                            </svg>
+                            <svg class="block dark:hidden" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                            </svg>
+                        </button>
+                        
+                        <!-- Overflow menu for small screens -->
+                        <div class="relative md:hidden ml-auto" id="more-menu-container">
+                            <button onclick="document.getElementById('more-dropdown').classList.toggle('hidden')" class="icon-btn" aria-label="More options">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+                                </svg>
+                            </button>
+                            <div id="more-dropdown" class="hidden absolute right-0 mt-2 w-56 card shadow-[var(--shadow-overlay)] z-50 py-1">
+                                
+                                <a href="/Food/index.html" class="menu-item active">
+                                    <span>🍳</span> <span>Recipes</span>
+                                </a>
+                                
+                                
+                                <div class="border-t border-line my-1"></div>
+                                
+                                
+                                
+                                <button onclick="showShortcutsHelp(); document.getElementById('more-dropdown').classList.add('hidden');" class="menu-item">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    <span>Keyboard Shortcuts</span>
+                                </button>
+                                <button onclick="toggleTheme(); document.getElementById('more-dropdown').classList.add('hidden');" class="menu-item">
+                                    <svg class="w-4 h-4 hidden dark:block" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path></svg>
+                                    <svg class="w-4 h-4 block dark:hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                                    <span>Toggle Theme</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main>
+            
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Recipe","image":"/Food/api/static/Recettes%20sal%C3%A9es/Bricks%20%E2%80%93%20id%C3%A9es%20recettes.jpeg","keywords":"Apero, recette, tapas","name":"Bricks – idées recettes","recipeIngredient":[],"recipeInstructions":[{"@type":"HowToStep","text":"# Bricks – idées recettes"},{"@type":"HowToStep","text":"**Bricks – idées recettes** ![](../_resources/unknown_filename.58.jpeg)"},{"@type":"HowToStep","text":"**Ingrédients –** **Base**"},{"@type":"HowToStep","text":"* 4 feuilles de bricks à badigeonner de beurre ou d’huile * accompagnement: mâche, salade, pignons de pin, tomates cerise..."},{"@type":"HowToStep","text":"> Si pas de brick faire bourses de galettes par exemple – on peut mélanger : 100 g de farine, 1 pc de sel, 1 œuf battu, 300 ml de lait, 2 càs d’huile d’olive, 1 càs de vinaigre balsamique. > Les bricks ne peuvent être préparées à l’avance, on peut préparer toutes les garnitures, cependant le montage et la cuisson ne peut se faire qu’une heure avant service"},{"@type":"HowToStep","text":"> Attention à la cuisson des bricks celles-ci cuisent très vite."},{"@type":"HowToStep","text":"Allez voir aussi à <u>bourek<\/u>"},{"@type":"HowToStep","text":"_**Version agneau et gingembre * - cuisson à la poêle, environ 10 minutes à retourner**_"},{"@type":"HowToStep","text":"* 1 oignon * 400 g d'agneau hache, 2 oeufs * 1 càs de persil, 12 feuilles de menthe, 1 càs de cumin, 1 càc de gingembre * Dans une sauteuse, cuire 3' l'oignon finement haché dans un peu d'huile d'olive. Ajouter ensuite l'agneau haché, le persil, la menthe ciselée, le cumin, le gingembre en poudre, sel et poivre. Cuire 10' puis laisser refroidir avant d'y ajouter les œufs. * Garnir les feuilles de brick avec cette farce en formant des nems. Coller les feuilles en les badigeonnant de blanc d'œuf. Traverser chaque nem d'une pique en bois. * Dans une poêle, faire frire les brochettes. Les égoutter et les servir avec une sauce blanche: fromage frais, feuilles de menthe, ciboulette, huile d'olive, sel et poivre."},{"@type":"HowToStep","text":"_**Version Maroilles et poireaux – cuisson au four environ 12min. à 180°C**_"},{"@type":"HowToStep","text":"* 120 g de Maroilles * 5 poireaux à faire revenir avec un peu de beurre * 1 càc de 4 épices, 4càc de cumin * Coupez les poireaux en fins tronçons biseautés, lavez-les à l’eau claire, égouttez-les et mettez-les dans une sauteuse avec du beurre. Salez, poivrez et ajoutez les 4 épices. Mélangez bien puis couvrez et laissez cuire à feu doux 20 min. * Retirez la croûte du fromage et coupez-le en petits morceaux. * Faire les bricks avec environ 1 càc de poireau, 2 petits morceaux de fromage ajoutez du cumin * Commentaires: très bon"},{"@type":"HowToStep","text":"_**Version Chèvre et pommes/poires caramélisées * cuisson à la poêle, durée ???**_"},{"@type":"HowToStep","text":"* 2 pommes / 2 poires (ne pas caraméliser) * 4 tranches de jambon fumé * 1 bûche de chèvre * 2 càs de sucre * Epluchez et coupez la pomme en petits morceaux que vous mettrez à cuire dans une poêle avec une noix de beurre et le sucre pour qu'elles caramélisent. * Faire les bricks avec environ 1/2 tranche de jambon fumé coupée en deux dans le sens de la longueur, déposez dessus quelques pommes et des morceaux de chèvre."},{"@type":"HowToStep","text":"_**Version Provençale – cuisson au four environ 15-20 min. à 220°C**_"},{"@type":"HowToStep","text":"* 4 aubergines, 4 tomates, 2 courgettes, 1 échalote, 1 oignon (= reste de ratatouille sinon) * thym, romarin, origan * options: cumin, piment d’Espelette, vin blanc (cuisson des légumes) * options fromage: gruyère / parmesan / chèvre * Couper les aubergines en petits dés et les cuire à la vapeur 20 min avec du sel. * Couper les tomates en petits dés, puis les mettre dans un saladier avec une cuillère d'huile d'olive, une échalote coupée finement, le basilic, sel et poivre. Une fois les aubergines cuites, les mettre dans un saladier avec l'huile d'olive, une peu d'herbes de Provence, sel et poivre. * Mélanger, couvrir d'un film plastique et laisser reposer quelques heures. * Préparer les bricks avec 1 càs de légumes et mettre des lamelles de parmesan. Faire plusieurs couches. * Former une bourse avec la feuille et la maintenir avec un pique en bois et déposer l'aumônière ainsi obtenue dans un ramequin. Mettre au four 15 à 20 min, jusqu'à ce que les feuilles de brick soit légèrement dorées. * Déposer chaque ramequin au centre d'une assiette, sur un lit de salade assaisonnée d'huile d'olive et de vinaigre balsamique. Décorer avec des quartiers de tomates, servir et déguster... * Commentaires: excellent"},{"@type":"HowToStep","text":"_**Version Tomates et Mozzarella * – cuisson au four environ 10 à 15 min à 180°C**_"},{"@type":"HowToStep","text":"* 4 tomates * 200 g de mozzarella * herbes de Provence et sel/poivre * Couper les tomates et la mozzarella en tranches. Beurrer les feuilles de brick au pinceau avec le beurre fondu. * Déposer sur chaque feuille de brick, des tomates et de la mozzarella, saler et poivrer, + 'herbes de Provence. * Enfourner de 10 à 15 minutes environ à four chaud. Servir dès la sortie du four."},{"@type":"HowToStep","text":"_**Version cantal et lard – cuisson au four environ 5 min à 200°C**_"},{"@type":"HowToStep","text":"* 4 tranches de lard * 60 g de Cantal * 1 càs de raisins sec * curry et sel/poivre * Couper les tomates et la mozzarella en tranches. * Faire revenir à la poêle le lard 1 à 2 minutes. * Déposer au milieu d’une feuille de brick : 15 g de cantal, 1 tranche de lard, 6 raisins secs et 1 pc de curry. * Saler et poivre * Fermer la feuille de brick en petit paquet. Faire cuire au four à 200°C (thermostat 6-7) pendant 5 minutes. Commentaires: excellent"},{"@type":"HowToStep","text":"_**Version reblochon et pommes– cuisson au four environ 5 min à 200°C**_"},{"@type":"HowToStep","text":"* 2 pommes avec un peu de beurre * 1/2 reblochon * 8 cerneaux de noix * sel/poivre * Dans une poêle, faire revenir dans du beurre les pommes coupées en morceaux. * Déposer au centre d’une feuille de brick 1/8 de reblochon, des morceaux de pommes, 2 cerneaux de noix en morceaux. Saler et poivrer. * Fermer la feuille de brick et la badigeonner de beurre fondu. Faire cuire au four à 200°C pendant 5 min. * Commentaires: excellent * Variante (non testée) sans pomme et sauce: 1 càs miel + 1 càs de vinaigre blanc + 1 càs de sauce soja + 2 gouttes de Tabasco + 1 càs de Worcestershire => tremper les bricks / nems dedans"},{"@type":"HowToStep","text":"_**Version poulet et curry**_"},{"@type":"HowToStep","text":"* 400 g de poulet * 2 échalotes hachées * 1 càs de curry et beurre * 2 càs de crème épaisse * sel/poivre * Dans un saladier, mettez les filets de poulet coupés en dés, les échalotes hachées, le sel et toutes les épices. Malaxez bien le tout. * Faites fondre le beurre dans une poêle et faites cuire la viande 10 à 15 minutes. Ajoutez la crème fraîche épaisse puis laissez mijoter 3 minutes. Laisser complètement refroidir. * Préchauffez le four à 180°C (thermostat 6). * Prenez une feuille de brick, badigeonnez-la de beurre fondu à l'aide d'un pinceau. Disposez la farce au centre d'une feuille et rabattre les deux côtés de façon à former une sorte d'enveloppe. Retournez le pliage et faites une entaille en forme de croix à l'aide de ciseaux. * Disposez les bricks farcis sur une plaque tapissée de papier sulfurisé. Faites cuire pendant 15 minutes jusqu'à l'obtention d'une couleur dorée. * Commentaires: excellent ne pas faire à l'avance"},{"@type":"HowToStep","text":"_**Version samossa**_"},{"@type":"HowToStep","text":"* 300 g de bœuf * 2 carottes * 2 poireaux * Option : 1 œuf * option: 1 oignon * 2 échalotes (moyennes) ou ail * sel, piment doux * 1 càc de 4 épices (voire plus) * 1 pc de curry, coriandre * Couper finement le poireau et la carotte (râpée si besoin), émincer les échalotes. * Mettre le tout dans une poêle avec un peu d'huile d'olive, faire revenir le tout quelques minutes jusqu'à ce que les poireaux soient cuits. * Mettre la viande hachée, la faire revenir quelques minutes. * Mixer le tout. * Ajouter l'œuf et bien mélanger. * Ajouter le sel, le piment doux et les épices. * J'ai mis beaucoup de mélange 4 épices que j'aime beaucoup et qui parfume à merveille cette recette. Je ne sais pas si la coriandre est vraiment nécessaire (j'ai mis 1 càs de coriandre surgelée). Laisser refroidir le mélange. * Préparer les feuilles de brick * Quand tous les samossas sont prêts, les cuire à la poêle ou à la friteuse quelques minutes (jusqu'à ce qu'ils soient dorés) où les passer au four après les avoir doré au jaune d'œuf (200°C pendant 15 min environ) * Commentaires: excellent ne pas faire le montage à l’avance"},{"@type":"HowToStep","text":"_**Version nem / porc ***_"},{"@type":"HowToStep","text":"* 8 feuilles de riz * 1 petit sachet de nouilles de riz ou de soja * 3 champignons de Paris * 2 saucisses de porc * 1 poignée de crevettes * Sel & poivre * 1/4 de courgette en julienne * 1 carotte en julienne * 1 poignée de soja frais * 1 œuf * 1 càs de sauce soja"},{"@type":"HowToStep","text":"_**Version nem / poulet ***_"},{"@type":"HowToStep","text":"* 1 paquet de feuilles de riz * restes de poulet rôti (un peu moins d'1/2 poulet ici) * 300 g de julienne de légumes surgelée ou non (carottes, céleri rave, courgettes... selon vos envies) * gingembre frais ou en poudre * 1 càs de sauce soja * miel * 1/2 nid de nouilles de riz * 1/4 de poivron rouge * 1/2 oignon * 1 gousse d'ail * piment en poudre (ici d’Espelette) * sel et poivre * Commencez par faire revenir la viande et les légumes. * Faites ramollir les nouilles de riz dans de l'eau. Une fois qu'elles sont molles, mettez-les dans un saladier avec la préparation que vous aurez poêlé. Ajoutez l'œuf battu salez et poivrez. * Dans une assiette remplie d'eau, faites ramollir les feuilles de riz avec 1 càs de sauce soja. Quand elles sont bien molles, préparez une cuillère de farce et roulez le nem. * Ensuite, il suffit de les faire cuire dans un four à 200°C en les retournant une fois ou au wok avec de l'huile."},{"@type":"HowToStep","text":"_**Version Aubergines caramélisées ***_"},{"@type":"HowToStep","text":"* 12 feuilles de brick * 4 aubergines * 25 à 30 g de pignons * 200 g de fêta * Sel et poivre * 20 à 40 feuilles de basilic frais * 1 à 2 branche(s) de romarin * 2 à 4 càs d’huile d’olive * 2 à 4 càs de sucre * Vinaigre balsamique * Préchauffer le four à 220°C. * Faites griller les pignons, à sec sur feu doux, dans une poêle antiadhésive. Réservez. * Rincez les aubergines et coupez-les en cubes de petite taille et conservez la peau si elles sont bio. Utilisez une bonne poêle antiadhésive pour saisir, à feu vif, les cubes d'aubergine pendant une quinzaine de minutes en mélangeant sans arrêt... et ce sans ajout de matières grasses. Ajoutez l'huile d'olive et mélangez régulièrement pendant encore 20 minutes. Ajoutez les feuilles de romarin. Salez et poivrez. * Cuire encore à feu vif jusqu’à ce que les aubergines soient fondantes et tendent à s'accrocher (à brunir) au fond de la poêle. Ajoutez et bien incorporez la fêta émiettée et le basilic et les pignons. Rectifiez l'assaisonnement. Laissez tiédir cette préparation d'aubergines. * Roulez les feuilles de bricks en cigares. Badigeonnez-les d'huile d'olive. Trempez les extrémités des bricks dans le vinaigre balsamique puis dans le sucre. Déposez les cigares sur une plaque de cuisson puis saupoudrez de sucre. * Cuire, dans le milieu du four, pendant 20 minutes à 220°C le temps que les extrémités se caramélisent et que la pâte de brick soient soit bien croquante. Si la pâte brunie trop rapidement… réduire légèrement, la température du four. * Servez tièdes!"},{"@type":"HowToStep","text":"_**Version aux légumes**_"},{"@type":"HowToStep","text":"* 1 courgette voire 2 poireaux * 1 carotte * 8 petits champignons de Paris * 100 g de pousses de soja * 4 feuilles de brick * de l'huile d'olive * 20 g de beurre * Sel et poivre * Gingembre frais (facultatif) * Découpez les carottes et les courgettes en 2 ou 3 tronçons selon leurs tailles. Coupez chaque tronçon en plusieurs lamelles, puis détaillez ces lamelles en bâtonnets. * Dans une poêle, faites chauffer 2 cuillères à soupe d'huile d'olive. Une fois qu'elle fume légèrement, ajoutez la julienne de carottes et courgettes, ainsi que le soja et les champignons. * Faites revenir le tout pendant 5 minutes jusqu'à coloration, sans trop cuire les légumes toutefois. Assaisonnez en sel et en poivre. * Sortez les feuilles de brick de leur emballage. A l'aide d'un pinceau, badigeonnez l'une d'entre elles sur une seule face avec du beurre fondu. Posez une deuxième feuille par dessus la première et badigeonnez-la. * Répétez l'opération avec toutes les feuilles. * Déposez environ 2 cuillères de légumes sautés dans chaque brick et roulez ensuite la feuille sur elle-même en serrant légèrement autour des légumes pour former un rouleau compact. * Déposez les rouleaux (face pliée vers le bas évidemment) sur une plaque recouverte de papier sulfurisé, puis faites cuire à 180°C jusqu’à coloration souhaitée (environ 10 minutes suffisent). * Une fois que les rouleaux sont bien dorés, sortez-les du four et coupez-les en biais à partir du milieu. * Présentez-les en les chevauchant de façon à mettre en avant les couleurs de leur farce. * Pour finir... N'hésitez pas à varier et à choisir les légumes que vous préférez (pois gourmands, poireau, céleri...) * Commentaires : très bon avec haricots verts, carottes et légumes ratatouilles + herbes de Provences + fromage genre Petit Billy"},{"@type":"HowToStep","text":"_**Version aubergines, fêta et tomates confites * - cuisson au four à 180°C environ 10 minutes**_"},{"@type":"HowToStep","text":"* 1 aubergine, des tomates confites ou séchées, de la fêta * Ail, huile d’olive, sel/poivre * Faire revenir à la poele l’aubergine en petis dés avec un peu d’huile d’olive, sel/ poivre et d’ail. * Mélanger la feta avec les tomates coupées en petits morceaux, ajouter les dés d’aubergine refroidis"},{"@type":"HowToStep","text":"_**Version rkakat jebneh * - - cuisson au four à 200°C environ 15 minutes**_"},{"@type":"HowToStep","text":"* 200 g de fêta * 1 oignon * Persil plat et menthe * poivre * Emietter le fromage et mélanger avec l’oignon revenu à la poele au préalable * Ajouter menthe, persil et poivre * Farcir des cigares"},{"@type":"HowToStep","text":"_**Version saumon fumé et crème ail ciboulette – cuisson 15 min**_"},{"@type":"HowToStep","text":"* Saumon fumé * Crème à base d’ail et ciboulette, pas trop liquide * Commentaires : servir tiède, simple & efficace"},{"@type":"HowToStep","text":"**Version maquereau et moutarde * -** _**cuisson au four à 180°C environ 15 minutes**_"},{"@type":"HowToStep","text":"* Mélanger moutarde, crème fraîche et thym * Napper 2 filets de maquereaux avec le mélanger * Faire des cigares"}]}</script>
+<div>
+    <nav class="mb-4 breadcrumb print:hidden">
+        <ol class="flex items-center space-x-2 text-sm text-muted">
+            <li><a href="/Food/index.html" class="hover:text-text">Recipes</a></li>
+            
+            <li class="flex items-center">
+                <span class="mx-2 text-faint">/</span>
+                
+                    <a href="/Food/directory/Recettes salées.html" class="hover:text-text">Recettes salées</a>
+                
+            </li>
+            
+            <li class="flex items-center">
+                <span class="mx-2 text-faint">/</span>
+                
+                    <span class="text-text">Bricks – idées recettes</span>
+                
+            </li>
+            
+        </ol>
+    </nav>
+
+    <div class="mb-8">
+        <!-- Recipe image if available -->
+        
+        <div class="mb-6 max-w-4xl mx-auto flex justify-center">
+            <img src="/Food/api/static/Recettes%20sal%C3%A9es/Bricks%20%E2%80%93%20id%C3%A9es%20recettes.jpeg" alt="Bricks – idées recettes" class="rounded-xl shadow-[var(--shadow-card)] max-w-full h-auto max-h-[500px]">
+        </div>
+        
+
+        <!-- Title bar with scale and shopping list button -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 print:flex-row print:items-center">
+            <h1 class="text-display font-bold text-text print:text-2xl">
+                Bricks – idées recettes
+            </h1>
+            
+            <div class="flex flex-wrap items-center gap-2 lg:gap-3 print:hidden">
+                
+                <button id="start-cooking-btn" onclick="startCookingMode()" class="btn btn-primary" title="Start Cooking">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span class="hidden lg:inline">Cook</span>
+                </button>
+                
+                <a href="/Food/recipe/Recettes salées/Bricks – idées recettes.cook" download class="btn" title="Download .cook source">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"></path>
+                    </svg>
+                    <span class="hidden lg:inline">.cook</span>
+                </a>
+                
+            </div>
+        </div>
+
+        <!-- Recipe info section -->
+        <div class="space-y-4">
+            <!-- Tags row -->
+            
+            <div class="flex flex-wrap gap-2">
+                
+                <span class="tag">#Apero</span>
+                
+                <span class="tag">#recette</span>
+                
+                <span class="tag">#tapas</span>
+                
+            </div>
+            
+
+            
+
+            <!-- Description if present -->
+            
+            
+
+            <!-- Metadata row -->
+            <div id="metadata-container" class="flex flex-wrap gap-3">
+                
+                
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                <!-- Custom metadata -->
+                
+                
+                <span class="metadata-pill metadata-custom">Created at: 2015-12-18</span>
+                
+                
+                
+                <span class="metadata-pill metadata-custom">Last updated at: 2024-03-08</span>
+                
+                
+            </div>
+
+            
+        </div>
+    </div>
+
+    <div id="recipe-body" class="grid md:grid-cols-3 gap-8 mb-8">
+        <div class="md:col-span-1">
+            <div class="card p-6">
+                <h2 class="text-title font-bold mb-4 text-accent-text">🥘 Ingredients</h2>
+                
+                <!-- Fallback to original flat list for recipes without sections -->
+                <ul class="ingredient-list space-y-3">
+                    
+                </ul>
+                
+
+                
+            </div>
+        </div>
+
+        <div class="md:col-span-2">
+            <div class="card p-6" data-recipe-path="Recettes salées/Bricks – idées recettes">
+                
+                
+                
+                <ol class="step-list space-y-4 ">
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">1</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        # Bricks – idées recettes
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">2</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Bricks – idées recettes** ![](../_resources/unknown_filename.58.jpeg)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">3</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Ingrédients –** **Base**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">4</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 4 feuilles de bricks à badigeonner de beurre ou d’huile * accompagnement: mâche, salade, pignons de pin, tomates cerise...
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">5</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        &gt; Si pas de brick faire bourses de galettes par exemple – on peut mélanger : 100 g de farine, 1 pc de sel, 1 œuf battu, 300 ml de lait, 2 càs d’huile d’olive, 1 càs de vinaigre balsamique. &gt; Les bricks ne peuvent être préparées à l’avance, on peut préparer toutes les garnitures, cependant le montage et la cuisson ne peut se faire qu’une heure avant service
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">6</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        &gt; Attention à la cuisson des bricks celles-ci cuisent très vite.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">7</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Allez voir aussi à &lt;u&gt;bourek&lt;/u&gt; 
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">8</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _**Version agneau et gingembre * - cuisson à la poêle, environ 10 minutes à retourner**_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">9</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 1 oignon * 400 g d&#x27;agneau hache, 2 oeufs * 1 càs de persil, 12 feuilles de menthe, 1 càs de cumin, 1 càc de gingembre * Dans une sauteuse, cuire 3&#x27; l&#x27;oignon finement haché dans un peu d&#x27;huile d&#x27;olive. Ajouter ensuite l&#x27;agneau haché, le persil, la menthe ciselée, le cumin, le gingembre en poudre, sel et poivre. Cuire 10&#x27; puis laisser refroidir avant d&#x27;y ajouter les œufs. * Garnir les feuilles de brick avec cette farce en formant des nems. Coller les feuilles en les badigeonnant de blanc d&#x27;œuf. Traverser chaque nem d&#x27;une pique en bois. * Dans une poêle, faire frire les brochettes. Les égoutter et les servir avec une sauce blanche: fromage frais, feuilles de menthe, ciboulette, huile d&#x27;olive, sel et poivre.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">10</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _**Version Maroilles et poireaux – cuisson au four environ 12min.  à 180°C**_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">11</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 120 g de Maroilles * 5 poireaux à faire revenir avec un peu de beurre * 1 càc de 4 épices, 4càc de cumin * Coupez les poireaux en fins tronçons biseautés, lavez-les à l’eau claire, égouttez-les et mettez-les dans une sauteuse avec du beurre. Salez, poivrez et ajoutez les 4 épices. Mélangez bien puis couvrez et laissez cuire à feu doux 20 min. * Retirez la croûte du fromage et coupez-le en petits morceaux. * Faire les bricks avec environ 1 càc de poireau, 2 petits morceaux de fromage ajoutez du cumin * Commentaires: très bon
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">12</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _**Version Chèvre et pommes/poires caramélisées * cuisson à la poêle, durée ???**_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">13</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 2 pommes / 2 poires (ne pas caraméliser) * 4 tranches de jambon fumé * 1 bûche de chèvre * 2 càs de sucre * Epluchez et coupez la pomme en petits morceaux que vous mettrez à cuire dans une poêle avec une noix de beurre et le sucre pour qu&#x27;elles caramélisent. * Faire les bricks avec environ 1/2 tranche de jambon fumé coupée en deux dans le sens de la longueur, déposez dessus quelques pommes et des morceaux de chèvre.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">14</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _**Version Provençale – cuisson au four environ 15-20 min. à 220°C**_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">15</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 4 aubergines, 4 tomates, 2 courgettes, 1 échalote, 1 oignon (= reste de ratatouille sinon) * thym, romarin, origan * options: cumin, piment d’Espelette, vin blanc (cuisson des légumes) * options fromage: gruyère / parmesan / chèvre * Couper les aubergines en petits dés et les cuire à la vapeur 20 min avec du sel. * Couper les tomates en petits dés, puis les mettre dans un saladier avec une cuillère d&#x27;huile d&#x27;olive, une échalote coupée finement, le basilic, sel et poivre. Une fois les aubergines cuites, les mettre dans un saladier avec l&#x27;huile d&#x27;olive, une peu d&#x27;herbes de Provence, sel et poivre. * Mélanger, couvrir d&#x27;un film plastique et laisser reposer quelques heures. * Préparer les bricks avec 1 càs de légumes et mettre des lamelles de parmesan. Faire plusieurs couches. * Former une bourse avec la feuille et la maintenir avec un pique en bois et déposer l&#x27;aumônière ainsi obtenue dans un ramequin. Mettre au four 15 à 20 min, jusqu&#x27;à ce que les feuilles de brick soit légèrement dorées. * Déposer chaque ramequin au centre d&#x27;une assiette, sur un lit de salade assaisonnée d&#x27;huile d&#x27;olive et de vinaigre balsamique. Décorer avec des quartiers de tomates, servir et déguster... * Commentaires: excellent
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">16</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _**Version Tomates et Mozzarella * – cuisson au four environ 10 à 15 min à 180°C**_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">17</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 4 tomates * 200 g de mozzarella * herbes de Provence et sel/poivre * Couper les tomates et la mozzarella en tranches. Beurrer les feuilles de brick au pinceau avec le beurre fondu. * Déposer sur chaque feuille de brick, des tomates et de la mozzarella, saler et poivrer, + &#x27;herbes de Provence. * Enfourner de 10 à 15 minutes environ à four chaud. Servir dès la sortie du four.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">18</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _**Version cantal et lard – cuisson au four environ 5  min à 200°C**_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">19</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 4 tranches de lard * 60 g de Cantal * 1 càs de raisins sec * curry et sel/poivre * Couper les tomates et la mozzarella en tranches. * Faire revenir à la poêle le lard 1 à 2 minutes. * Déposer au milieu d’une feuille de brick : 15 g de cantal, 1 tranche de lard, 6 raisins secs et 1 pc de curry. * Saler et poivre * Fermer la feuille de brick en petit paquet. Faire cuire au four à 200°C (thermostat 6-7) pendant 5 minutes. Commentaires: excellent
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">20</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _**Version reblochon et pommes– cuisson au four environ 5  min à 200°C**_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">21</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 2 pommes avec un peu de beurre * 1/2 reblochon * 8 cerneaux de noix * sel/poivre * Dans une poêle, faire revenir dans du beurre les pommes coupées en morceaux. * Déposer au centre d’une feuille de brick 1/8 de reblochon, des morceaux de pommes, 2 cerneaux de noix en morceaux. Saler et poivrer. * Fermer la feuille de brick et la badigeonner de beurre fondu. Faire cuire au four à 200°C  pendant 5 min. * Commentaires: excellent * Variante (non testée) sans pomme et sauce: 1 càs miel + 1 càs de vinaigre blanc + 1 càs de sauce soja + 2 gouttes de Tabasco + 1 càs de Worcestershire =&gt; tremper les bricks / nems dedans
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">22</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _**Version poulet et curry**_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">23</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 400 g de poulet * 2 échalotes hachées * 1 càs de curry et beurre * 2 càs de crème épaisse * sel/poivre * Dans un saladier, mettez les filets de poulet coupés en dés, les échalotes hachées, le sel et toutes les épices. Malaxez bien le tout. * Faites fondre le beurre dans une poêle et faites cuire la viande 10 à 15 minutes. Ajoutez la crème fraîche épaisse puis laissez mijoter 3 minutes. Laisser complètement refroidir. * Préchauffez le four à 180°C (thermostat 6). * Prenez une feuille de brick, badigeonnez-la de beurre fondu à l&#x27;aide d&#x27;un pinceau. Disposez la farce au centre d&#x27;une feuille et rabattre les deux côtés de façon à former une sorte d&#x27;enveloppe. Retournez le pliage et faites une entaille en forme de croix à l&#x27;aide de ciseaux. * Disposez les bricks farcis sur une plaque tapissée de papier sulfurisé. Faites cuire pendant 15 minutes jusqu&#x27;à l&#x27;obtention d&#x27;une couleur dorée. * Commentaires: excellent ne pas faire à l&#x27;avance
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">24</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _**Version samossa**_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">25</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 300 g de bœuf * 2 carottes * 2 poireaux * Option : 1 œuf * option: 1 oignon * 2 échalotes (moyennes) ou ail * sel, piment doux * 1 càc de 4 épices (voire plus) * 1 pc de curry, coriandre * Couper finement le poireau et la carotte (râpée si besoin), émincer les échalotes. * Mettre le tout dans une poêle avec un peu d&#x27;huile d&#x27;olive, faire revenir le tout quelques minutes jusqu&#x27;à ce que les poireaux soient cuits. * Mettre la viande hachée, la faire revenir quelques minutes. * Mixer le tout. * Ajouter l&#x27;œuf et bien mélanger. * Ajouter le sel, le piment doux et les épices. * J&#x27;ai mis beaucoup de mélange 4 épices que j&#x27;aime beaucoup et qui parfume à merveille cette recette. Je ne sais pas si la coriandre est vraiment nécessaire (j&#x27;ai mis 1 càs de coriandre surgelée). Laisser refroidir le mélange. * Préparer les feuilles de brick * Quand tous les samossas sont prêts, les cuire à la poêle ou à la friteuse quelques minutes (jusqu&#x27;à ce qu&#x27;ils soient dorés) où les passer au four après les avoir doré au jaune d&#x27;œuf (200°C pendant 15 min environ) * Commentaires: excellent ne pas faire le montage à l’avance
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">26</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _**Version nem / porc ***_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">27</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 8 feuilles de riz * 1 petit sachet de nouilles de riz ou de soja * 3 champignons de Paris * 2 saucisses de porc * 1 poignée de crevettes * Sel &amp; poivre * 1/4 de courgette en julienne * 1 carotte en julienne * 1 poignée de soja frais * 1 œuf * 1 càs de sauce soja
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">28</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _**Version nem / poulet ***_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">29</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 1 paquet de feuilles de riz * restes de poulet rôti (un peu moins d&#x27;1/2 poulet ici) * 300 g de julienne de légumes surgelée ou non (carottes, céleri rave, courgettes... selon vos envies) * gingembre frais ou en poudre * 1 càs de sauce soja * miel * 1/2 nid de nouilles de riz * 1/4 de poivron rouge * 1/2 oignon * 1 gousse d&#x27;ail * piment en poudre (ici d’Espelette) * sel et poivre * Commencez par faire revenir la viande et les légumes. * Faites ramollir les nouilles de riz dans de l&#x27;eau. Une fois qu&#x27;elles sont molles, mettez-les dans un saladier avec la préparation que vous aurez poêlé. Ajoutez l&#x27;œuf battu salez et poivrez. * Dans une assiette remplie d&#x27;eau, faites ramollir les feuilles de riz avec 1 càs de sauce soja. Quand elles sont bien molles, préparez une cuillère de farce et roulez le nem. * Ensuite, il suffit de les faire cuire dans un four à 200°C en les retournant une fois ou au wok avec de l&#x27;huile.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">30</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _**Version Aubergines caramélisées ***_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">31</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 12 feuilles de brick * 4 aubergines * 25 à 30 g de pignons * 200 g de fêta * Sel et poivre * 20 à 40 feuilles de basilic frais * 1 à 2 branche(s) de romarin * 2 à 4 càs d’huile d’olive * 2 à 4 càs de sucre * Vinaigre balsamique * Préchauffer le four à 220°C. * Faites griller les pignons, à sec sur feu doux, dans une poêle antiadhésive. Réservez. * Rincez les aubergines et coupez-les en cubes de petite taille et conservez la peau si elles sont bio. Utilisez une bonne poêle antiadhésive pour saisir, à feu vif, les cubes d&#x27;aubergine pendant une quinzaine de minutes en mélangeant sans arrêt... et ce sans ajout de matières grasses. Ajoutez l&#x27;huile d&#x27;olive et mélangez régulièrement pendant encore 20 minutes. Ajoutez les feuilles de romarin. Salez et poivrez. * Cuire encore à feu vif jusqu’à ce que les aubergines soient fondantes et tendent à s&#x27;accrocher (à brunir) au fond de la poêle. Ajoutez et bien incorporez la fêta émiettée et le basilic et les pignons. Rectifiez l&#x27;assaisonnement. Laissez tiédir cette préparation d&#x27;aubergines. * Roulez les feuilles de bricks en cigares. Badigeonnez-les d&#x27;huile d&#x27;olive. Trempez les extrémités des bricks dans le vinaigre balsamique puis dans le sucre. Déposez les cigares sur une plaque de cuisson puis saupoudrez de sucre. * Cuire, dans le milieu du four, pendant 20 minutes à 220°C le temps que les extrémités se caramélisent et que la pâte de brick soient soit bien croquante. Si la pâte brunie trop rapidement… réduire légèrement, la température du four. * Servez tièdes!
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">32</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _**Version aux légumes**_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">33</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 1 courgette voire 2 poireaux * 1 carotte * 8 petits champignons de Paris * 100 g de pousses de soja * 4 feuilles de brick * de l&#x27;huile d&#x27;olive * 20 g de beurre * Sel et poivre * Gingembre frais (facultatif) * Découpez les carottes et les courgettes en 2 ou 3 tronçons selon leurs tailles. Coupez chaque tronçon en plusieurs lamelles, puis détaillez ces lamelles en bâtonnets. * Dans une poêle, faites chauffer 2 cuillères à soupe d&#x27;huile d&#x27;olive. Une fois qu&#x27;elle fume légèrement, ajoutez la julienne de carottes et courgettes, ainsi que le soja et les champignons. * Faites revenir le tout pendant 5 minutes jusqu&#x27;à coloration, sans trop cuire les légumes toutefois. Assaisonnez en sel et en poivre. * Sortez les feuilles de brick de leur emballage. A l&#x27;aide d&#x27;un pinceau, badigeonnez l&#x27;une d&#x27;entre elles sur une seule face avec du beurre fondu. Posez une deuxième feuille par dessus la première et badigeonnez-la. * Répétez l&#x27;opération avec toutes les feuilles. * Déposez environ 2 cuillères de légumes sautés dans chaque brick et roulez ensuite la feuille sur elle-même en serrant légèrement autour des légumes pour former un rouleau compact. * Déposez les rouleaux (face pliée vers le bas évidemment) sur une plaque recouverte de papier sulfurisé, puis faites cuire à 180°C jusqu’à coloration souhaitée (environ 10 minutes suffisent). * Une fois que les rouleaux sont bien dorés, sortez-les du four et coupez-les en biais à partir du milieu. * Présentez-les en les chevauchant de façon à mettre en avant les couleurs de leur farce. * Pour finir... N&#x27;hésitez pas à varier et à choisir les légumes que vous préférez (pois gourmands, poireau, céleri...) * Commentaires : très bon avec haricots verts, carottes et légumes ratatouilles + herbes de Provences + fromage genre Petit Billy
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">34</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _**Version aubergines, fêta et tomates confites * - cuisson au four à 180°C environ 10 minutes**_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">35</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 1 aubergine, des tomates confites ou séchées, de la fêta * Ail, huile d’olive, sel/poivre * Faire revenir à la poele l’aubergine en petis dés avec un peu d’huile d’olive, sel/ poivre et d’ail. * Mélanger la feta avec les tomates coupées en petits morceaux, ajouter les dés d’aubergine refroidis
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">36</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _**Version rkakat jebneh * - - cuisson au four à 200°C environ 15 minutes**_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">37</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 200 g de fêta * 1 oignon * Persil plat et menthe * poivre * Emietter le fromage et mélanger avec l’oignon revenu à la poele au préalable * Ajouter menthe, persil et poivre * Farcir des cigares
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">38</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _**Version saumon fumé et crème ail ciboulette – cuisson 15 min**_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">39</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * Saumon fumé * Crème à base d’ail et ciboulette, pas trop liquide * Commentaires : servir tiède, simple &amp; efficace
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">40</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Version maquereau et moutarde * -** _**cuisson au four à 180°C environ 15 minutes**_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">41</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * Mélanger moutarde, crème fraîche et thym * Napper 2 filets de maquereaux avec le mélanger * Faire des cigares
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                </ol>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<script id="cooking-mode-data" type="application/json">
+{"image":"/Food/api/static/Recettes%20sal%C3%A9es/Bricks%20%E2%80%93%20id%C3%A9es%20recettes.jpeg","name":"Bricks – idées recettes","scale":1.0,"sections":[{"ingredients":[],"name":null,"stepOffset":0,"steps":[{"globalNumber":1,"image":null,"ingredients":[],"number":1,"type":"step"},{"globalNumber":2,"image":null,"ingredients":[],"number":2,"type":"step"},{"globalNumber":3,"image":null,"ingredients":[],"number":3,"type":"step"},{"globalNumber":4,"image":null,"ingredients":[],"number":4,"type":"step"},{"globalNumber":5,"image":null,"ingredients":[],"number":5,"type":"step"},{"globalNumber":6,"image":null,"ingredients":[],"number":6,"type":"step"},{"globalNumber":7,"image":null,"ingredients":[],"number":7,"type":"step"},{"globalNumber":8,"image":null,"ingredients":[],"number":8,"type":"step"},{"globalNumber":9,"image":null,"ingredients":[],"number":9,"type":"step"},{"globalNumber":10,"image":null,"ingredients":[],"number":10,"type":"step"},{"globalNumber":11,"image":null,"ingredients":[],"number":11,"type":"step"},{"globalNumber":12,"image":null,"ingredients":[],"number":12,"type":"step"},{"globalNumber":13,"image":null,"ingredients":[],"number":13,"type":"step"},{"globalNumber":14,"image":null,"ingredients":[],"number":14,"type":"step"},{"globalNumber":15,"image":null,"ingredients":[],"number":15,"type":"step"},{"globalNumber":16,"image":null,"ingredients":[],"number":16,"type":"step"},{"globalNumber":17,"image":null,"ingredients":[],"number":17,"type":"step"},{"globalNumber":18,"image":null,"ingredients":[],"number":18,"type":"step"},{"globalNumber":19,"image":null,"ingredients":[],"number":19,"type":"step"},{"globalNumber":20,"image":null,"ingredients":[],"number":20,"type":"step"},{"globalNumber":21,"image":null,"ingredients":[],"number":21,"type":"step"},{"globalNumber":22,"image":null,"ingredients":[],"number":22,"type":"step"},{"globalNumber":23,"image":null,"ingredients":[],"number":23,"type":"step"},{"globalNumber":24,"image":null,"ingredients":[],"number":24,"type":"step"},{"globalNumber":25,"image":null,"ingredients":[],"number":25,"type":"step"},{"globalNumber":26,"image":null,"ingredients":[],"number":26,"type":"step"},{"globalNumber":27,"image":null,"ingredients":[],"number":27,"type":"step"},{"globalNumber":28,"image":null,"ingredients":[],"number":28,"type":"step"},{"globalNumber":29,"image":null,"ingredients":[],"number":29,"type":"step"},{"globalNumber":30,"image":null,"ingredients":[],"number":30,"type":"step"},{"globalNumber":31,"image":null,"ingredients":[],"number":31,"type":"step"},{"globalNumber":32,"image":null,"ingredients":[],"number":32,"type":"step"},{"globalNumber":33,"image":null,"ingredients":[],"number":33,"type":"step"},{"globalNumber":34,"image":null,"ingredients":[],"number":34,"type":"step"},{"globalNumber":35,"image":null,"ingredients":[],"number":35,"type":"step"},{"globalNumber":36,"image":null,"ingredients":[],"number":36,"type":"step"},{"globalNumber":37,"image":null,"ingredients":[],"number":37,"type":"step"},{"globalNumber":38,"image":null,"ingredients":[],"number":38,"type":"step"},{"globalNumber":39,"image":null,"ingredients":[],"number":39,"type":"step"},{"globalNumber":40,"image":null,"ingredients":[],"number":40,"type":"step"},{"globalNumber":41,"image":null,"ingredients":[],"number":41,"type":"step"}]}]}
+</script>
+
+
+
+        </main>
+
+        
+        <footer class="mt-12 mb-6 text-center text-sm text-faint print:hidden">
+            Built with
+            <a href="https://cooklang.org/cli/" class="text-accent-text hover:underline" target="_blank" rel="noopener">CookCLI</a>
+            
+            &middot;
+            <a href="https://github.com/S3v3r1n3/Food" class="text-accent-text hover:underline" target="_blank" rel="noopener">View source</a>
+            
+        </footer>
+        
+    </div>
+
+    <script>
+        // Theme toggle function
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.classList.contains('dark') ? 'dark' : 'light';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+            html.classList.toggle('dark');
+            localStorage.setItem('theme', newTheme);
+        }
+    </script>
+
+    
+    <script>window.__PREFIX__ = "/Food";</script>
+    <script src="/Food/static/js/search.js"></script>
+    
+
+    <!-- URL prefix for JavaScript -->
+    <script>
+        window.__PREFIX__ = "/Food";
+        window.__STATIC_MODE__ = true;
+        window.__STRINGS__ = { close: "Close" };
+        // Bring the visitor back to this page after signing in.
+        document.querySelectorAll('[data-login-link]').forEach((link) => {
+            const prefix = window.__PREFIX__;
+            const path = location.pathname.startsWith(prefix)
+                ? location.pathname.slice(prefix.length)
+                : location.pathname;
+            if (path === '/login') return;
+            link.href = `${prefix}/login?next=${encodeURIComponent((path || '/') + location.search)}`;
+        });
+    </script>
+
+    <!-- Keyboard shortcuts -->
+    <script src="/Food/static/js/keyboard-shortcuts.js"></script>
+    <!-- Expose showShortcutsHelp globally for the help button -->
+    <script>
+        // showShortcutsHelp is defined in keyboard-shortcuts.js
+        // This ensures it's available for the onclick handler
+        if (typeof showShortcutsHelp === 'undefined') {
+            window.showShortcutsHelp = function() {
+                console.warn('Keyboard shortcuts not loaded');
+            };
+        }
+    </script>
+
+    
+<link rel="stylesheet" href="/Food/static/css/cooking-mode.css">
+<script src="/Food/static/js/cooking-mode.js"></script>
+<script src="/Food/static/js/timers.js"></script>
+
+</body>
+</html>

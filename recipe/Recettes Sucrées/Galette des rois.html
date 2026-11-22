@@ -1,0 +1,2564 @@
+<!DOCTYPE html>
+<html lang="en-US" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galette des rois - Cook</title>
+    <link rel="icon" type="image/x-icon" href="/Food/static/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/Food/static/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/Food/static/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/Food/static/apple-touch-icon.png">
+    <link rel="manifest" href="/Food/static/site.webmanifest">
+    
+    <link href="/Food/static/css/output.css" rel="stylesheet">
+    <script>
+        // Check for saved theme preference, or check for prefers-color-scheme, or default to light
+        const theme = localStorage.getItem('theme')
+            || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.classList.toggle('dark', theme === 'dark');
+        // False for a guest, or a role below shopper, on a server that requires signing in.
+        window.__CAN_EDIT_LISTS__ = true;
+        // `--recipes-only` and nobody signed in: no shopping list or pantry.
+        window.__RECIPES_ONLY__ = false;
+    </script>
+    <style>
+        .viewport {
+            width: 100%;
+            max-width: 72rem;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        /* Search result keyboard selection. --surface-sunk alone is barely
+           visible against --surface in dark mode, so the accent bar carries
+           the signal. */
+        #search-results a.search-selected {
+            background: var(--accent-soft);
+            box-shadow: inset 3px 0 0 var(--accent);
+        }
+
+        @media print {
+            /* Token values are reset to light in input.css; this resets the
+               browser's own defaults so unstyled text is dark too. */
+            html.dark, html {
+                color-scheme: light !important;
+            }
+
+            * {
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+
+            body {
+                background: white !important;
+                margin: 0;
+                padding: 0;
+            }
+
+            .viewport {
+                max-width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            /* Hide navigation and non-essential elements */
+            nav, #search-container, #search-input, #search-results, .print\:hidden, .breadcrumb {
+                display: none !important;
+            }
+
+            /* Hide all navigation links */
+            a[href="/Food/"] {
+                display: none !important;
+            }
+
+            /* Recipe layout for print: one column */
+            .grid {
+                display: block !important;
+            }
+
+            .md\:col-span-1, .md\:col-span-2 {
+                page-break-inside: avoid;
+                width: 100% !important;
+            }
+
+            /* Square corners on paper */
+            .card, .step-box, .ingredient-row, .recipe-note, .rounded-xl {
+                border-radius: 0 !important;
+            }
+
+            /* Step numbers */
+            .step-number {
+                background: #000 !important;
+                color: #fff !important;
+            }
+
+            /* Images */
+            img {
+                max-height: 300px !important;
+                max-width: 100% !important;
+                height: auto !important;
+                object-fit: contain !important;
+                page-break-inside: avoid;
+                page-break-after: avoid;
+            }
+
+            /* Recipe sections on same page if possible */
+            h2, h3 {
+                page-break-after: avoid;
+            }
+
+            ol, ul {
+                page-break-inside: avoid;
+            }
+
+            /* Compact spacing */
+            .mb-8, .mb-6, .mb-4 {
+                margin-bottom: 0.5rem !important;
+            }
+
+            .p-6 {
+                padding: 0.5rem !important;
+            }
+
+            /* Recipe header */
+            h1 {
+                color: #000 !important;
+                font-size: 1.5rem !important;
+                margin-bottom: 0 !important;
+            }
+
+            /* Shopping list print styles */
+            .lg\:w-2\/5, .xl\:w-1\/3 {
+                display: none !important;
+            }
+
+            #shopping-list-results {
+                font-size: 11pt !important;
+                line-height: 1.2 !important;
+            }
+
+            #shopping-list-results input[type="checkbox"] {
+                display: none !important;
+            }
+
+            #shopping-list-results li .flex-1 {
+                width: auto !important;
+                flex: 1 1 0% !important;
+            }
+
+            #shopping-list-results label {
+                cursor: default !important;
+            }
+
+            #shopping-list-results h2 {
+                font-size: 11pt !important;
+                color: #000 !important;
+                margin-bottom: 0 !important;
+            }
+
+            #shopping-list-results .space-y-2 > * + *,
+            #shopping-list-results ul > * + * {
+                margin-top: 0 !important;
+            }
+
+            #shopping-list-results li {
+                padding: 0 !important;
+                line-height: 1.3 !important;
+                border-bottom: 1px dotted #ccc;
+            }
+
+            #shopping-list-results .card {
+                margin-bottom: 0.15rem !important;
+                padding: 0 !important;
+                border: none !important;
+            }
+
+            /* Menu print styles */
+            #menu-content {
+                font-size: 10pt !important;
+                line-height: 1.4 !important;
+            }
+
+            #menu-content h1 {
+                font-size: 14pt !important;
+                margin-bottom: 0.25rem !important;
+                color: #000 !important;
+            }
+
+            #menu-content .space-y-6 > * + * {
+                margin-top: 0.3rem !important;
+            }
+
+            #menu-content .menu-section {
+                border: 1px solid #ccc !important;
+                border-radius: 0 !important;
+                page-break-inside: avoid;
+            }
+
+            #menu-content .menu-section-header {
+                background: #eee !important;
+                color: #000 !important;
+                padding: 0.15rem 0.5rem !important;
+            }
+
+            #menu-content .menu-section-header h2 {
+                font-size: 11pt !important;
+                color: #000 !important;
+            }
+
+            #menu-content .menu-section-body {
+                padding: 0.25rem 0.5rem !important;
+            }
+
+            #menu-content .menu-section-body .space-y-2 > * + *,
+            #menu-content .menu-section-body > * + * {
+                margin-top: 0.05rem !important;
+            }
+
+            #menu-content .menu-section-body h3 {
+                font-size: 10pt !important;
+                margin-top: 0.2rem !important;
+                margin-bottom: 0 !important;
+            }
+
+            #menu-content .menu-section-body .pl-6 {
+                padding-left: 1rem !important;
+            }
+
+            /* Preserve word spacing in flex lines */
+            #menu-content .menu-section-body .flex {
+                gap: 0.25em !important;
+            }
+
+            #menu-content .ingredient-badge {
+                font-weight: bold !important;
+                color: #000 !important;
+            }
+
+            #menu-content a {
+                color: #000 !important;
+                text-decoration: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-bg text-text">
+    <div class="viewport">
+        <nav class="nav-card relative">
+            <div class="px-3 lg:px-6 py-4 relative">
+                <div class="flex items-center justify-between flex-wrap gap-y-3">
+                    <a href="/Food/index.html" class="order-1 hidden md:flex items-center space-x-2">
+                        <img src="/Food/static/android-chrome-192x192.png" alt="Cook" class="brand-mark h-8 w-8 rounded-md" width="32" height="32">
+                    </a>
+
+                    <div class="relative z-50 order-2 flex-1 min-w-0 mr-2 md:ml-2 md:mr-4" id="search-container">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-faint" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        <input type="text"
+                               id="search-input"
+                               placeholder="Search recipes..."
+                               class="search-input">
+                        <div id="search-results"
+                             class="absolute top-full mt-2 w-full card shadow-[var(--shadow-overlay)] hidden max-h-96 overflow-y-auto"
+                             style="z-index: 9999;">
+                        </div>
+                    </div>
+
+                    <div class="order-3 flex items-center gap-1 lg:gap-2">
+                        
+                        <div class="hidden md:flex items-center gap-1 mr-2 lg:mr-4">
+                            <a href="/Food/index.html"
+                               class="nav-pill active">
+                                Recipes
+                            </a>
+                            
+                            
+                        </div>
+                        
+                        <!-- Inline buttons on md+ screens -->
+                        
+                        <button onclick="showShortcutsHelp()" class="icon-btn hidden md:inline-flex ml-2 print:hidden" aria-label="Keyboard shortcuts" title="Keyboard shortcuts (?)">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </button>
+                        <button onclick="toggleTheme()" class="icon-btn hidden md:inline-flex ml-2 print:hidden" aria-label="Toggle theme">
+                            <svg class="hidden dark:block" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
+                            </svg>
+                            <svg class="block dark:hidden" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                            </svg>
+                        </button>
+                        
+                        <!-- Overflow menu for small screens -->
+                        <div class="relative md:hidden ml-auto" id="more-menu-container">
+                            <button onclick="document.getElementById('more-dropdown').classList.toggle('hidden')" class="icon-btn" aria-label="More options">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+                                </svg>
+                            </button>
+                            <div id="more-dropdown" class="hidden absolute right-0 mt-2 w-56 card shadow-[var(--shadow-overlay)] z-50 py-1">
+                                
+                                <a href="/Food/index.html" class="menu-item active">
+                                    <span>🍳</span> <span>Recipes</span>
+                                </a>
+                                
+                                
+                                <div class="border-t border-line my-1"></div>
+                                
+                                
+                                
+                                <button onclick="showShortcutsHelp(); document.getElementById('more-dropdown').classList.add('hidden');" class="menu-item">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    <span>Keyboard Shortcuts</span>
+                                </button>
+                                <button onclick="toggleTheme(); document.getElementById('more-dropdown').classList.add('hidden');" class="menu-item">
+                                    <svg class="w-4 h-4 hidden dark:block" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path></svg>
+                                    <svg class="w-4 h-4 block dark:hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                                    <span>Toggle Theme</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main>
+            
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Recipe","image":"/Food/api/static/Recettes%20Sucr%C3%A9es/Galette%20des%20rois.jpg","keywords":"Classique, recette","name":"Galette des rois","recipeIngredient":[],"recipeInstructions":[{"@type":"HowToStep","text":"# Galette des rois"},{"@type":"HowToStep","text":"**Galettes des rois – idées recettes** ![](../_resources/Evernote_Camera_Roll_20160103_194140.jpg)"},{"@type":"HowToStep","text":"6 personnes Préparation: 15 min Cuisson: 30 min à 180°C"},{"@type":"HowToStep","text":"**Ingrédients - Base**"},{"@type":"HowToStep","text":"2 pâtes feuilletées"},{"@type":"HowToStep","text":"Ingrédients – Base allégée = bonne pâte, cuit en 30 min à 200°C 180 g de farine + 3 petits suisses + 90 g de beurre 45% + 3 càs d'eau > Mélanger tous les ingrédients et mettre au frais."},{"@type":"HowToStep","text":"Ingrédients - autre base light = très bonne pâte (tournesol) croustillante cuit en 30 min à 200°C 180 g de farine + 30 g d’huile neutre (mais/tourneso/arachide) + 45 g de compote/jus de pommes + 1/2 œuf > Mélanger tous les ingrédients et mettre au frais"},{"@type":"HowToStep","text":"Parfums testés pas top :"},{"@type":"HowToStep","text":"* pommes avec crème de noisettes => moins bon que frangipane ou pommes amande * Fraises tagada => chimique ;-)"},{"@type":"HowToStep","text":"** REGLES A SUIVRE **"},{"@type":"HowToStep","text":"**CREME PATISSIERE** Faire une journée à l’avance Si maïzena bien délayer au préalable Faire bouillir le lait avec l’arôme à la casserole ou au micro ondes Pendant ce temps, battre le sucre et le jaune d'œuf au fouet dans une casserole, rajouter la maïzena puis le lait Mettre sur feu doux jusqu'à ébullition, ne pas cesser de remuer. Retirer du feu"},{"@type":"HowToStep","text":"**CREME A L'AMANDE** On peut torréfier l’amande au préalable au four 5 min à 200°C Battre le sucre avec le beurre (avec les doigts c'est beaucoup plus simple) rajouter l'œuf puis la poudre d'amande. Mélanger ou pas avec la crème pâtissière et ajouter l’arôme"},{"@type":"HowToStep","text":"**PREPARER LE FEUILLETAGE** Etaler la première pâte feuilletée, mettre du blanc d'œuf sur tout le pourtour à 2cm du bord Rajouter la crème et laisser au moins 1,5 cm de bord sans creme Rajouter la fève en périphérie de la galette (on a moins de chance de tomber dessus à la découpe) Mettre le second disque Vous pouvez aussi décorer le tour de la galette (=chiquetage marguerite par exemple) avec un couteau en passant celui ci à l'intérieur de la pâte sur 1cm environ en maintenant bien avec vos doigts la pâte"},{"@type":"HowToStep","text":"![](../_resources/IMG_1738.JPG)"},{"@type":"HowToStep","text":"Dorer au jaune d'œuf avec 1 càs de lait ou à l'œuf entier on peut la mettre au frais 30 minutes et la rebadigeonner de nouveau pour une belle dorure préchauffer le four à 210°C dessiner sur la galette avec pointe de couteau doucement faire quelques trous discrets (et un au centre)"},{"@type":"HowToStep","text":"**DORURE** 1 jaune d’œuf + 1 càs de lait ou 1 càs de lait + sucre Note: toujours la dorure avant toute decoration et ne pas oublier de faire qq trous avant d'enfourner."},{"@type":"HowToStep","text":"**CUISSON** Si pâte feuilletée : Mettre au four 10 min à 210°C, baisser le à 180°C, et remettre pendant 15-20 min Sinon cuire 25 minutes à 200°C"},{"@type":"HowToStep","text":"**BRILLANCE** Faite cuire 5 minutes de moins et faire un sirop avec 2 càs d'eau + 3 càs de sucre (ou au sirop d'érable ou confiture d’abricot) et remettre au four 5min"},{"@type":"HowToStep","text":"**Version FRANGIPANE -** cuisson 25 min à 210°C"},{"@type":"HowToStep","text":"Crème pâtissière toute douce et vanillée : 125 ml de lait demi écrémé 20 g de sucre 1 jaune d'œuf 1/2 càc de vanille en poudre (facultatif - voire une vraie gousse...) 12 g de maïzena"},{"@type":"HowToStep","text":"Crème à l'amande : 75 g de sucre en poudre assez fin (sinon le mixer) - ou sucre glace 45 g de beurre (ramollis) 110 g de poudre d'amande si possible torréfiée 1 œuf 1,5 bonne càs de rhum (facultatif mais c'est vraiment meilleur!)"},{"@type":"HowToStep","text":"Commentaires: excellente recette avec crème pâtissière maison, moins bon avec crème pâtissière poudre"},{"@type":"HowToStep","text":"meilleures pâtes feuilletées: 1- Marie 2- Herta/Carrefour"},{"@type":"HowToStep","text":"version à tester: 40g sucre poudre + 40g sucre roux + 1/2 fève tonka + 1 œuf + 100g poudre d'amandes + 1 poignée d'amandes grillées + 2 càc de rhum ambré"},{"@type":"HowToStep","text":"**Version crème pâtissière aux pommes - légère** 2 belles pommes 80 g de poudre d'amande 30 g de sucre 1 càs de sirop d'érable ou équivalent 1 càs de maïzena 2 verres de lait d'amande 2 œufs Commentaires: très bon, meilleure avec poudre d'amandes"},{"@type":"HowToStep","text":"**Version crème pâtissière noix de coco (faire une journée avant la crème)** 25 cl de lait de coco 1 jaune d'œuf 20 g de maïzena 40 g de sucre 35 g de noix de coco 1 càs d'extrait de vanille Parfum option : rhum, vanille ou malibu (1 càs) > Commentaires : très bon pas écœurant du tout"},{"@type":"HowToStep","text":"**Version frangipane exotique**"},{"@type":"HowToStep","text":"* 200 g de noix de coco râpée (dont si possible 125 g de copeaux Ti Coco Vahiné) * 100 g de sucre en poudre * 50 g de beurre coupé en morceaux * 15 cl de lait * 5 tranches d’ananas entières fraiches (ou 1 petite boite) * 2 œufs entiers * 1 cuillère à soupe Maïzena * 3 cuillères à café de rhum (facultatif)"},{"@type":"HowToStep","text":"> Découper en dès 5 tranches d’ananas et en garder 3 entières pour la décoration finale."},{"@type":"HowToStep","text":"_La frangipane noix de coco/ananas_ :"},{"@type":"HowToStep","text":"* Battre les œufs avec le sucre. * Ajouter la Maïzena délayée dans le lait froid. * Cuire à feu doux jusqu’à ébullition en remuant (logiquement la préparation a épaissi). * Retirer du feu et ajouter la noix de coco râpée, le beurre, le rhum et les dès d’ananas. * Laisser tiédir un peu pour éviter de ramollir ensuite trop les pates feuilletées lors du montage."},{"@type":"HowToStep","text":"**Version Crème d’amande à la poire et épices douces**"},{"@type":"HowToStep","text":"* 2 oeufs + 1 (pour dorer et coller) * 125 gr d’amandes en poudre * 125 gr de sucre en poudre * 50 gr de beurre * 75 g de compote de poire * 2 cuill. à soupe de rhum * 1 fève tonka"},{"@type":"HowToStep","text":"**LES SPECIALES – ne nécessitent pas de pâte feuilletée**"},{"@type":"HowToStep","text":"**Version franc-comtoise** 250 ml de lait 60 g de sucre 80 g de beurre 120 g de farine 3œufs 1 jaune d'œuf pour la dorure 1 càs de fleur d'oranger, vanille liquide,..."},{"@type":"HowToStep","text":"Faire bouillir dans une casserole le lait avec le beurre et le sucre. Ajouter hors du feu la farine. Ajouter 1 à 1 les œufs, remettre à feu doux pour sécher la pâte. Parfumer la pâte avec le parfum de votre choix. Etaler dans un moule a tarte recouvert de papier sulfurisé. Dorer avec le jaune d’œuf. Enfourner 25min à 180°C jusqu’à ce que la galette soit dorée. > Commentaires: simple et bonne"},{"@type":"HowToStep","text":"**Version brick pommes-amande légère /** 6 personnes / manger chaud 40 g de compote de pommes 1 œuf 1 pomme 50 g de margarine 30 g de sucre vanillé 120 g de poudre d’amande rhum"},{"@type":"HowToStep","text":"Empiler 4 feuilles de bricks, mettre la garniture et fève recouvrir de 2 feuilles de bricks (en humidifiant chaque feuille). On arrive au premier point délicat de la recette : rabattre les bords des 2 feuilles de brick supérieures sous les feuilles de brick n°3 et 4 inférieures"},{"@type":"HowToStep","text":"Recouvrir de nouveau la galette avec les 2 dernières feuilles de brick (toujours en les humidifiant). Deuxième point délicat : rabattre les bords des 2 dernières feuilles de brick supérieures sous les feuilles de brick n°1 et 2."},{"@type":"HowToStep","text":"Maintenant que votre frangipane est bien enfermée dans les feuilles de brick, faire fondre 2 noix de margarine et l'étaler sur le dessus de la galette au pinceau.Placer la galette dans un moule à manqué rond. Faire cuire dans un four chaud à 200°C durant 25 minutes, puis à 180°C pendant 10 minutes."},{"@type":"HowToStep","text":"Commentaires : l’idée de la feuille de brick est excellente la consommer dans les 2h sinon la brick perd de son croustillant au frais, excellente avec pommes uniquement sans beurre et compote. J’ai ajouté des pommes coupées en dés revenues à la poêle pour plus de fondant."},{"@type":"HowToStep","text":"**Galette tourbillon** **![](../_resources/Evernote_Camera_Roll_20170104_222757.jpg) ** Étaler votre pâte feuilletée en un grand rectangle. Répartir la frangipane dessus. Parsemer de pépites de chocolat / amandes / raisins... Rouler votre pâte en un grand boudin. Couper-le en deux dans le sens de la longueur. Sur une plaque recouvert de papier sulfu déposer une des deux moitié de boudin dessus en lui donnant une forme arrondie, la partie intérieur du boudin face vers le haut. Faire de même avec l’autre moitié. Dorer votre galette. Cuire 35mn à 180C."},{"@type":"HowToStep","text":"**Idées deco** ![](../_resources/IMG_1737.JPG)"},{"@type":"HowToStep","text":"**Galette des rois à l'ananas de Pierre Hermé - taille: 24 cm ~ 6 parts**"},{"@type":"HowToStep","text":"**Pour le sirop à la vanille caramélisé (à faire la veille ou deux à trois jours avant) :**"},{"@type":"HowToStep","text":"* 1/2 gousse de Vanille de Tahiti (1 gousse entière de vanille Bourbon pour moi) * 75g de sucre en poudre * 4g de gingembre frais coupé en fines lamelles * 0,15g de mélange quatre-épices (ou 3 grains de poivre de la Jamaïque broyés) * 125g d'eau de source tiède * 10g de rhum agricole brun * 20g de jus de citron * 75g de purée de banane (j'ai broyé 75g de banane avec quelques gouttes de jus de citron)"},{"@type":"HowToStep","text":"**Pour l'ananas rôti caramélisé :** 2 ananas Victoria (ou un ananas : il faut obtenir 300g d'ananas pelé au final)"},{"@type":"HowToStep","text":"**Pour la crème pâtissière (la veille) :**"},{"@type":"HowToStep","text":"* 85g de lait frais entier * 1 gousse de vanille Bourbon * 20g de sucre en poudre * 8g de poudre à flan ou de maïzena * 20g de jaune d'oeuf (un gros jaune) * 8g de beurre"},{"@type":"HowToStep","text":"**Pour la crème d'amande/coco/citron vert (la veille) :**"},{"@type":"HowToStep","text":"* 50g de sucre glace * 25g de poudre d'amande * 25g de poudre de coco * 0,5g de zestes de citron vert * 5g de maïzena * 40g de beurre * 30g d'oeuf entier (battez un oeuf et pesez 30g) * 5g de rhum brun agricole * 1,5g de gingembre frais râpé (à la microplane)"},{"@type":"HowToStep","text":"**Pour la dorure ultra brillante hallucinante qui ne nécessite aucun sirop ensuite :**"},{"@type":"HowToStep","text":"* 20g de jaune d'oeuf (un gros jaune) * 2g de crème liquide entière (il faut que le poids de la crème soit de 10% par rapport au poids du jaune)"},{"@type":"HowToStep","text":"**Et bien sûr deux pâtons de 230g chacun de pâte feuilletée inversée.**"},{"@type":"HowToStep","text":"**1) Le sirop caramélisé** Préparez une toute petite casserole, 75g de sucre en poudre, 4g de gingembre frais coupé en fines lamelles, 125g d'eau de source tiède, 20g de jus de citron, 10g de rhum (je l'ai mélangé au jus de citron), 0,15g de mélange quatre-épices. Fendez la gousse de vanille en deux et récupérez les graines également."},{"@type":"HowToStep","text":"Pour cela il faut tout d'abord faire un caramel à sec. Versez un tiers du sucre en poudre dans la casserole et laissez-le fondre sur feu moyen sans rien toucher - Quand il fond ajoutez un autre tiers de sucre, toujours sans rien toucher. Le feu ne doit pas être trop fort sinon il va brûler en périphérie. Mais il ne doit pas être trop doux non plus sinon il va mettre trois plombes pour fondre."},{"@type":"HowToStep","text":"Quand tout a fondu ajoutez enfin le dernier tiers de sucre et laissez bien fondre. Poussez la caramélisation jusqu'à l'obtention d'une belle couleur ambrée, la plus foncée possible, mais pas brûlée !!"},{"@type":"HowToStep","text":"Ajoutez alors la vanille fendue et ses graines, ainsi que les lamelles de gingembre."},{"@type":"HowToStep","text":"* Attendez 5 secondes et ajoutez petit à petit 125g d'eau tiède. Attention : il va y a voir des projections, il faut y aller doucement. Si vous voyez que le sucre masse n'ayez aucune angoisse surtout : il va finir par fondre. Redonnez une ébullition et mélangez bien avec une cuillère pour faire fondre le sucre. Dès que vous sentez que le sirop est parfaitement liquide et qu'il n'y a plus aucun morceau de sucre récalcitrant sous la cuillère retirez la casserole du feu. * Ajoutez 75g de purée de banane * Puis 20g de jus de citron et 10g de rhum, et 0,15g de quatre-épices - Filmez et réservez au frais, jusqu'à 3 jours :"},{"@type":"HowToStep","text":"![](../_resources/unknown_filename.122.jpeg)"},{"@type":"HowToStep","text":"**2) La crème pâtissière :** Faites chauffez 85g de lait dans une petite casserole. Fendez la gousse de vanille en deux, grattez-la et mettez le tout (gousses et graines dans le lait). Laissez infuser une heure (ou une nuit au frais c'est encore mieux, et c'est valable pour toutes les crèmes pâtissières)."},{"@type":"HowToStep","text":"Dans un petit récipient, mélangez 20g de sucre en poudre et 8g de poudre à flan (ou de maïzena). Ajoutez 20g de jaune d'oeuf et mélangez de suite."},{"@type":"HowToStep","text":"Versez alors le lait chaud (réchauffez-le avant) petit à petit sur ce mélange, en le filtrant à travers une petite passoire, tout en mélangeant. Remettez le tout dans la casserole, et faites cuire la crème pâtissière sur feu fort sans jamais cesser de remuer à la cuillère magique. Dès que vous sentez que la pâte s'épaissit, retirez la casserole du feu et mélangez très vite : la crème pâtissière aura alors la consistance idéale."},{"@type":"HowToStep","text":"Laissez-la retomber à 55° avant d'incorporer le beurre. Mélangez bien : la crème devient très brillante. Réservez à température ambiante pour l'instant."},{"@type":"HowToStep","text":"Zestez le citron vert : on doit obtenir 0,5g de zestes. Mélangez-les avec 50g de sucre glace, 5g de maïzena, 25g de poudre d'amande et 25g de noix de coco en poudre."},{"@type":"HowToStep","text":"Dans un récipient, mélangez 40g de beurre (qui doit être très mou mais surtout pas fondu), simplement pour l'assouplir."},{"@type":"HowToStep","text":"Versez les poudres, Mélangez sans insister, Ajoutez 30g d'oeuf entier et mélangez mais toujours sans insister surtout ! Il ne faut pas incorporer d'air."},{"@type":"HowToStep","text":"Ajoutez alors 1,5g de gingembre et 5g de rhum - Ajoutez la crème pâtissière."},{"@type":"HowToStep","text":"Mélangez simplement pour avoir quelque chose d'homogène, mais vous avez compris que l'on n’insiste pas !"},{"@type":"HowToStep","text":"Filmez et réservez une nuit au frais."},{"@type":"HowToStep","text":"**3) L'ananas rôti caramélisé (à faire le jour J) :** Préchauffez le four à 230°chaleur tournante avec une grille au milieu. Coupez alors les ananas en 4 : Et retirez le coeur (la partie dure) :"},{"@type":"HowToStep","text":"**![](../_resources/unknown_filename.123.jpeg) **"},{"@type":"HowToStep","text":"Sortez le sirop du réfrigérateur, retirez la gousse de vanille et les lamelles de gingembre : Versez le sirop dans un plat à rôtir, et nappez les ananas. Enfournez pour 35mn, en arrosant les ananas toutes les 5mn."},{"@type":"HowToStep","text":"Laissez les refroidir une heure : Puis coupez-les en fines lamelles. **![](../_resources/unknown_filename.115.jpeg) **"},{"@type":"HowToStep","text":"**4) Le montage :** Pour réaliser cette galette il faut deux disques de 24cm. Il m'a fallu deux pâtons de 230g, mais il va y avoir des chutes de pâte c'est normal. faut savoir que ce n'est pas vraiment une partie de plaisir de manipuler de la pâte feuilletée inversée. C'est une pâte riche en beurre qui se réchauffe super vite. Il faut qu'elle soit super froide à chaque fois, et bien la réfrigérer entre chaque étape. Commencez par étaler la pâte entre deux silpat. Déposez votre cercle de 24cm dessus afin de contrôler si la taille est correcte. Il faut qu'il y ait le moins de perte possible, et vous aurez l'épaisseur qu'il faut(encore moins de perte que sur cette photo c'est l'idéal). Ne détaillez surtout pas le cercle pour l'instant, laissez-la comme ça et mettez-la de suite au réfrigérateur. Faire la même chose avec le 2e pâton."},{"@type":"HowToStep","text":"Pendant que la seconde abaisse refroidit, on va commencer le montage de la galette. Si vous avez un cercle de 18cm, il vous servira de chablon pour la crème de coco."},{"@type":"HowToStep","text":"Déposez la crème de coco au centre, et étalez-la bien. Etalez bien, et retirez le cercle."},{"@type":"HowToStep","text":"Déposez ensuite les lamelles d'ananas harmonieusement sur la crème de coco, sans bouffer les 3/4 au passage :"},{"@type":"HowToStep","text":"**![](../_resources/unknown_filename.117.jpeg) **"},{"@type":"HowToStep","text":"Ajoutez la fève. A l'aide d'un pinceau trempé dans l'eau, humidifiez la pâte qui est tout autour. Veillez à bien égoutter le pinceau pour que ce ne soit pas la pataugeoire."},{"@type":"HowToStep","text":"Sortez la seconde abaisse du congélateur ou du réfrigérateur (je l'ai laissée au congélateur ça va plus vite). Retirez une silpat et retournez la pâte sur la galette."},{"@type":"HowToStep","text":"En ce qui concerne la dorure, j'ai fait celle qu'un professeur de l'école Ferrandi, Patrice Guermonprez, avait expliqué à Conticini. Cela donne une dorure ultra brillante. Il suffit de mettre 10% de crème dans le jaune d'oeuf. Cette dorure sera ultra brillante. Il ne sera pas du tout nécessaire d'ajouter ensuite un sirop de sucre ou quoi que ce soit. Et surtout oubliez l'astuce qui consiste à saupoudrer la galette en fin de cuisson avec du sucre glace : ça donnera un goût de brûlé désagréable. A la limite vous pourrez la lustrer à la fin avec du sirop de sucre de canne liquide, mais vous verrez que ça ne sera pas la peine. Cette dorure est top. On commence par dorer la galette une première fois, en mettant peu de matière et en étirant bien. Seul un vrai pinceau vous permettra d'avoir une belle couche de dorure uniforme et de bien l'étirer (les pros pulvérisent la dorure au pistolet). Faites très attention à ne pas laisser couler de jaune au niveau de la pâte découpée, sinon ce jaune empêchera la pâte de lever durant la cuisson. Puis on laisse la galette reposer au réfrigérateur pendant 30mn, on dore une seconde fois et on laisse à nouveau reposer 30mn au frais. Il faut bien respecter ces temps de repos, à la fois pour que la dorure sèche un peu, mais surtout pour que la pâte ne se déforme pas à la cuisson. Ensuite, il faut faire un trou au centre pour laisser s'échapper la vapeur : il sera votre point de repère pour réaliser les motifs aussi."},{"@type":"HowToStep","text":"**![](../_resources/unknown_filename.121.jpeg) **"},{"@type":"HowToStep","text":"Préchauffez maintenant le four à 170° chaleur tournante avec une grille sur le second gradin en partant du bas. Si on cuit la galette avec un four plus chaud, la garniture ne sera pas cuite du tout : vous obtiendrez une galette qui va colorer trop vite, qui va lever énormément et retomber ensuite comme un soufflé. Mieux vaut une cuisson plus lente avec un four à 170°."},{"@type":"HowToStep","text":"Ensuite vous pouvez dessiner les motifs que vous souhaitez, à l'aide d'un petit couteau tranchant, en l'inclinant bien dans la pâte pour qu'il la marque bien sans la couper ! Il faut qu'il soit en biais quand il entre dans la pâte. On ne le positionne pas perpendiculairement. Si comme moi vous êtes aussi douée à main levée qu'un manchot qui fait le poirier, aidez-vous d'un cercle comme guide :"},{"@type":"HowToStep","text":"**![](../_resources/unknown_filename.118.jpeg) **"},{"@type":"HowToStep","text":"**![](../_resources/unknown_filename.119.jpeg) **"},{"@type":"HowToStep","text":"Il faut ensuite faire 4 trous supplémentaires dans la pâte, mais il faut les faire DANS les rainures, c'est plus joli ! Voici la façon dont doivent être disposés les quatre trous :"},{"@type":"HowToStep","text":"**![](../_resources/unknown_filename.120.jpeg) **"},{"@type":"HowToStep","text":"Enfournez pour une heure à 170°, et laissez de suite la galette refroidir sur une grille. On ne s'en rend pas vraiment compte en photos, mais la dorure est vraiment super brillante :"},{"@type":"HowToStep","text":"**![](../_resources/unknown_filename.116.jpeg) **"},{"@type":"HowToStep","text":"**Remarques :** - Vous pouvez congeler la galette garnie et crue si vous le souhaitez, pour la cuire au dernier moment. - Pour une dégustation optimale, il faut la déguster tiède. Elle se conserve une journée, mais il faudra la réchauffer avant de servir"},{"@type":"HowToStep","text":"`Tentative en version \"simplifiée\" malheureusement la crème était trop liquide, ce qui a rendu le façonnage très compliqué (catastrophique), dommage car elle est bonne`"},{"@type":"HowToStep","text":"**Galette des rois briochee à tester** Les ingrédients **Pour la pâte**"},{"@type":"HowToStep","text":"6 cl de lait tiède 15 g de levure fraîche de boulanger 1 oeuf 90 g de crème fraîche 2 cuil. à soupe (facultatif) de rhum ambré 300 g de farine T45 100 g de poudre d’amandes 50 g de cassonade 1 cuil. à café de sel"},{"@type":"HowToStep","text":"**Pour la crème d’amande au praliné**"},{"@type":"HowToStep","text":"120 g de poudre d’amandes 100 g de beurre demi-sel fondu 80 g de sucre 1 oeuf 2 cuil. à soupe de praliné noisette 1 cuil. à soupe de rhum ambré 10 g de farine"},{"@type":"HowToStep","text":"**Pour la dorure**"},{"@type":"HowToStep","text":"2 cuil. à soupe de lait Sucre glace 1 fève"},{"@type":"HowToStep","text":"La recette Mélangez le lait avec la levure émiettée. Mélangez l’oeuf, la crème et le rhum, puis incorporez-y le lait. Dans le bol d’un robot muni d’un crochet pétrisseur, versez la farine, la poudre d’amandes, la cassonade et le sel. Mélangez brièvement, ajoutez le mélange liquide. Pétrissez à petite vitesse jusqu’à la formation d’une boule de pâte. Augmentez la vitesse et laissez pétrir pendant 10 min. Débarrassez la pâte dans un bol fariné, filmez et laissez lever pendant 1 h dans le four préchauffé à 40 °C (th. 1?2) puis éteint (ou 2-3 h à température ambiante). Mélangez ensemble tous les ingrédients de la crème d’amande au praliné jusqu’à obtenir un mélange homogène, réservez au frais. Dégazez la pâte, séparez-la en 2. Étalez chaque moitié de pâte en disque. Répartissez la crème d’amande au praliné sur toute la surface du premier disque en laissant 2 cm sur le pourtour. Placez la fève. Recouvrez avec le second disque de pâte, scellez le pourtour de la galette en appuyant. Placez la galette sur la plaque du four recouverte de papier sulfurisé, et laissez de nouveau lever pendant 1 h à 1 h 30 dans le four préchauffé à 40 °C (th. 1?2) puis éteint (ou 2-3 h à température ambiante). Préchauffez le four à 160 °C (th. 5?6). Badigeonnez la galette de lait à l’aide d’un pinceau. Tracez des décors à l'aide d'une lame de couteau. Enfournez pour 30 min. Débarrassez sur une grille et laissez refroidir. Au moment de servir, parsemez de sucre glace. ![](../_resources/unknown_filename.124.jpeg =1200x)"}]}</script>
+<div>
+    <nav class="mb-4 breadcrumb print:hidden">
+        <ol class="flex items-center space-x-2 text-sm text-muted">
+            <li><a href="/Food/index.html" class="hover:text-text">Recipes</a></li>
+            
+            <li class="flex items-center">
+                <span class="mx-2 text-faint">/</span>
+                
+                    <a href="/Food/directory/Recettes Sucrées.html" class="hover:text-text">Recettes Sucrées</a>
+                
+            </li>
+            
+            <li class="flex items-center">
+                <span class="mx-2 text-faint">/</span>
+                
+                    <span class="text-text">Galette des rois</span>
+                
+            </li>
+            
+        </ol>
+    </nav>
+
+    <div class="mb-8">
+        <!-- Recipe image if available -->
+        
+        <div class="mb-6 max-w-4xl mx-auto flex justify-center">
+            <img src="/Food/api/static/Recettes%20Sucr%C3%A9es/Galette%20des%20rois.jpg" alt="Galette des rois" class="rounded-xl shadow-[var(--shadow-card)] max-w-full h-auto max-h-[500px]">
+        </div>
+        
+
+        <!-- Title bar with scale and shopping list button -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 print:flex-row print:items-center">
+            <h1 class="text-display font-bold text-text print:text-2xl">
+                Galette des rois
+            </h1>
+            
+            <div class="flex flex-wrap items-center gap-2 lg:gap-3 print:hidden">
+                
+                <button id="start-cooking-btn" onclick="startCookingMode()" class="btn btn-primary" title="Start Cooking">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span class="hidden lg:inline">Cook</span>
+                </button>
+                
+                <a href="/Food/recipe/Recettes Sucrées/Galette des rois.cook" download class="btn" title="Download .cook source">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"></path>
+                    </svg>
+                    <span class="hidden lg:inline">.cook</span>
+                </a>
+                
+            </div>
+        </div>
+
+        <!-- Recipe info section -->
+        <div class="space-y-4">
+            <!-- Tags row -->
+            
+            <div class="flex flex-wrap gap-2">
+                
+                <span class="tag">#Classique</span>
+                
+                <span class="tag">#recette</span>
+                
+            </div>
+            
+
+            
+
+            <!-- Description if present -->
+            
+            
+
+            <!-- Metadata row -->
+            <div id="metadata-container" class="flex flex-wrap gap-3">
+                
+                
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                <!-- Custom metadata -->
+                
+                
+                <span class="metadata-pill metadata-custom">Created at: 2015-11-21</span>
+                
+                
+                
+                <span class="metadata-pill metadata-custom">Last updated at: 2019-11-18</span>
+                
+                
+            </div>
+
+            
+        </div>
+    </div>
+
+    <div id="recipe-body" class="grid md:grid-cols-3 gap-8 mb-8">
+        <div class="md:col-span-1">
+            <div class="card p-6">
+                <h2 class="text-title font-bold mb-4 text-accent-text">🥘 Ingredients</h2>
+                
+                <!-- Fallback to original flat list for recipes without sections -->
+                <ul class="ingredient-list space-y-3">
+                    
+                </ul>
+                
+
+                
+            </div>
+        </div>
+
+        <div class="md:col-span-2">
+            <div class="card p-6" data-recipe-path="Recettes Sucrées/Galette des rois">
+                
+                
+                
+                <ol class="step-list space-y-4 ">
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">1</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        # Galette des rois
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">2</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Galettes des rois – idées recettes** ![](../_resources/Evernote_Camera_Roll_20160103_194140.jpg)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">3</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        6 personnes Préparation: 15 min Cuisson: 30 min à 180°C
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">4</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Ingrédients - Base**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">5</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        2 pâtes feuilletées
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">6</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Ingrédients – Base allégée = bonne pâte, cuit en 30 min à 200°C 180 g de farine + 3 petits suisses + 90 g de beurre 45% + 3 càs d&#x27;eau &gt; Mélanger tous les ingrédients et mettre au frais.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">7</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Ingrédients - autre base light = très bonne pâte (tournesol) croustillante cuit en 30 min à 200°C 180 g de farine + 30 g d’huile neutre (mais/tourneso/arachide) + 45 g de compote/jus de pommes + 1/2 œuf &gt; Mélanger tous les ingrédients et mettre au frais
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">8</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Parfums testés pas top :
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">9</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * pommes avec crème de noisettes =&gt; moins bon que frangipane ou pommes amande * Fraises tagada =&gt; chimique ;-)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">10</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        ** REGLES A SUIVRE **
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">11</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **CREME PATISSIERE** Faire une journée à l’avance Si maïzena bien délayer au préalable Faire bouillir le lait avec l’arôme à la casserole ou au micro ondes Pendant ce temps, battre le sucre et le jaune d&#x27;œuf au fouet dans une casserole, rajouter la maïzena puis le lait Mettre sur feu doux jusqu&#x27;à ébullition, ne pas cesser de remuer. Retirer du feu
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">12</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **CREME A L&#x27;AMANDE** On peut torréfier l’amande au préalable au four 5 min à 200°C Battre le sucre avec le beurre (avec les doigts c&#x27;est beaucoup plus simple) rajouter l&#x27;œuf puis la poudre d&#x27;amande. Mélanger ou pas avec la crème pâtissière et ajouter l’arôme
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">13</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **PREPARER LE FEUILLETAGE** Etaler la première pâte feuilletée, mettre du blanc d&#x27;œuf sur tout le pourtour à 2cm du bord Rajouter la crème et laisser au moins 1,5 cm de bord sans creme Rajouter la fève en périphérie de la galette (on a moins de chance de tomber dessus à la découpe) Mettre le second disque Vous pouvez aussi décorer le tour de la galette (=chiquetage marguerite par exemple) avec un couteau en passant celui ci à l&#x27;intérieur de la pâte sur 1cm environ en maintenant bien avec vos doigts la pâte
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">14</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        ![](../_resources/IMG_1738.JPG)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">15</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Dorer au jaune d&#x27;œuf avec 1 càs de lait ou à l&#x27;œuf entier on peut la mettre au frais 30 minutes et la rebadigeonner de nouveau pour une belle dorure préchauffer le four à 210°C dessiner sur la galette avec pointe de couteau doucement faire quelques trous discrets (et un au centre)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">16</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **DORURE** 1 jaune d’œuf + 1 càs de lait ou 1 càs de lait + sucre Note: toujours la dorure avant toute decoration et ne pas oublier de faire qq trous avant d&#x27;enfourner.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">17</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **CUISSON** Si pâte feuilletée : Mettre au four 10 min à 210°C, baisser le à 180°C, et remettre pendant 15-20 min Sinon cuire 25 minutes à 200°C
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">18</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **BRILLANCE** Faite cuire 5 minutes de moins et faire un sirop avec 2 càs d&#x27;eau + 3 càs de sucre (ou au sirop d&#x27;érable ou confiture d’abricot) et remettre au four 5min
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">19</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Version FRANGIPANE -** cuisson 25 min à 210°C
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">20</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Crème pâtissière toute douce et vanillée : 125 ml de lait demi écrémé 20 g de sucre 1 jaune d&#x27;œuf 1/2 càc de vanille en poudre (facultatif - voire une vraie gousse...) 12 g de maïzena
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">21</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Crème à l&#x27;amande : 75 g de sucre en poudre assez fin (sinon le mixer) - ou sucre glace 45 g de beurre (ramollis) 110 g de poudre d&#x27;amande si possible torréfiée 1 œuf 1,5 bonne càs de rhum (facultatif mais c&#x27;est vraiment meilleur!)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">22</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Commentaires: excellente recette avec crème pâtissière maison, moins bon avec crème pâtissière poudre
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">23</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        meilleures pâtes feuilletées: 1- Marie 2- Herta/Carrefour
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">24</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        version à tester: 40g sucre poudre + 40g sucre roux + 1/2 fève tonka + 1 œuf + 100g poudre d&#x27;amandes + 1 poignée d&#x27;amandes grillées + 2 càc de rhum ambré
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">25</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Version crème pâtissière aux pommes - légère** 2 belles pommes 80 g de poudre d&#x27;amande 30 g de sucre 1 càs de sirop d&#x27;érable ou équivalent 1 càs de maïzena 2 verres de lait d&#x27;amande 2 œufs Commentaires: très bon, meilleure avec poudre d&#x27;amandes
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">26</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Version crème pâtissière noix de coco (faire une journée avant la crème)** 25 cl de lait de coco 1 jaune d&#x27;œuf 20 g de maïzena 40 g de sucre 35 g de noix de coco 1 càs d&#x27;extrait de vanille Parfum option : rhum, vanille ou malibu (1 càs) &gt; Commentaires : très bon pas écœurant du tout
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">27</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Version frangipane exotique**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">28</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 200 g de noix de coco râpée (dont si possible 125 g de copeaux Ti Coco Vahiné) * 100 g de sucre en poudre * 50 g de beurre coupé en morceaux * 15 cl de lait * 5 tranches d’ananas entières fraiches (ou 1 petite boite) * 2 œufs entiers * 1 cuillère à soupe Maïzena * 3 cuillères à café de rhum (facultatif)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">29</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        &gt; Découper en dès 5 tranches d’ananas et en garder 3 entières pour la décoration finale.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">30</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _La frangipane noix de coco/ananas_ :
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">31</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * Battre les œufs avec le sucre. * Ajouter la Maïzena délayée dans le lait froid. * Cuire à feu doux jusqu’à ébullition en remuant (logiquement la préparation a épaissi). * Retirer du feu et ajouter la noix de coco râpée, le beurre, le rhum et les dès d’ananas. * Laisser tiédir un peu pour éviter de ramollir ensuite trop les pates feuilletées lors du montage.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">32</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Version Crème d’amande à la poire et épices douces**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">33</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 2 oeufs + 1 (pour dorer et coller) * 125 gr d’amandes en poudre * 125 gr de sucre en poudre * 50 gr de beurre * 75 g de compote de poire * 2 cuill. à soupe de rhum * 1 fève tonka
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">34</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **LES SPECIALES – ne nécessitent pas de pâte feuilletée**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">35</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Version franc-comtoise** 250 ml de lait 60 g de sucre 80 g de beurre 120 g de farine 3œufs 1 jaune d&#x27;œuf pour la dorure 1 càs de fleur d&#x27;oranger, vanille liquide,...
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">36</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Faire bouillir dans une casserole le lait avec le beurre et le sucre. Ajouter hors du feu la farine. Ajouter 1 à 1 les œufs, remettre à feu doux pour sécher la pâte. Parfumer la pâte avec le parfum de votre choix. Etaler dans un moule a tarte recouvert de papier sulfurisé. Dorer avec le jaune d’œuf. Enfourner 25min à 180°C jusqu’à ce que la galette soit dorée. &gt; Commentaires: simple et bonne
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">37</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Version brick pommes-amande légère /** 6 personnes / manger chaud 40 g de compote de pommes 1 œuf 1 pomme 50 g de margarine 30 g de sucre vanillé 120 g de poudre d’amande rhum
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">38</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Empiler 4 feuilles de bricks, mettre la garniture et fève recouvrir de 2 feuilles de bricks (en humidifiant chaque feuille). On arrive au premier point délicat de la recette : rabattre les bords des 2 feuilles de brick supérieures sous les feuilles de brick n°3 et 4 inférieures
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">39</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Recouvrir de nouveau la galette avec les 2 dernières feuilles de brick (toujours en les humidifiant). Deuxième point délicat : rabattre les bords des 2 dernières feuilles de brick supérieures sous les feuilles de brick n°1 et 2.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">40</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Maintenant que votre frangipane est bien enfermée dans les feuilles de brick, faire fondre 2 noix de margarine et l&#x27;étaler sur le dessus de la galette au pinceau.Placer la galette dans un moule à manqué rond. Faire cuire dans un four chaud à 200°C durant 25 minutes, puis à 180°C pendant 10 minutes.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">41</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Commentaires : l’idée de la feuille de brick est excellente la consommer dans les 2h sinon la brick perd de son croustillant au frais, excellente avec pommes uniquement sans beurre et compote. J’ai ajouté des pommes coupées en dés revenues à la poêle pour plus de fondant.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">42</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Galette tourbillon** **![](../_resources/Evernote_Camera_Roll_20170104_222757.jpg) ** Étaler votre pâte feuilletée en un grand rectangle. Répartir la frangipane dessus. Parsemer de pépites de chocolat / amandes / raisins... Rouler votre pâte en un grand boudin. Couper-le en deux dans le sens de la longueur. Sur une plaque recouvert de papier sulfu déposer une des deux moitié de boudin dessus en lui donnant une forme arrondie, la partie intérieur du boudin face vers le haut. Faire de même avec l’autre moitié. Dorer votre galette. Cuire 35mn à 180C.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">43</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Idées deco** ![](../_resources/IMG_1737.JPG)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">44</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Galette des rois à l&#x27;ananas de Pierre Hermé - taille: 24 cm 
+                                        ~ 6 parts**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">45</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Pour le sirop à la vanille caramélisé (à faire la veille ou deux à trois jours avant) :**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">46</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 1/2 gousse de Vanille de Tahiti (1 gousse entière de vanille Bourbon pour moi) * 75g de sucre en poudre * 4g de gingembre frais coupé en fines lamelles * 0,15g de mélange quatre-épices (ou 3 grains de poivre de la Jamaïque broyés) * 125g d&#x27;eau de source tiède * 10g de rhum agricole brun * 20g de jus de citron * 75g de purée de banane (j&#x27;ai broyé 75g de banane avec quelques gouttes de jus de citron)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">47</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Pour l&#x27;ananas rôti caramélisé :** 2 ananas Victoria (ou un ananas : il faut obtenir 300g d&#x27;ananas pelé au final)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">48</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Pour la crème pâtissière (la veille) :**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">49</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 85g de lait frais entier * 1 gousse de vanille Bourbon * 20g de sucre en poudre * 8g de poudre à flan ou de maïzena * 20g de jaune d&#x27;oeuf (un gros jaune) * 8g de beurre 
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">50</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Pour la crème d&#x27;amande/coco/citron vert (la veille) :**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">51</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 50g de sucre glace * 25g de poudre d&#x27;amande * 25g de poudre de coco * 0,5g de zestes de citron vert * 5g de maïzena * 40g de beurre * 30g d&#x27;oeuf entier (battez un oeuf et pesez 30g) * 5g de rhum brun agricole * 1,5g de gingembre frais râpé (à la microplane)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">52</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Pour la dorure ultra brillante hallucinante qui ne nécessite aucun sirop ensuite :**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">53</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 20g de jaune d&#x27;oeuf (un gros jaune) * 2g de crème liquide entière (il faut que le poids de la crème soit de 10% par rapport au poids du jaune)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">54</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Et bien sûr deux pâtons de 230g chacun de pâte feuilletée inversée.**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">55</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **1) Le sirop caramélisé**  Préparez une toute petite casserole, 75g de sucre en poudre, 4g de gingembre frais coupé en fines lamelles, 125g d&#x27;eau de source tiède, 20g de jus de citron, 10g de rhum (je l&#x27;ai mélangé au jus de citron), 0,15g de mélange quatre-épices. Fendez la gousse de vanille en deux et récupérez les graines également.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">56</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Pour cela il faut tout d&#x27;abord faire un caramel à sec. Versez un tiers du sucre en poudre dans la casserole et laissez-le fondre sur feu moyen sans rien toucher -  Quand il fond ajoutez un autre tiers de sucre, toujours sans rien toucher. Le feu ne doit pas être trop fort sinon il va brûler en périphérie. Mais il ne doit pas être trop doux non plus sinon il va mettre trois plombes pour fondre.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">57</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Quand tout a fondu ajoutez enfin le dernier tiers de sucre et laissez bien fondre. Poussez la caramélisation jusqu&#x27;à l&#x27;obtention d&#x27;une belle couleur ambrée, la plus foncée possible, mais pas brûlée !!
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">58</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Ajoutez alors la vanille fendue et ses graines, ainsi que les lamelles de gingembre.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">59</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * Attendez 5 secondes et ajoutez petit à petit 125g d&#x27;eau tiède. Attention : il va y a voir des projections, il faut y aller doucement. Si vous voyez que le sucre masse n&#x27;ayez aucune angoisse surtout : il va finir par fondre. Redonnez une ébullition et mélangez bien avec une cuillère pour faire fondre le sucre. Dès que vous sentez que le sirop est parfaitement liquide et qu&#x27;il n&#x27;y a plus aucun morceau de sucre récalcitrant sous la cuillère retirez la casserole du feu.  * Ajoutez 75g de purée de banane * Puis 20g de jus de citron et 10g de rhum, et 0,15g de quatre-épices - Filmez et réservez au frais, jusqu&#x27;à 3 jours :
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">60</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        ![](../_resources/unknown_filename.122.jpeg)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">61</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **2) La crème pâtissière :** Faites chauffez 85g de lait dans une petite casserole. Fendez la gousse de vanille en deux, grattez-la et mettez le tout (gousses et graines dans le lait). Laissez infuser une heure (ou une nuit au frais c&#x27;est encore mieux, et c&#x27;est valable pour toutes les crèmes pâtissières).
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">62</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Dans un petit récipient, mélangez 20g de sucre en poudre et 8g de poudre à flan (ou de maïzena). Ajoutez 20g de jaune d&#x27;oeuf et mélangez de suite.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">63</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Versez alors le lait chaud (réchauffez-le avant) petit à petit sur ce mélange, en le filtrant à travers une petite passoire, tout en mélangeant. Remettez le tout dans la casserole, et faites cuire la crème pâtissière sur feu fort sans jamais cesser de remuer à la cuillère magique. Dès que vous sentez que la pâte s&#x27;épaissit, retirez la casserole du feu et mélangez  très vite : la crème pâtissière aura alors la consistance idéale.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">64</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Laissez-la retomber à 55° avant d&#x27;incorporer le beurre. Mélangez bien : la crème devient très brillante. Réservez à température ambiante pour l&#x27;instant.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">65</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Zestez le citron vert : on doit obtenir 0,5g de zestes. Mélangez-les avec 50g de sucre glace, 5g de maïzena, 25g de poudre d&#x27;amande et 25g de noix de coco en poudre.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">66</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Dans un récipient, mélangez 40g de beurre (qui doit être très mou mais surtout pas fondu), simplement pour l&#x27;assouplir.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">67</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Versez les poudres, Mélangez sans insister, Ajoutez 30g d&#x27;oeuf entier et mélangez mais toujours sans insister surtout ! Il ne faut pas incorporer d&#x27;air.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">68</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Ajoutez alors 1,5g de gingembre et 5g de rhum - Ajoutez la crème pâtissière.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">69</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Mélangez simplement pour avoir quelque chose d&#x27;homogène, mais vous avez compris que l&#x27;on n’insiste pas !
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">70</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Filmez et réservez une nuit au frais.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">71</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **3) L&#x27;ananas rôti caramélisé (à faire le jour J) :** Préchauffez le four à 230°chaleur tournante avec une grille au milieu. Coupez alors les ananas en 4 : Et retirez le coeur (la partie dure) :
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">72</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **![](../_resources/unknown_filename.123.jpeg) **
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">73</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Sortez le sirop du réfrigérateur, retirez la gousse de vanille et les lamelles de gingembre : Versez le sirop dans un plat à rôtir, et nappez les ananas.  Enfournez pour 35mn, en arrosant les ananas toutes les 5mn. 
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">74</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Laissez les refroidir une heure : Puis coupez-les en fines lamelles.  **![](../_resources/unknown_filename.115.jpeg) **
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">75</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **4) Le montage :** Pour réaliser cette galette il faut deux disques de 24cm. Il m&#x27;a fallu deux pâtons de 230g, mais il va y avoir des chutes de pâte c&#x27;est normal.  faut savoir que ce n&#x27;est pas vraiment une partie de plaisir de manipuler de la pâte feuilletée inversée. C&#x27;est une pâte riche en beurre qui se réchauffe super vite. Il faut qu&#x27;elle soit super froide à chaque fois, et bien la réfrigérer entre chaque étape. Commencez par étaler la pâte entre deux silpat. Déposez votre cercle de 24cm dessus afin de contrôler si la taille est correcte. Il faut qu&#x27;il y ait le moins de perte possible, et vous aurez l&#x27;épaisseur qu&#x27;il faut(encore moins de perte que sur cette photo c&#x27;est l&#x27;idéal). Ne détaillez surtout pas le cercle pour l&#x27;instant, laissez-la comme ça et mettez-la de suite au réfrigérateur. Faire la même chose avec le 2e pâton.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">76</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Pendant que la seconde abaisse refroidit, on va commencer le montage de la galette. Si vous avez un cercle de 18cm, il vous servira de chablon pour la crème de coco. 
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">77</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Déposez la crème de coco au centre, et étalez-la bien.  Etalez bien, et retirez le cercle.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">78</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Déposez ensuite les lamelles d&#x27;ananas harmonieusement sur la crème de coco, sans bouffer les 3/4 au passage :
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">79</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **![](../_resources/unknown_filename.117.jpeg) **
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">80</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Ajoutez la fève. A l&#x27;aide d&#x27;un pinceau trempé dans l&#x27;eau, humidifiez la pâte qui est tout autour. Veillez à bien égoutter le pinceau pour que ce ne soit pas la pataugeoire.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">81</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Sortez la seconde abaisse du congélateur ou du réfrigérateur (je l&#x27;ai laissée au congélateur ça va plus vite). Retirez une silpat et retournez la pâte sur la galette.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">82</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        En ce qui concerne la dorure, j&#x27;ai fait celle qu&#x27;un professeur de l&#x27;école Ferrandi, Patrice Guermonprez, avait expliqué à Conticini. Cela donne une dorure ultra brillante. Il suffit de mettre 10% de crème dans le jaune d&#x27;oeuf.  Cette dorure sera ultra brillante. Il ne sera pas du tout nécessaire d&#x27;ajouter ensuite un sirop de sucre ou quoi que ce soit. Et surtout oubliez l&#x27;astuce qui consiste à saupoudrer la galette en fin de cuisson avec du sucre glace : ça donnera un goût de brûlé désagréable. A la limite vous pourrez la lustrer à la fin avec du sirop de sucre de canne liquide, mais vous verrez que ça ne sera pas la peine. Cette dorure est top. On commence par dorer la galette une première fois, en mettant peu de matière et en étirant bien. Seul un vrai pinceau vous permettra d&#x27;avoir une belle couche de dorure uniforme et de bien l&#x27;étirer (les pros pulvérisent la dorure au pistolet). Faites très attention à ne pas laisser couler de jaune au niveau de la pâte découpée, sinon ce jaune empêchera la pâte de lever durant la cuisson. Puis on laisse la galette reposer au réfrigérateur pendant 30mn, on dore une seconde fois et on laisse à nouveau reposer 30mn au frais. Il faut bien respecter ces temps de repos, à la fois pour que la dorure sèche un peu, mais surtout pour que la pâte ne se déforme pas à la cuisson. Ensuite, il faut faire un trou au centre pour laisser s&#x27;échapper la vapeur  : il sera votre point de repère pour réaliser les motifs aussi. 
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">83</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **![](../_resources/unknown_filename.121.jpeg) **
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">84</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Préchauffez maintenant le four à 170° chaleur tournante avec une grille sur le second gradin en partant du bas. Si on cuit la galette avec un four plus chaud, la garniture ne sera pas cuite du tout : vous obtiendrez une galette qui va colorer trop vite, qui va lever énormément et retomber ensuite comme un soufflé. Mieux vaut une cuisson plus lente avec un four à 170°.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">85</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Ensuite vous pouvez dessiner les motifs que vous souhaitez, à l&#x27;aide d&#x27;un petit couteau tranchant, en l&#x27;inclinant bien dans la pâte pour qu&#x27;il la marque bien sans la couper ! Il faut qu&#x27;il soit en biais quand il entre dans la pâte. On ne le positionne pas perpendiculairement. Si comme moi vous êtes aussi douée à main levée qu&#x27;un manchot qui fait le poirier, aidez-vous d&#x27;un cercle comme guide :
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">86</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **![](../_resources/unknown_filename.118.jpeg) **
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">87</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **![](../_resources/unknown_filename.119.jpeg) **
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">88</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Il faut ensuite faire 4 trous supplémentaires dans la pâte, mais il faut les faire DANS les rainures, c&#x27;est plus joli ! Voici la façon dont doivent être disposés les quatre trous :
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">89</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **![](../_resources/unknown_filename.120.jpeg) **
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">90</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Enfournez pour une heure à 170°, et laissez de suite la galette refroidir sur une grille. On ne s&#x27;en rend pas vraiment compte en photos, mais la dorure est vraiment super brillante :
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">91</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **![](../_resources/unknown_filename.116.jpeg) **
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">92</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Remarques :** - Vous pouvez congeler la galette garnie et crue si vous le souhaitez, pour la cuire au dernier moment. - Pour une dégustation optimale, il faut la déguster tiède. Elle se conserve une journée, mais il faudra la réchauffer avant de servir
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">93</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        `Tentative en version &quot;simplifiée&quot; malheureusement la crème était trop liquide, ce qui a rendu le façonnage très compliqué (catastrophique), dommage car elle est bonne` 
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">94</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Galette des rois briochee à tester**  Les ingrédients **Pour la pâte**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">95</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        6 cl de lait tiède 15 g de levure fraîche de boulanger 1 oeuf 90 g de crème fraîche 2 cuil. à soupe (facultatif) de rhum ambré 300 g  de farine T45 100 g de poudre d’amandes 50 g de cassonade 1 cuil. à café de sel
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">96</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Pour la crème d’amande au praliné**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">97</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        120 g de poudre d’amandes 100 g de beurre demi-sel fondu 80 g de sucre 1 oeuf 2 cuil. à soupe de praliné noisette 1 cuil. à soupe de rhum ambré 10 g de farine
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">98</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Pour la dorure**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">99</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        2 cuil. à soupe de lait Sucre glace 1 fève
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">100</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        La recette Mélangez le lait avec la levure émiettée. Mélangez l’oeuf, la crème et le rhum, puis incorporez-y le lait. Dans le bol d’un robot muni d’un crochet pétrisseur, versez la farine, la poudre d’amandes, la cassonade et le sel. Mélangez brièvement, ajoutez le mélange liquide. Pétrissez à petite vitesse jusqu’à la formation d’une boule de pâte. Augmentez la vitesse et laissez pétrir pendant 10 min. Débarrassez la pâte dans un bol fariné, filmez et laissez lever pendant 1 h dans le four préchauffé à 40 °C (th. 1?2) puis éteint (ou 2-3 h à température ambiante). Mélangez ensemble tous les ingrédients de la crème d’amande au praliné jusqu’à obtenir un mélange homogène, réservez au frais. Dégazez la pâte, séparez-la en 2. Étalez chaque moitié de pâte en disque. Répartissez la crème d’amande au praliné sur toute la surface du premier disque en laissant 2 cm sur le pourtour. Placez la fève. Recouvrez avec le second disque de pâte, scellez le pourtour de la galette en appuyant. Placez la galette sur la plaque du four recouverte de papier sulfurisé, et laissez de nouveau lever pendant 1 h à 1 h 30 dans le four préchauffé à 40 °C (th. 1?2) puis éteint (ou 2-3 h à température ambiante). Préchauffez le four à 160 °C (th. 5?6). Badigeonnez la galette de lait à l’aide d’un pinceau. Tracez des décors à l&#x27;aide d&#x27;une lame  de couteau. Enfournez pour 30 min. Débarrassez sur une grille et laissez refroidir. Au moment de servir, parsemez de sucre glace. ![](../_resources/unknown_filename.124.jpeg =1200x)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                </ol>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<script id="cooking-mode-data" type="application/json">
+{"image":"/Food/api/static/Recettes%20Sucr%C3%A9es/Galette%20des%20rois.jpg","name":"Galette des rois","scale":1.0,"sections":[{"ingredients":[],"name":null,"stepOffset":0,"steps":[{"globalNumber":1,"image":null,"ingredients":[],"number":1,"type":"step"},{"globalNumber":2,"image":null,"ingredients":[],"number":2,"type":"step"},{"globalNumber":3,"image":null,"ingredients":[],"number":3,"type":"step"},{"globalNumber":4,"image":null,"ingredients":[],"number":4,"type":"step"},{"globalNumber":5,"image":null,"ingredients":[],"number":5,"type":"step"},{"globalNumber":6,"image":null,"ingredients":[],"number":6,"type":"step"},{"globalNumber":7,"image":null,"ingredients":[],"number":7,"type":"step"},{"globalNumber":8,"image":null,"ingredients":[],"number":8,"type":"step"},{"globalNumber":9,"image":null,"ingredients":[],"number":9,"type":"step"},{"globalNumber":10,"image":null,"ingredients":[],"number":10,"type":"step"},{"globalNumber":11,"image":null,"ingredients":[],"number":11,"type":"step"},{"globalNumber":12,"image":null,"ingredients":[],"number":12,"type":"step"},{"globalNumber":13,"image":null,"ingredients":[],"number":13,"type":"step"},{"globalNumber":14,"image":null,"ingredients":[],"number":14,"type":"step"},{"globalNumber":15,"image":null,"ingredients":[],"number":15,"type":"step"},{"globalNumber":16,"image":null,"ingredients":[],"number":16,"type":"step"},{"globalNumber":17,"image":null,"ingredients":[],"number":17,"type":"step"},{"globalNumber":18,"image":null,"ingredients":[],"number":18,"type":"step"},{"globalNumber":19,"image":null,"ingredients":[],"number":19,"type":"step"},{"globalNumber":20,"image":null,"ingredients":[],"number":20,"type":"step"},{"globalNumber":21,"image":null,"ingredients":[],"number":21,"type":"step"},{"globalNumber":22,"image":null,"ingredients":[],"number":22,"type":"step"},{"globalNumber":23,"image":null,"ingredients":[],"number":23,"type":"step"},{"globalNumber":24,"image":null,"ingredients":[],"number":24,"type":"step"},{"globalNumber":25,"image":null,"ingredients":[],"number":25,"type":"step"},{"globalNumber":26,"image":null,"ingredients":[],"number":26,"type":"step"},{"globalNumber":27,"image":null,"ingredients":[],"number":27,"type":"step"},{"globalNumber":28,"image":null,"ingredients":[],"number":28,"type":"step"},{"globalNumber":29,"image":null,"ingredients":[],"number":29,"type":"step"},{"globalNumber":30,"image":null,"ingredients":[],"number":30,"type":"step"},{"globalNumber":31,"image":null,"ingredients":[],"number":31,"type":"step"},{"globalNumber":32,"image":null,"ingredients":[],"number":32,"type":"step"},{"globalNumber":33,"image":null,"ingredients":[],"number":33,"type":"step"},{"globalNumber":34,"image":null,"ingredients":[],"number":34,"type":"step"},{"globalNumber":35,"image":null,"ingredients":[],"number":35,"type":"step"},{"globalNumber":36,"image":null,"ingredients":[],"number":36,"type":"step"},{"globalNumber":37,"image":null,"ingredients":[],"number":37,"type":"step"},{"globalNumber":38,"image":null,"ingredients":[],"number":38,"type":"step"},{"globalNumber":39,"image":null,"ingredients":[],"number":39,"type":"step"},{"globalNumber":40,"image":null,"ingredients":[],"number":40,"type":"step"},{"globalNumber":41,"image":null,"ingredients":[],"number":41,"type":"step"},{"globalNumber":42,"image":null,"ingredients":[],"number":42,"type":"step"},{"globalNumber":43,"image":null,"ingredients":[],"number":43,"type":"step"},{"globalNumber":44,"image":null,"ingredients":[],"number":44,"type":"step"},{"globalNumber":45,"image":null,"ingredients":[],"number":45,"type":"step"},{"globalNumber":46,"image":null,"ingredients":[],"number":46,"type":"step"},{"globalNumber":47,"image":null,"ingredients":[],"number":47,"type":"step"},{"globalNumber":48,"image":null,"ingredients":[],"number":48,"type":"step"},{"globalNumber":49,"image":null,"ingredients":[],"number":49,"type":"step"},{"globalNumber":50,"image":null,"ingredients":[],"number":50,"type":"step"},{"globalNumber":51,"image":null,"ingredients":[],"number":51,"type":"step"},{"globalNumber":52,"image":null,"ingredients":[],"number":52,"type":"step"},{"globalNumber":53,"image":null,"ingredients":[],"number":53,"type":"step"},{"globalNumber":54,"image":null,"ingredients":[],"number":54,"type":"step"},{"globalNumber":55,"image":null,"ingredients":[],"number":55,"type":"step"},{"globalNumber":56,"image":null,"ingredients":[],"number":56,"type":"step"},{"globalNumber":57,"image":null,"ingredients":[],"number":57,"type":"step"},{"globalNumber":58,"image":null,"ingredients":[],"number":58,"type":"step"},{"globalNumber":59,"image":null,"ingredients":[],"number":59,"type":"step"},{"globalNumber":60,"image":null,"ingredients":[],"number":60,"type":"step"},{"globalNumber":61,"image":null,"ingredients":[],"number":61,"type":"step"},{"globalNumber":62,"image":null,"ingredients":[],"number":62,"type":"step"},{"globalNumber":63,"image":null,"ingredients":[],"number":63,"type":"step"},{"globalNumber":64,"image":null,"ingredients":[],"number":64,"type":"step"},{"globalNumber":65,"image":null,"ingredients":[],"number":65,"type":"step"},{"globalNumber":66,"image":null,"ingredients":[],"number":66,"type":"step"},{"globalNumber":67,"image":null,"ingredients":[],"number":67,"type":"step"},{"globalNumber":68,"image":null,"ingredients":[],"number":68,"type":"step"},{"globalNumber":69,"image":null,"ingredients":[],"number":69,"type":"step"},{"globalNumber":70,"image":null,"ingredients":[],"number":70,"type":"step"},{"globalNumber":71,"image":null,"ingredients":[],"number":71,"type":"step"},{"globalNumber":72,"image":null,"ingredients":[],"number":72,"type":"step"},{"globalNumber":73,"image":null,"ingredients":[],"number":73,"type":"step"},{"globalNumber":74,"image":null,"ingredients":[],"number":74,"type":"step"},{"globalNumber":75,"image":null,"ingredients":[],"number":75,"type":"step"},{"globalNumber":76,"image":null,"ingredients":[],"number":76,"type":"step"},{"globalNumber":77,"image":null,"ingredients":[],"number":77,"type":"step"},{"globalNumber":78,"image":null,"ingredients":[],"number":78,"type":"step"},{"globalNumber":79,"image":null,"ingredients":[],"number":79,"type":"step"},{"globalNumber":80,"image":null,"ingredients":[],"number":80,"type":"step"},{"globalNumber":81,"image":null,"ingredients":[],"number":81,"type":"step"},{"globalNumber":82,"image":null,"ingredients":[],"number":82,"type":"step"},{"globalNumber":83,"image":null,"ingredients":[],"number":83,"type":"step"},{"globalNumber":84,"image":null,"ingredients":[],"number":84,"type":"step"},{"globalNumber":85,"image":null,"ingredients":[],"number":85,"type":"step"},{"globalNumber":86,"image":null,"ingredients":[],"number":86,"type":"step"},{"globalNumber":87,"image":null,"ingredients":[],"number":87,"type":"step"},{"globalNumber":88,"image":null,"ingredients":[],"number":88,"type":"step"},{"globalNumber":89,"image":null,"ingredients":[],"number":89,"type":"step"},{"globalNumber":90,"image":null,"ingredients":[],"number":90,"type":"step"},{"globalNumber":91,"image":null,"ingredients":[],"number":91,"type":"step"},{"globalNumber":92,"image":null,"ingredients":[],"number":92,"type":"step"},{"globalNumber":93,"image":null,"ingredients":[],"number":93,"type":"step"},{"globalNumber":94,"image":null,"ingredients":[],"number":94,"type":"step"},{"globalNumber":95,"image":null,"ingredients":[],"number":95,"type":"step"},{"globalNumber":96,"image":null,"ingredients":[],"number":96,"type":"step"},{"globalNumber":97,"image":null,"ingredients":[],"number":97,"type":"step"},{"globalNumber":98,"image":null,"ingredients":[],"number":98,"type":"step"},{"globalNumber":99,"image":null,"ingredients":[],"number":99,"type":"step"},{"globalNumber":100,"image":null,"ingredients":[],"number":100,"type":"step"}]}]}
+</script>
+
+
+
+        </main>
+
+        
+        <footer class="mt-12 mb-6 text-center text-sm text-faint print:hidden">
+            Built with
+            <a href="https://cooklang.org/cli/" class="text-accent-text hover:underline" target="_blank" rel="noopener">CookCLI</a>
+            
+            &middot;
+            <a href="https://github.com/S3v3r1n3/Food" class="text-accent-text hover:underline" target="_blank" rel="noopener">View source</a>
+            
+        </footer>
+        
+    </div>
+
+    <script>
+        // Theme toggle function
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.classList.contains('dark') ? 'dark' : 'light';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+            html.classList.toggle('dark');
+            localStorage.setItem('theme', newTheme);
+        }
+    </script>
+
+    
+    <script>window.__PREFIX__ = "/Food";</script>
+    <script src="/Food/static/js/search.js"></script>
+    
+
+    <!-- URL prefix for JavaScript -->
+    <script>
+        window.__PREFIX__ = "/Food";
+        window.__STATIC_MODE__ = true;
+        window.__STRINGS__ = { close: "Close" };
+        // Bring the visitor back to this page after signing in.
+        document.querySelectorAll('[data-login-link]').forEach((link) => {
+            const prefix = window.__PREFIX__;
+            const path = location.pathname.startsWith(prefix)
+                ? location.pathname.slice(prefix.length)
+                : location.pathname;
+            if (path === '/login') return;
+            link.href = `${prefix}/login?next=${encodeURIComponent((path || '/') + location.search)}`;
+        });
+    </script>
+
+    <!-- Keyboard shortcuts -->
+    <script src="/Food/static/js/keyboard-shortcuts.js"></script>
+    <!-- Expose showShortcutsHelp globally for the help button -->
+    <script>
+        // showShortcutsHelp is defined in keyboard-shortcuts.js
+        // This ensures it's available for the onclick handler
+        if (typeof showShortcutsHelp === 'undefined') {
+            window.showShortcutsHelp = function() {
+                console.warn('Keyboard shortcuts not loaded');
+            };
+        }
+    </script>
+
+    
+<link rel="stylesheet" href="/Food/static/css/cooking-mode.css">
+<script src="/Food/static/js/cooking-mode.js"></script>
+<script src="/Food/static/js/timers.js"></script>
+
+</body>
+</html>

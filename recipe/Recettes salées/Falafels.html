@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="en-US" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Falafels - Cook</title>
+    <link rel="icon" type="image/x-icon" href="/Food/static/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/Food/static/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/Food/static/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/Food/static/apple-touch-icon.png">
+    <link rel="manifest" href="/Food/static/site.webmanifest">
+    
+    <link href="/Food/static/css/output.css" rel="stylesheet">
+    <script>
+        // Check for saved theme preference, or check for prefers-color-scheme, or default to light
+        const theme = localStorage.getItem('theme')
+            || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.classList.toggle('dark', theme === 'dark');
+        // False for a guest, or a role below shopper, on a server that requires signing in.
+        window.__CAN_EDIT_LISTS__ = true;
+        // `--recipes-only` and nobody signed in: no shopping list or pantry.
+        window.__RECIPES_ONLY__ = false;
+    </script>
+    <style>
+        .viewport {
+            width: 100%;
+            max-width: 72rem;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        /* Search result keyboard selection. --surface-sunk alone is barely
+           visible against --surface in dark mode, so the accent bar carries
+           the signal. */
+        #search-results a.search-selected {
+            background: var(--accent-soft);
+            box-shadow: inset 3px 0 0 var(--accent);
+        }
+
+        @media print {
+            /* Token values are reset to light in input.css; this resets the
+               browser's own defaults so unstyled text is dark too. */
+            html.dark, html {
+                color-scheme: light !important;
+            }
+
+            * {
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+
+            body {
+                background: white !important;
+                margin: 0;
+                padding: 0;
+            }
+
+            .viewport {
+                max-width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            /* Hide navigation and non-essential elements */
+            nav, #search-container, #search-input, #search-results, .print\:hidden, .breadcrumb {
+                display: none !important;
+            }
+
+            /* Hide all navigation links */
+            a[href="/Food/"] {
+                display: none !important;
+            }
+
+            /* Recipe layout for print: one column */
+            .grid {
+                display: block !important;
+            }
+
+            .md\:col-span-1, .md\:col-span-2 {
+                page-break-inside: avoid;
+                width: 100% !important;
+            }
+
+            /* Square corners on paper */
+            .card, .step-box, .ingredient-row, .recipe-note, .rounded-xl {
+                border-radius: 0 !important;
+            }
+
+            /* Step numbers */
+            .step-number {
+                background: #000 !important;
+                color: #fff !important;
+            }
+
+            /* Images */
+            img {
+                max-height: 300px !important;
+                max-width: 100% !important;
+                height: auto !important;
+                object-fit: contain !important;
+                page-break-inside: avoid;
+                page-break-after: avoid;
+            }
+
+            /* Recipe sections on same page if possible */
+            h2, h3 {
+                page-break-after: avoid;
+            }
+
+            ol, ul {
+                page-break-inside: avoid;
+            }
+
+            /* Compact spacing */
+            .mb-8, .mb-6, .mb-4 {
+                margin-bottom: 0.5rem !important;
+            }
+
+            .p-6 {
+                padding: 0.5rem !important;
+            }
+
+            /* Recipe header */
+            h1 {
+                color: #000 !important;
+                font-size: 1.5rem !important;
+                margin-bottom: 0 !important;
+            }
+
+            /* Shopping list print styles */
+            .lg\:w-2\/5, .xl\:w-1\/3 {
+                display: none !important;
+            }
+
+            #shopping-list-results {
+                font-size: 11pt !important;
+                line-height: 1.2 !important;
+            }
+
+            #shopping-list-results input[type="checkbox"] {
+                display: none !important;
+            }
+
+            #shopping-list-results li .flex-1 {
+                width: auto !important;
+                flex: 1 1 0% !important;
+            }
+
+            #shopping-list-results label {
+                cursor: default !important;
+            }
+
+            #shopping-list-results h2 {
+                font-size: 11pt !important;
+                color: #000 !important;
+                margin-bottom: 0 !important;
+            }
+
+            #shopping-list-results .space-y-2 > * + *,
+            #shopping-list-results ul > * + * {
+                margin-top: 0 !important;
+            }
+
+            #shopping-list-results li {
+                padding: 0 !important;
+                line-height: 1.3 !important;
+                border-bottom: 1px dotted #ccc;
+            }
+
+            #shopping-list-results .card {
+                margin-bottom: 0.15rem !important;
+                padding: 0 !important;
+                border: none !important;
+            }
+
+            /* Menu print styles */
+            #menu-content {
+                font-size: 10pt !important;
+                line-height: 1.4 !important;
+            }
+
+            #menu-content h1 {
+                font-size: 14pt !important;
+                margin-bottom: 0.25rem !important;
+                color: #000 !important;
+            }
+
+            #menu-content .space-y-6 > * + * {
+                margin-top: 0.3rem !important;
+            }
+
+            #menu-content .menu-section {
+                border: 1px solid #ccc !important;
+                border-radius: 0 !important;
+                page-break-inside: avoid;
+            }
+
+            #menu-content .menu-section-header {
+                background: #eee !important;
+                color: #000 !important;
+                padding: 0.15rem 0.5rem !important;
+            }
+
+            #menu-content .menu-section-header h2 {
+                font-size: 11pt !important;
+                color: #000 !important;
+            }
+
+            #menu-content .menu-section-body {
+                padding: 0.25rem 0.5rem !important;
+            }
+
+            #menu-content .menu-section-body .space-y-2 > * + *,
+            #menu-content .menu-section-body > * + * {
+                margin-top: 0.05rem !important;
+            }
+
+            #menu-content .menu-section-body h3 {
+                font-size: 10pt !important;
+                margin-top: 0.2rem !important;
+                margin-bottom: 0 !important;
+            }
+
+            #menu-content .menu-section-body .pl-6 {
+                padding-left: 1rem !important;
+            }
+
+            /* Preserve word spacing in flex lines */
+            #menu-content .menu-section-body .flex {
+                gap: 0.25em !important;
+            }
+
+            #menu-content .ingredient-badge {
+                font-weight: bold !important;
+                color: #000 !important;
+            }
+
+            #menu-content a {
+                color: #000 !important;
+                text-decoration: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-bg text-text">
+    <div class="viewport">
+        <nav class="nav-card relative">
+            <div class="px-3 lg:px-6 py-4 relative">
+                <div class="flex items-center justify-between flex-wrap gap-y-3">
+                    <a href="/Food/index.html" class="order-1 hidden md:flex items-center space-x-2">
+                        <img src="/Food/static/android-chrome-192x192.png" alt="Cook" class="brand-mark h-8 w-8 rounded-md" width="32" height="32">
+                    </a>
+
+                    <div class="relative z-50 order-2 flex-1 min-w-0 mr-2 md:ml-2 md:mr-4" id="search-container">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-faint" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        <input type="text"
+                               id="search-input"
+                               placeholder="Search recipes..."
+                               class="search-input">
+                        <div id="search-results"
+                             class="absolute top-full mt-2 w-full card shadow-[var(--shadow-overlay)] hidden max-h-96 overflow-y-auto"
+                             style="z-index: 9999;">
+                        </div>
+                    </div>
+
+                    <div class="order-3 flex items-center gap-1 lg:gap-2">
+                        
+                        <div class="hidden md:flex items-center gap-1 mr-2 lg:mr-4">
+                            <a href="/Food/index.html"
+                               class="nav-pill active">
+                                Recipes
+                            </a>
+                            
+                            
+                        </div>
+                        
+                        <!-- Inline buttons on md+ screens -->
+                        
+                        <button onclick="showShortcutsHelp()" class="icon-btn hidden md:inline-flex ml-2 print:hidden" aria-label="Keyboard shortcuts" title="Keyboard shortcuts (?)">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </button>
+                        <button onclick="toggleTheme()" class="icon-btn hidden md:inline-flex ml-2 print:hidden" aria-label="Toggle theme">
+                            <svg class="hidden dark:block" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
+                            </svg>
+                            <svg class="block dark:hidden" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                            </svg>
+                        </button>
+                        
+                        <!-- Overflow menu for small screens -->
+                        <div class="relative md:hidden ml-auto" id="more-menu-container">
+                            <button onclick="document.getElementById('more-dropdown').classList.toggle('hidden')" class="icon-btn" aria-label="More options">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+                                </svg>
+                            </button>
+                            <div id="more-dropdown" class="hidden absolute right-0 mt-2 w-56 card shadow-[var(--shadow-overlay)] z-50 py-1">
+                                
+                                <a href="/Food/index.html" class="menu-item active">
+                                    <span>🍳</span> <span>Recipes</span>
+                                </a>
+                                
+                                
+                                <div class="border-t border-line my-1"></div>
+                                
+                                
+                                
+                                <button onclick="showShortcutsHelp(); document.getElementById('more-dropdown').classList.add('hidden');" class="menu-item">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    <span>Keyboard Shortcuts</span>
+                                </button>
+                                <button onclick="toggleTheme(); document.getElementById('more-dropdown').classList.add('hidden');" class="menu-item">
+                                    <svg class="w-4 h-4 hidden dark:block" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path></svg>
+                                    <svg class="w-4 h-4 block dark:hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                                    <span>Toggle Theme</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main>
+            
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Recipe","image":"/Food/api/static/Recettes%20sal%C3%A9es/Falafels.jpg","keywords":"Boulette, Orient, recette","name":"Falafels","recipeIngredient":[],"recipeInstructions":[{"@type":"HowToStep","text":"# Falafels"},{"@type":"HowToStep","text":"**Pour 20 falafels environ :**"},{"@type":"HowToStep","text":"-500g de pois chiches secs ou fèves sèches ou moitié pois chiches et moitié patate douce cuite -5 gousses d'ail -1/2 bouquet de persil plat -1/2 bouquet de coriandre (en tout pour les 2: 60g) -1 oignon -1 cuillerée à café de bicarbonate de soude -1 cuillerée à soupe de sésame doré -2 cuillerées à café de coriandre en poudre -2 cuillerées à café de cumin en poudre -1/2 cuillerée à café de piment en poudre -sel, poivre"},{"@type":"HowToStep","text":"**Pour la sauce au yaourt**"},{"@type":"HowToStep","text":"* 1 yaourt grec (environ 200g) * 1 gousse d'ail * 1 càc de cumin * quelques feuilles de persil frais * 1 càs de poivre * 1/2 citron"},{"@type":"HowToStep","text":"_Mettre à tremper les pois chiches (ou les fèves) la veille dans de l'eau froide. Il suffit de les laisser tremper 24h._ _**N'essayez pas cette recette avec des pois chiches en boîte! Surtout pas afin d'éviter que les pois chiches ne tiennent pas la cuisson.**_ (`Ça marche quand même avec pois chiches en boite!)`"},{"@type":"HowToStep","text":"_Vingt-quatre heures plus tard: bien égoutter les pois chiches puis les essuyer parfaitement dans un linge propre ou du papier absorbant. Il faut vraiment que les pois chiches soient secs. Car c'est souvent là que les falafels se délitent à la cuisson, car ils ont trop d'eau. Si on prend bien soin de les sécher, alors les falafels seront parfaits!_"},{"@type":"HowToStep","text":"_Mettre les pois chiches (crus donc, et séchés mais réhydratés) dans un mixeur (ou un hachoir à viande)._"},{"@type":"HowToStep","text":"_Mixer par petits coups pour obtenir une pâte qui colle un peu. On ne veut pas pour autant une purée lisse!! Mais en laissant une minute au mixeur, on obtient déjà cette belle texture avec ces petits morceaux minuscules. Si on tasse cette pâte, elle s'agglomère: c'est ce que l'on cherche! Il faut mixer suffisamment pour éviter le délitement de la pâte dans l'huile chaude._"},{"@type":"HowToStep","text":"_Mettre la pâte dans un bol puis ajouter les épices: coriandre en poudre, cumin, piment, sel, bicarbonate de soude._"},{"@type":"HowToStep","text":"_Hacher finement un demi bouquet de coriandre fraîche et un demi de persil plat, les gousses d'ail et le demi oignon._"},{"@type":"HowToStep","text":"_**Conseil de bernard:**_ _si on lave les herbes, il faudra veiller à bien les sécher pour enlever toute l'eau!!_"},{"@type":"HowToStep","text":"Ajouter le tout à la pâte."},{"@type":"HowToStep","text":"_Bien mélanger et ajouter (c'est délicieux avec!!) les graines de sésame grillées. On obtient donc une pâte où l'on voit les herbes._"},{"@type":"HowToStep","text":"_Une autre solution qui donnera une pâte verte (au goût, c'est quasiment la même chose!) consiste à tout mettre ensemble dans le mixeur. J'aime cette version car du coup ça va plus vite et cela donne une belle couleur de falafels._"},{"@type":"HowToStep","text":"_**Note de bernard:**_ _si on lave les herbes, il faudra veiller à bien les sécher pour enlever toute l'eau!!_"},{"@type":"HowToStep","text":"_Bien épicer le tout._ _Sans oublier les graines de sésame!_"},{"@type":"HowToStep","text":"_Voilà! La belle pâte à falafels est prête! Le roi du falafel, l'as du falafel.... c'est nous maintenant!_ ![](../_resources/Evernote_Camera_Roll_20130915_134735.jpg)"},{"@type":"HowToStep","text":"_C'est tout!! Pas de farine, pas de farine de pois chiches, pas d'oeuf, pas d'eau (!!!!), rien d'autre! Le falafel c'est aussi simple que cela si l'on a pris bien soin de prendre des pois chiches secs réhydratés 24h que l'on a ensuite bien séchés!_"},{"@type":"HowToStep","text":"**Si l'on se passe de la cuillère à falafel, il suffit alors de former des boulettes avec nos petites mains** **humides** **(c'est plus pratique)**"},{"@type":"HowToStep","text":"**Cuisson** 1- Poêle _Mettre les falafels un par un dans l'huile bien chaude._ _On peut choisir leur couleur, mais je les aimes bien brun foncé._"},{"@type":"HowToStep","text":"_Laisser refroidir sur un papier absorbant._ _Et voici un délicieux falafel tout moelleux au centre!_"},{"@type":"HowToStep","text":"2- Four à 180°C _Huilez une plaque de four à rebords. Arrosez les falafels avec un filet d'huile et faites cuire 20 à 25 min en les retournant à mi-parcours jusqu'à ce qu'ils soient bien dorés._"},{"@type":"HowToStep","text":"Et voici les délicieux petits falafels bien croustillants et moelleux à l'intérieur. ![](../_resources/Evernote_Camera_Roll_20130915_134748.jpg)"},{"@type":"HowToStep","text":"_Alors cette fois c'en est fini des falafels qui se délitent dans l'huile! Pour ma part, j'ai congelé une partie de mes falafels. Il suffit alors de les réchauffer à four chaud pendant une dizaine de minutes pour qu'ils retrouvent leur texture croustillante...!_"},{"@type":"HowToStep","text":"**Pour la sauce au yaourt**: Dans un bol verser le yaourt, Ajouter le jus d'un demi citron, ciseler le persil et écraser la gousse d'ail puis les ajouter dans la sauce, incorporer les épices et bien mélanger. Réserver au frais."},{"@type":"HowToStep","text":"![](../_resources/unknown_filename.278.jpeg)"},{"@type":"HowToStep","text":"# **Falafels de lentilles corail - à tester**"},{"@type":"HowToStep","text":"[![](../_resources/unknown_filename.279.jpeg =948x)](http://www.lentilles-corail.com/files/2016/04/photodune-10875726-falafel-s1.jpg)Cette recette est une variante des célèbres falafels de pois chiche. Elle présente plusieurs avantages. D’abord, elle est plus rapide à réaliser : les lentilles corail ne demandent pas de trempage et cuisent plus vite. Les boulettes de lentilles corail sont plus fondantes et un peu moins sèches que les falafels classiques. Ces falafels orangés seront parfaits pour accompagner une salade verte. Si vous préférez un plat chaud, ils se marieront bien à un plat de quinoa légèrement épicé. La sauce au yaourt que nous vous proposons apporte une touche de fraicheur et d’onctuosité aux falafels de lentilles corail. **PouR 12 FALAFELS**"},{"@type":"HowToStep","text":"* 200g de [lentilles corail](https://www.bienmanger.com/1F10653_Lentilles_Corail_Bio_Celnat.html)"},{"@type":"HowToStep","text":"* Quelques feuilles de coriandre et de persil * 1 demi-oignon * 1 cuillère à soupe bombée de <https://www.bienmanger.com/1F8553_Sesame_Dore_Tyr_Liban.html> [graine de sésame](https://www.bienmanger.com/1F8553_Sesame_Dore_Tyr_Liban.html)<http://www.lentilles-corail.com/files/2016/04/sesame_seeds_XXL.jpg> * Sel, [poivre](https://www.bienmanger.com/1F3191_Poivre_Noir_Concasse_Bio.html) * 2 cuillères d’huile d’olive * 2 pincées de <http://www.bienmanger.com/1F26391_Curcuma_Mayotte.html> [curcuma](http://www.bienmanger.com/1F26391_Curcuma_Mayotte.html), 2 pincées de [cumin](https://www.bienmanger.com/1F8521_Cumin_Alep.html), 1 pincée de [piment en poudre](https://www.bienmanger.com/1F2070_Piment_Doux_Espagne_Bio.html) * 1 cuillère à café de bicarbonate de soude * 40 g de mie de pain ou de chapelure (peut être remplacée par de la farine) * Le jus d’un demi-citron ou d’un [demi-yuzu](https://www.bienmanger.com/1F6497_Jus_Yuzu_Vert.html)"},{"@type":"HowToStep","text":"**LA SAUCE YAOURT**"},{"@type":"HowToStep","text":"* 100 g de yaourt de type grec (crémeux)<http://www.lentilles-corail.com/files/2016/04/Yuzu.jpg> * 2 cuillères à soupe de [tahin](https://www.bienmanger.com/1F3770_Tahin_Puree_Sesame_Blanc_Bio.html) (purée de sésame) * Le jus d’un d’un demi-yuzu ou d’un demi-citron * 1 cuillère à café d’huile d’olive * De la ciboulette fraiche ciselée"},{"@type":"HowToStep","text":"**<u>Les étapes de la recette<\/u>** **Les falafels**"},{"@type":"HowToStep","text":"1. Rincez bien les lentilles corail 2. Cuisez entre 15 minutes et 20 minutes 3. Passez au mixeur, les lentilles, la mie de main, les graines de sésame, l’huile d’olive, le jus de citron, les épices, les herbes, le sel le poivre 4. Ajustez l’assaisonnement selon vos goûts 5. Vous devez obtenir une texture grumeleuse pour pouvoir réaliser de belles boulettes 6. Incorporez le bicarbonate 7. Préchauffez le four à 200 °C 8. Vous pouvez éventuellement faire refroidir le mélange 20 minutes au réfrigérateur 9. Faites des boules en roulant 1 à 2 cuillères à soupe de la préparation entre vos mains, posez les sur une plaques recouverte d’une couche de papier sulfurisé 10. Badigeonnez les boulettes d’huile d’olive pour plus de brillance 11. Enfournez pour environ 20 minutes"},{"@type":"HowToStep","text":"**SAUCE**"},{"@type":"HowToStep","text":"1. Ciselez la ciboulette 2. Mélangez énergiquement dans un bol le yaourt, le tahin, le jus de citron et l’huile d’olive (ou autre huile végétale), pour obtenir une texture lisse 3. Saupoudrez avec la ciboulette 4. Mettez le bol au réfrigérateur pour obtenir une sauce bien fraîche"},{"@type":"HowToStep","text":"Dégustez les falafels de lentilles corail avec les doigts ou en vous aidant de petites piques, en les trempant dans la sauce. Le tout accompagné d’une salade fraîche ou de céréales pour un plat plus consistant."}]}</script>
+<div>
+    <nav class="mb-4 breadcrumb print:hidden">
+        <ol class="flex items-center space-x-2 text-sm text-muted">
+            <li><a href="/Food/index.html" class="hover:text-text">Recipes</a></li>
+            
+            <li class="flex items-center">
+                <span class="mx-2 text-faint">/</span>
+                
+                    <a href="/Food/directory/Recettes salées.html" class="hover:text-text">Recettes salées</a>
+                
+            </li>
+            
+            <li class="flex items-center">
+                <span class="mx-2 text-faint">/</span>
+                
+                    <span class="text-text">Falafels</span>
+                
+            </li>
+            
+        </ol>
+    </nav>
+
+    <div class="mb-8">
+        <!-- Recipe image if available -->
+        
+        <div class="mb-6 max-w-4xl mx-auto flex justify-center">
+            <img src="/Food/api/static/Recettes%20sal%C3%A9es/Falafels.jpg" alt="Falafels" class="rounded-xl shadow-[var(--shadow-card)] max-w-full h-auto max-h-[500px]">
+        </div>
+        
+
+        <!-- Title bar with scale and shopping list button -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 print:flex-row print:items-center">
+            <h1 class="text-display font-bold text-text print:text-2xl">
+                Falafels
+            </h1>
+            
+            <div class="flex flex-wrap items-center gap-2 lg:gap-3 print:hidden">
+                
+                <button id="start-cooking-btn" onclick="startCookingMode()" class="btn btn-primary" title="Start Cooking">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span class="hidden lg:inline">Cook</span>
+                </button>
+                
+                <a href="/Food/recipe/Recettes salées/Falafels.cook" download class="btn" title="Download .cook source">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"></path>
+                    </svg>
+                    <span class="hidden lg:inline">.cook</span>
+                </a>
+                
+            </div>
+        </div>
+
+        <!-- Recipe info section -->
+        <div class="space-y-4">
+            <!-- Tags row -->
+            
+            <div class="flex flex-wrap gap-2">
+                
+                <span class="tag">#Boulette</span>
+                
+                <span class="tag">#Orient</span>
+                
+                <span class="tag">#recette</span>
+                
+            </div>
+            
+
+            
+
+            <!-- Description if present -->
+            
+            
+
+            <!-- Metadata row -->
+            <div id="metadata-container" class="flex flex-wrap gap-3">
+                
+                
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                <!-- Custom metadata -->
+                
+                
+                <span class="metadata-pill metadata-custom">Created at: 2013-09-15</span>
+                
+                
+                
+                <span class="metadata-pill metadata-custom">Last updated at: 2017-08-13</span>
+                
+                
+            </div>
+
+            
+        </div>
+    </div>
+
+    <div id="recipe-body" class="grid md:grid-cols-3 gap-8 mb-8">
+        <div class="md:col-span-1">
+            <div class="card p-6">
+                <h2 class="text-title font-bold mb-4 text-accent-text">🥘 Ingredients</h2>
+                
+                <!-- Fallback to original flat list for recipes without sections -->
+                <ul class="ingredient-list space-y-3">
+                    
+                </ul>
+                
+
+                
+            </div>
+        </div>
+
+        <div class="md:col-span-2">
+            <div class="card p-6" data-recipe-path="Recettes salées/Falafels">
+                
+                
+                
+                <ol class="step-list space-y-4 ">
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">1</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        # Falafels
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">2</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Pour 20 falafels environ :**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">3</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        -500g de pois chiches secs ou fèves sèches ou moitié pois chiches et moitié patate douce cuite -5 gousses d&#x27;ail -1/2 bouquet de persil plat -1/2 bouquet de coriandre (en tout pour les 2: 60g) -1 oignon -1 cuillerée à café de bicarbonate de soude -1 cuillerée à soupe de sésame doré -2 cuillerées à café de coriandre en poudre -2 cuillerées à café de cumin en poudre -1/2 cuillerée à café de piment en poudre -sel, poivre
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">4</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Pour la sauce au yaourt**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">5</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 1 yaourt grec (environ 200g) * 1 gousse d&#x27;ail * 1 càc de cumin * quelques feuilles de persil frais * 1 càs de poivre * 1/2 citron
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">6</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _Mettre à tremper les pois chiches (ou les fèves) la veille dans de l&#x27;eau froide. Il suffit de les laisser tremper 24h._ _**N&#x27;essayez pas cette recette avec des pois chiches en boîte! Surtout pas afin d&#x27;éviter que les pois chiches ne tiennent pas la cuisson.**_ (`Ça marche quand même avec pois chiches en boite!)`
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">7</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _Vingt-quatre heures plus tard: bien égoutter les pois chiches puis les essuyer parfaitement dans un linge propre ou du papier absorbant. Il faut vraiment que les pois chiches soient secs. Car c&#x27;est souvent là que les falafels se délitent à la cuisson, car ils ont trop d&#x27;eau. Si on prend bien soin de les sécher, alors les falafels seront parfaits!_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">8</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _Mettre les pois chiches (crus donc, et séchés mais réhydratés) dans un mixeur (ou un hachoir à viande)._
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">9</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _Mixer par petits coups pour obtenir une pâte qui colle un peu. On ne veut pas pour autant une purée lisse!! Mais en laissant une minute au mixeur, on obtient déjà cette belle texture avec ces petits morceaux minuscules. Si on tasse cette pâte, elle s&#x27;agglomère: c&#x27;est ce que l&#x27;on cherche! Il faut mixer suffisamment pour éviter le délitement de la pâte dans l&#x27;huile chaude._
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">10</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _Mettre la pâte dans un bol puis ajouter les épices: coriandre en poudre, cumin, piment, sel, bicarbonate de soude._
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">11</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _Hacher finement un demi bouquet de coriandre fraîche et un demi de persil plat, les gousses d&#x27;ail  et le demi oignon._
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">12</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _**Conseil de bernard:**_ _si on lave les herbes, il faudra veiller à bien les sécher pour enlever toute l&#x27;eau!!_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">13</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Ajouter le tout à la pâte.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">14</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _Bien mélanger et ajouter (c&#x27;est délicieux avec!!) les graines de sésame grillées. On obtient donc une pâte où l&#x27;on voit les herbes._
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">15</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _Une autre solution qui donnera une pâte verte (au goût, c&#x27;est quasiment la même chose!) consiste à tout mettre ensemble dans le mixeur. J&#x27;aime cette version car du coup ça va plus vite et cela donne une belle couleur de falafels._
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">16</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _**Note de bernard:**_ _si on lave les herbes, il faudra veiller à bien les sécher pour enlever toute l&#x27;eau!!_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">17</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _Bien épicer le tout._ _Sans oublier les graines de sésame!_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">18</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _Voilà! La belle pâte à falafels est prête! Le roi du falafel, l&#x27;as du falafel.... c&#x27;est nous maintenant!_ ![](../_resources/Evernote_Camera_Roll_20130915_134735.jpg)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">19</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _C&#x27;est tout!! Pas de farine, pas de farine de pois chiches, pas d&#x27;oeuf, pas d&#x27;eau (!!!!), rien d&#x27;autre! Le falafel c&#x27;est aussi simple que cela si l&#x27;on a pris bien soin de prendre des pois chiches secs réhydratés 24h que l&#x27;on a ensuite bien séchés!_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">20</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Si l&#x27;on se passe de la cuillère à falafel, il suffit alors de former des boulettes avec nos petites mains** **humides** **(c&#x27;est plus pratique)**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">21</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Cuisson** 1- Poêle _Mettre les falafels un par un dans l&#x27;huile bien chaude._ _On peut choisir leur couleur, mais je les aimes bien brun foncé._
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">22</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _Laisser refroidir sur un papier absorbant._ _Et voici un délicieux falafel tout moelleux au centre!_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">23</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        2- Four à 180°C _Huilez une plaque de four à rebords. Arrosez les falafels avec un filet d&#x27;huile et faites cuire 20 à 25 min en les retournant à mi-parcours jusqu&#x27;à ce qu&#x27;ils soient bien dorés._
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">24</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Et voici les délicieux petits falafels bien croustillants et moelleux à l&#x27;intérieur. ![](../_resources/Evernote_Camera_Roll_20130915_134748.jpg)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">25</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        _Alors cette fois c&#x27;en est fini des falafels qui se délitent dans l&#x27;huile! Pour ma part, j&#x27;ai congelé une partie de mes falafels. Il suffit alors de les réchauffer à four chaud pendant une dizaine de minutes pour qu&#x27;ils retrouvent leur texture croustillante...!_
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">26</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Pour la sauce au yaourt**: Dans un bol verser le yaourt, Ajouter le jus d&#x27;un demi citron, ciseler le persil et écraser la gousse d&#x27;ail puis les ajouter dans la sauce, incorporer les épices et bien mélanger. Réserver au frais.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">27</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        ![](../_resources/unknown_filename.278.jpeg)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">28</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        # **Falafels de lentilles corail - à tester**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">29</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        [![](../_resources/unknown_filename.279.jpeg =948x)](http://www.lentilles-corail.com/files/2016/04/photodune-10875726-falafel-s1.jpg)Cette recette est une variante des célèbres falafels de pois chiche. Elle présente plusieurs avantages. D’abord, elle est plus rapide à réaliser : les lentilles corail ne demandent pas de trempage et cuisent plus vite. Les boulettes de lentilles corail sont plus fondantes et un peu moins sèches que les falafels classiques. Ces falafels orangés seront parfaits pour accompagner une salade verte. Si vous préférez un plat chaud, ils se marieront bien à un plat de quinoa légèrement épicé. La sauce au yaourt que nous vous proposons apporte une touche de fraicheur et d’onctuosité aux falafels de lentilles corail. **PouR 12 FALAFELS**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">30</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 200g de [lentilles corail](https://www.bienmanger.com/1F10653_Lentilles_Corail_Bio_Celnat.html)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">31</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * Quelques feuilles de coriandre et de persil * 1 demi-oignon * 1 cuillère à soupe bombée de &lt;https://www.bienmanger.com/1F8553_Sesame_Dore_Tyr_Liban.html&gt; [graine de sésame](https://www.bienmanger.com/1F8553_Sesame_Dore_Tyr_Liban.html)&lt;http://www.lentilles-corail.com/files/2016/04/sesame_seeds_XXL.jpg&gt; * Sel, [poivre](https://www.bienmanger.com/1F3191_Poivre_Noir_Concasse_Bio.html) * 2 cuillères d’huile d’olive * 2 pincées de &lt;http://www.bienmanger.com/1F26391_Curcuma_Mayotte.html&gt; [curcuma](http://www.bienmanger.com/1F26391_Curcuma_Mayotte.html), 2 pincées de [cumin](https://www.bienmanger.com/1F8521_Cumin_Alep.html), 1 pincée de [piment en poudre](https://www.bienmanger.com/1F2070_Piment_Doux_Espagne_Bio.html) * 1 cuillère à café de bicarbonate de soude * 40 g de mie de pain ou de chapelure (peut être remplacée par de la farine) * Le jus d’un demi-citron ou d’un [demi-yuzu](https://www.bienmanger.com/1F6497_Jus_Yuzu_Vert.html)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">32</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **LA SAUCE YAOURT**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">33</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        * 100 g de yaourt de type grec (crémeux)&lt;http://www.lentilles-corail.com/files/2016/04/Yuzu.jpg&gt; * 2 cuillères à soupe de [tahin](https://www.bienmanger.com/1F3770_Tahin_Puree_Sesame_Blanc_Bio.html) (purée de sésame) * Le jus d’un d’un demi-yuzu ou d’un demi-citron * 1 cuillère à café d’huile d’olive * De la ciboulette fraiche ciselée
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">34</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **&lt;u&gt;Les étapes de la recette&lt;/u&gt;** **Les falafels**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">35</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        1. Rincez bien les lentilles corail 2. Cuisez entre 15 minutes et 20 minutes 3. Passez au mixeur, les lentilles, la mie de main, les graines de sésame, l’huile d’olive, le jus de citron, les épices, les herbes, le sel le poivre 4. Ajustez l’assaisonnement selon vos goûts 5. Vous devez obtenir une texture grumeleuse pour pouvoir réaliser de belles boulettes 6. Incorporez le bicarbonate 7. Préchauffez le four à 200 °C 8. Vous pouvez éventuellement faire refroidir le mélange 20 minutes au réfrigérateur 9. Faites des boules en roulant 1 à 2 cuillères à soupe de la préparation entre vos mains, posez les sur une plaques recouverte d’une couche de papier sulfurisé 10. Badigeonnez les boulettes d’huile d’olive pour plus de brillance 11. Enfournez pour environ 20 minutes
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">36</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **SAUCE**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">37</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        1. Ciselez la ciboulette 2. Mélangez énergiquement dans un bol le yaourt, le tahin, le jus de citron et l’huile d’olive (ou autre huile végétale), pour obtenir une texture lisse 3. Saupoudrez avec la ciboulette 4. Mettez le bol au réfrigérateur pour obtenir une sauce bien fraîche
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">38</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Dégustez les falafels de lentilles corail avec les doigts ou en vous aidant de petites piques, en les trempant dans la sauce. Le tout accompagné d’une salade fraîche ou de céréales pour un plat plus consistant.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                </ol>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<script id="cooking-mode-data" type="application/json">
+{"image":"/Food/api/static/Recettes%20sal%C3%A9es/Falafels.jpg","name":"Falafels","scale":1.0,"sections":[{"ingredients":[],"name":null,"stepOffset":0,"steps":[{"globalNumber":1,"image":null,"ingredients":[],"number":1,"type":"step"},{"globalNumber":2,"image":null,"ingredients":[],"number":2,"type":"step"},{"globalNumber":3,"image":null,"ingredients":[],"number":3,"type":"step"},{"globalNumber":4,"image":null,"ingredients":[],"number":4,"type":"step"},{"globalNumber":5,"image":null,"ingredients":[],"number":5,"type":"step"},{"globalNumber":6,"image":null,"ingredients":[],"number":6,"type":"step"},{"globalNumber":7,"image":null,"ingredients":[],"number":7,"type":"step"},{"globalNumber":8,"image":null,"ingredients":[],"number":8,"type":"step"},{"globalNumber":9,"image":null,"ingredients":[],"number":9,"type":"step"},{"globalNumber":10,"image":null,"ingredients":[],"number":10,"type":"step"},{"globalNumber":11,"image":null,"ingredients":[],"number":11,"type":"step"},{"globalNumber":12,"image":null,"ingredients":[],"number":12,"type":"step"},{"globalNumber":13,"image":null,"ingredients":[],"number":13,"type":"step"},{"globalNumber":14,"image":null,"ingredients":[],"number":14,"type":"step"},{"globalNumber":15,"image":null,"ingredients":[],"number":15,"type":"step"},{"globalNumber":16,"image":null,"ingredients":[],"number":16,"type":"step"},{"globalNumber":17,"image":null,"ingredients":[],"number":17,"type":"step"},{"globalNumber":18,"image":null,"ingredients":[],"number":18,"type":"step"},{"globalNumber":19,"image":null,"ingredients":[],"number":19,"type":"step"},{"globalNumber":20,"image":null,"ingredients":[],"number":20,"type":"step"},{"globalNumber":21,"image":null,"ingredients":[],"number":21,"type":"step"},{"globalNumber":22,"image":null,"ingredients":[],"number":22,"type":"step"},{"globalNumber":23,"image":null,"ingredients":[],"number":23,"type":"step"},{"globalNumber":24,"image":null,"ingredients":[],"number":24,"type":"step"},{"globalNumber":25,"image":null,"ingredients":[],"number":25,"type":"step"},{"globalNumber":26,"image":null,"ingredients":[],"number":26,"type":"step"},{"globalNumber":27,"image":null,"ingredients":[],"number":27,"type":"step"},{"globalNumber":28,"image":null,"ingredients":[],"number":28,"type":"step"},{"globalNumber":29,"image":null,"ingredients":[],"number":29,"type":"step"},{"globalNumber":30,"image":null,"ingredients":[],"number":30,"type":"step"},{"globalNumber":31,"image":null,"ingredients":[],"number":31,"type":"step"},{"globalNumber":32,"image":null,"ingredients":[],"number":32,"type":"step"},{"globalNumber":33,"image":null,"ingredients":[],"number":33,"type":"step"},{"globalNumber":34,"image":null,"ingredients":[],"number":34,"type":"step"},{"globalNumber":35,"image":null,"ingredients":[],"number":35,"type":"step"},{"globalNumber":36,"image":null,"ingredients":[],"number":36,"type":"step"},{"globalNumber":37,"image":null,"ingredients":[],"number":37,"type":"step"},{"globalNumber":38,"image":null,"ingredients":[],"number":38,"type":"step"}]}]}
+</script>
+
+
+
+        </main>
+
+        
+        <footer class="mt-12 mb-6 text-center text-sm text-faint print:hidden">
+            Built with
+            <a href="https://cooklang.org/cli/" class="text-accent-text hover:underline" target="_blank" rel="noopener">CookCLI</a>
+            
+            &middot;
+            <a href="https://github.com/S3v3r1n3/Food" class="text-accent-text hover:underline" target="_blank" rel="noopener">View source</a>
+            
+        </footer>
+        
+    </div>
+
+    <script>
+        // Theme toggle function
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.classList.contains('dark') ? 'dark' : 'light';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+            html.classList.toggle('dark');
+            localStorage.setItem('theme', newTheme);
+        }
+    </script>
+
+    
+    <script>window.__PREFIX__ = "/Food";</script>
+    <script src="/Food/static/js/search.js"></script>
+    
+
+    <!-- URL prefix for JavaScript -->
+    <script>
+        window.__PREFIX__ = "/Food";
+        window.__STATIC_MODE__ = true;
+        window.__STRINGS__ = { close: "Close" };
+        // Bring the visitor back to this page after signing in.
+        document.querySelectorAll('[data-login-link]').forEach((link) => {
+            const prefix = window.__PREFIX__;
+            const path = location.pathname.startsWith(prefix)
+                ? location.pathname.slice(prefix.length)
+                : location.pathname;
+            if (path === '/login') return;
+            link.href = `${prefix}/login?next=${encodeURIComponent((path || '/') + location.search)}`;
+        });
+    </script>
+
+    <!-- Keyboard shortcuts -->
+    <script src="/Food/static/js/keyboard-shortcuts.js"></script>
+    <!-- Expose showShortcutsHelp globally for the help button -->
+    <script>
+        // showShortcutsHelp is defined in keyboard-shortcuts.js
+        // This ensures it's available for the onclick handler
+        if (typeof showShortcutsHelp === 'undefined') {
+            window.showShortcutsHelp = function() {
+                console.warn('Keyboard shortcuts not loaded');
+            };
+        }
+    </script>
+
+    
+<link rel="stylesheet" href="/Food/static/css/cooking-mode.css">
+<script src="/Food/static/js/cooking-mode.js"></script>
+<script src="/Food/static/js/timers.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,1970 @@
+<!DOCTYPE html>
+<html lang="en-US" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meringues ultra simples - Cook</title>
+    <link rel="icon" type="image/x-icon" href="/Food/static/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/Food/static/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/Food/static/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/Food/static/apple-touch-icon.png">
+    <link rel="manifest" href="/Food/static/site.webmanifest">
+    
+    <link href="/Food/static/css/output.css" rel="stylesheet">
+    <script>
+        // Check for saved theme preference, or check for prefers-color-scheme, or default to light
+        const theme = localStorage.getItem('theme')
+            || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.classList.toggle('dark', theme === 'dark');
+        // False for a guest, or a role below shopper, on a server that requires signing in.
+        window.__CAN_EDIT_LISTS__ = true;
+        // `--recipes-only` and nobody signed in: no shopping list or pantry.
+        window.__RECIPES_ONLY__ = false;
+    </script>
+    <style>
+        .viewport {
+            width: 100%;
+            max-width: 72rem;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        /* Search result keyboard selection. --surface-sunk alone is barely
+           visible against --surface in dark mode, so the accent bar carries
+           the signal. */
+        #search-results a.search-selected {
+            background: var(--accent-soft);
+            box-shadow: inset 3px 0 0 var(--accent);
+        }
+
+        @media print {
+            /* Token values are reset to light in input.css; this resets the
+               browser's own defaults so unstyled text is dark too. */
+            html.dark, html {
+                color-scheme: light !important;
+            }
+
+            * {
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+
+            body {
+                background: white !important;
+                margin: 0;
+                padding: 0;
+            }
+
+            .viewport {
+                max-width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            /* Hide navigation and non-essential elements */
+            nav, #search-container, #search-input, #search-results, .print\:hidden, .breadcrumb {
+                display: none !important;
+            }
+
+            /* Hide all navigation links */
+            a[href="/Food/"] {
+                display: none !important;
+            }
+
+            /* Recipe layout for print: one column */
+            .grid {
+                display: block !important;
+            }
+
+            .md\:col-span-1, .md\:col-span-2 {
+                page-break-inside: avoid;
+                width: 100% !important;
+            }
+
+            /* Square corners on paper */
+            .card, .step-box, .ingredient-row, .recipe-note, .rounded-xl {
+                border-radius: 0 !important;
+            }
+
+            /* Step numbers */
+            .step-number {
+                background: #000 !important;
+                color: #fff !important;
+            }
+
+            /* Images */
+            img {
+                max-height: 300px !important;
+                max-width: 100% !important;
+                height: auto !important;
+                object-fit: contain !important;
+                page-break-inside: avoid;
+                page-break-after: avoid;
+            }
+
+            /* Recipe sections on same page if possible */
+            h2, h3 {
+                page-break-after: avoid;
+            }
+
+            ol, ul {
+                page-break-inside: avoid;
+            }
+
+            /* Compact spacing */
+            .mb-8, .mb-6, .mb-4 {
+                margin-bottom: 0.5rem !important;
+            }
+
+            .p-6 {
+                padding: 0.5rem !important;
+            }
+
+            /* Recipe header */
+            h1 {
+                color: #000 !important;
+                font-size: 1.5rem !important;
+                margin-bottom: 0 !important;
+            }
+
+            /* Shopping list print styles */
+            .lg\:w-2\/5, .xl\:w-1\/3 {
+                display: none !important;
+            }
+
+            #shopping-list-results {
+                font-size: 11pt !important;
+                line-height: 1.2 !important;
+            }
+
+            #shopping-list-results input[type="checkbox"] {
+                display: none !important;
+            }
+
+            #shopping-list-results li .flex-1 {
+                width: auto !important;
+                flex: 1 1 0% !important;
+            }
+
+            #shopping-list-results label {
+                cursor: default !important;
+            }
+
+            #shopping-list-results h2 {
+                font-size: 11pt !important;
+                color: #000 !important;
+                margin-bottom: 0 !important;
+            }
+
+            #shopping-list-results .space-y-2 > * + *,
+            #shopping-list-results ul > * + * {
+                margin-top: 0 !important;
+            }
+
+            #shopping-list-results li {
+                padding: 0 !important;
+                line-height: 1.3 !important;
+                border-bottom: 1px dotted #ccc;
+            }
+
+            #shopping-list-results .card {
+                margin-bottom: 0.15rem !important;
+                padding: 0 !important;
+                border: none !important;
+            }
+
+            /* Menu print styles */
+            #menu-content {
+                font-size: 10pt !important;
+                line-height: 1.4 !important;
+            }
+
+            #menu-content h1 {
+                font-size: 14pt !important;
+                margin-bottom: 0.25rem !important;
+                color: #000 !important;
+            }
+
+            #menu-content .space-y-6 > * + * {
+                margin-top: 0.3rem !important;
+            }
+
+            #menu-content .menu-section {
+                border: 1px solid #ccc !important;
+                border-radius: 0 !important;
+                page-break-inside: avoid;
+            }
+
+            #menu-content .menu-section-header {
+                background: #eee !important;
+                color: #000 !important;
+                padding: 0.15rem 0.5rem !important;
+            }
+
+            #menu-content .menu-section-header h2 {
+                font-size: 11pt !important;
+                color: #000 !important;
+            }
+
+            #menu-content .menu-section-body {
+                padding: 0.25rem 0.5rem !important;
+            }
+
+            #menu-content .menu-section-body .space-y-2 > * + *,
+            #menu-content .menu-section-body > * + * {
+                margin-top: 0.05rem !important;
+            }
+
+            #menu-content .menu-section-body h3 {
+                font-size: 10pt !important;
+                margin-top: 0.2rem !important;
+                margin-bottom: 0 !important;
+            }
+
+            #menu-content .menu-section-body .pl-6 {
+                padding-left: 1rem !important;
+            }
+
+            /* Preserve word spacing in flex lines */
+            #menu-content .menu-section-body .flex {
+                gap: 0.25em !important;
+            }
+
+            #menu-content .ingredient-badge {
+                font-weight: bold !important;
+                color: #000 !important;
+            }
+
+            #menu-content a {
+                color: #000 !important;
+                text-decoration: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-bg text-text">
+    <div class="viewport">
+        <nav class="nav-card relative">
+            <div class="px-3 lg:px-6 py-4 relative">
+                <div class="flex items-center justify-between flex-wrap gap-y-3">
+                    <a href="/Food/index.html" class="order-1 hidden md:flex items-center space-x-2">
+                        <img src="/Food/static/android-chrome-192x192.png" alt="Cook" class="brand-mark h-8 w-8 rounded-md" width="32" height="32">
+                    </a>
+
+                    <div class="relative z-50 order-2 flex-1 min-w-0 mr-2 md:ml-2 md:mr-4" id="search-container">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-faint" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        <input type="text"
+                               id="search-input"
+                               placeholder="Search recipes..."
+                               class="search-input">
+                        <div id="search-results"
+                             class="absolute top-full mt-2 w-full card shadow-[var(--shadow-overlay)] hidden max-h-96 overflow-y-auto"
+                             style="z-index: 9999;">
+                        </div>
+                    </div>
+
+                    <div class="order-3 flex items-center gap-1 lg:gap-2">
+                        
+                        <div class="hidden md:flex items-center gap-1 mr-2 lg:mr-4">
+                            <a href="/Food/index.html"
+                               class="nav-pill active">
+                                Recipes
+                            </a>
+                            
+                            
+                        </div>
+                        
+                        <!-- Inline buttons on md+ screens -->
+                        
+                        <button onclick="showShortcutsHelp()" class="icon-btn hidden md:inline-flex ml-2 print:hidden" aria-label="Keyboard shortcuts" title="Keyboard shortcuts (?)">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </button>
+                        <button onclick="toggleTheme()" class="icon-btn hidden md:inline-flex ml-2 print:hidden" aria-label="Toggle theme">
+                            <svg class="hidden dark:block" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
+                            </svg>
+                            <svg class="block dark:hidden" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                            </svg>
+                        </button>
+                        
+                        <!-- Overflow menu for small screens -->
+                        <div class="relative md:hidden ml-auto" id="more-menu-container">
+                            <button onclick="document.getElementById('more-dropdown').classList.toggle('hidden')" class="icon-btn" aria-label="More options">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+                                </svg>
+                            </button>
+                            <div id="more-dropdown" class="hidden absolute right-0 mt-2 w-56 card shadow-[var(--shadow-overlay)] z-50 py-1">
+                                
+                                <a href="/Food/index.html" class="menu-item active">
+                                    <span>🍳</span> <span>Recipes</span>
+                                </a>
+                                
+                                
+                                <div class="border-t border-line my-1"></div>
+                                
+                                
+                                
+                                <button onclick="showShortcutsHelp(); document.getElementById('more-dropdown').classList.add('hidden');" class="menu-item">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    <span>Keyboard Shortcuts</span>
+                                </button>
+                                <button onclick="toggleTheme(); document.getElementById('more-dropdown').classList.add('hidden');" class="menu-item">
+                                    <svg class="w-4 h-4 hidden dark:block" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path></svg>
+                                    <svg class="w-4 h-4 block dark:hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                                    <span>Toggle Theme</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main>
+            
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Recipe","image":"/Food/api/static/Recettes%20Sucr%C3%A9es/Meringues%20ultra%20simples.jpeg","keywords":"Classique, dessert, recette","name":"Meringues ultra simples","recipeIngredient":[],"recipeInstructions":[{"@type":"HowToStep","text":"# Meringues ultra simples"},{"@type":"HowToStep","text":"Meringues ultra simples"},{"@type":"HowToStep","text":"[![](../_resources/unknown_filename.263.jpeg)](http://www.marmiton.org/recettes/recette-photo_meringues-ultra-simples_36561.aspx) **Temps de préparation :** **20** **minutes** **Temps de cuisson :** **50** **minutes** **Ingrédients (pour 6 personnes) :**"},{"@type":"HowToStep","text":"- 2 blancs d'[oeufs](http://www.marmiton.org/Magazine/Tendances-Gourmandes_oeufs_1.aspx) - 70 ~ 90 g de [sucre](http://www.marmiton.org/Magazine/Tendances-Gourmandes_le-gout-des-sucres_1.aspx) glace - 1 robot"},{"@type":"HowToStep","text":"**Préparation de la recette :**"},{"@type":"HowToStep","text":"Mettre les blancs d'oeufs dans le robot, le faire tourner à moyenne puissance pendant 10 minutes."},{"@type":"HowToStep","text":"Ajouter progressivement le sucre glace dans le robot en le faisant tourner encore 10 minutes."},{"@type":"HowToStep","text":"Mettre la [meringue](http://www.marmiton.org/Recettes/Recettes-Incontournables-Detail_meringue_r_12.aspx) dans une poche à douille et faire des petits tas de 2 à 3 cm de diamètre (pas plus) sur une hauteur de 2,5 cm environ sur une plaque beurrée et sucrée."},{"@type":"HowToStep","text":"Pour garder une meilleure tenue, il faut les saupoudrer de sucre glace avant cuisson."},{"@type":"HowToStep","text":"Enfourner à four préchauffé à 130°C, la porte du four légèrement entre-ouverte (coincer une manique pliée en 4 ou en 2 si elle est trop épaisse, sur le côté haut de la porte) pendant 50 minutes."},{"@type":"HowToStep","text":"Eteindre votre four et laisser les [meringues](http://www.marmiton.org/Recettes/Recettes-Incontournables-Detail_meringue_r_12.aspx) dedans jusqu'à complet refroidissement, en laissant la porte du four toujours entre-ouverte."},{"@type":"HowToStep","text":"Vos meringues doivent rester toujours blanches."},{"@type":"HowToStep","text":"commentaires: - très bonnes - les conserver dans une boite en fer au frais"},{"@type":"HowToStep","text":"[![](../_resources/unknown_filename.264.jpeg)](https://4.bp.blogspot.com/-DLCW_dJINIU/VlRdK7npKHI/AAAAAAAAHN8/N1Ks2DNqcxAwf29mDIHe7gAtjF_XgoaGQCKgB/s1600/Couronne_Noel_meringues.jpg)"},{"@type":"HowToStep","text":"**1. PRÉCAUTIONS : PAS DE GRAS, PAS DE SEL ET PAS DE FROID !**"},{"@type":"HowToStep","text":"**a. Bien séparer les blancs des jaunes**"},{"@type":"HowToStep","text":"Le seul élément que la meringue n'aime vraiment pas est le gras ;-). C'est la raison pour laquelle il est important de séparer parfaitement les blancs des jaunes. S'il reste des traces de ce dernier dans le blanc (donc des traces de gras) il ne va jamais monter comme il faut pour obtenir une meringue."},{"@type":"HowToStep","text":"**b. Récipient**"},{"@type":"HowToStep","text":"Il est impératif d'utiliser un saladier ou la cuve d'une robot parfaitement propre, sans aucune trace de gras. La meilleure solution est un récipient en inox (pas de fer blanc qui va colorer sur la meringue). Le plastique est déconseillé car à tendance à \"retenir' des traces de gras."},{"@type":"HowToStep","text":"**c. Pas de sel !**"},{"@type":"HowToStep","text":"Contrairement à ce qui est souvent indiqué (un peu par réflexe car tout le monde le dit, un peu le remède de grand-mère non vérifié ;-), il ne faut absolument pas de sel ! Tous les scientifiques et même les profanes (suffit de faire un essai) le disent : le sel va faire ressortir l'eau, déstabiliser la meringue qui sera ainsi moins homogène et va moins tenir. Le conseils est né il y a plus d'un siècle quand tout se faisait à la main, souvent dans des pièces froides : en effet le sel au début donne l'illusion que les blancs prennent mieux (il se crée plus de mousse). Mais c'est ensuite qu'il va faire son mauvais effet."},{"@type":"HowToStep","text":"**d. Travaillez à température ambiante**"},{"@type":"HowToStep","text":"Si vous devez séparer les blancs des jaunes, faites-les quand les oeufs sont froids, c'est beaucoup plus simple. Par contre, utilisez les blancs à température ambiante (jusqu'à autour de 35°C) il montent vraiment mieux. En général, je les sors, fais autre chose puis m'occupe des meringues quand ils sont tièdes."},{"@type":"HowToStep","text":"Si les blancs sont congelés (voir mon article sur [que faire des blancs d'oeufs](http://www.undejeunerdesoleil.com/2014/07/blancs-oeuf-recettes-conseils-conservation.html)), faites-les décongeler une nuit au frais puis sortez-les 20 à 30 minutes avant de les fouetter."},{"@type":"HowToStep","text":"**2. LES PROPORTIONS MAGIQUES**"},{"@type":"HowToStep","text":"**a. 1-2**"},{"@type":"HowToStep","text":"Le proportions sont très très simples à retenir : il faut le **double de sucre par rapport au poids de blancs** (c'est pourquoi il est très important de peser les oeufs, mais ceci vaut en général en pâtisserie). Par ex. <u>100 g de blanc d'oeuf et 200 g de sucre semoule<\/u>."},{"@type":"HowToStep","text":"Ici les proportions sont celles idéales pour obtenir une meringue très stable et croustillante, zéro risques quoi, même en cuisson. Sachant que la meringue est sucrée par définition, on n'y échappe pas... et cela fait son charme unique."},{"@type":"HowToStep","text":"**b. Peut-on diminuer ?**"},{"@type":"HowToStep","text":"Selon l'usage et la texture souhaitée, on peut un peu <u>diminuer le sucre, jusqu'à 10 à 20 %<\/u>. Pas plus car autrement il y aura trop d'eau en proportion, elles auront du mal à sécher et ne seront pas croustillantes. Ce qui signifie par exemple que pour 100 g de blancs on peut utiliser 160 à 180 g de sucre."},{"@type":"HowToStep","text":"**c. Quel sucre ?**"},{"@type":"HowToStep","text":"Le sucre classique est le **sucre semoule**, sachant quand même que, plus il sera fin plus la meringue prendra et le blanc absorbera facilement le sucre. Donc, utilisez un sucre semoule fin ou mixez-le avant usage pour le réduire en poudre subtile."},{"@type":"HowToStep","text":"On peut aussi panacher (je le fais très souvent) le sucre classique et le **sucre glace**, ce dernier est ajouté en dernier car fond plus rapidement. Pour une meringue plus fondante et encore plus facile à travailler, utilisez uniquement du sucre glace. Le résultat sera parfait !"},{"@type":"HowToStep","text":"Pour ce qui est d'autres sucres, on peut remplacer le sucre semoule par du **sucre de canne blond** et les meringues seront légèrement plus colorées. Par contre (déjà testé), je vous déconseille tous les sucres de canne complet (genre rapadura, muscovado, panela... ou même du sucre de palme, que j'aime beaucoup mais dans d'autres préparations) car le meringue sera un peu moins croustillante, pas blanche du tout (mais ça on le sait) mais surtout aura un petit arrière-goût désagréable je trouve. Du moins c'est mon expérience négative."},{"@type":"HowToStep","text":"**3. PRÉPARATION PAR PETITES TOUCHES**"},{"@type":"HowToStep","text":"**a. Fouettez au début sans sucre**"},{"@type":"HowToStep","text":"Le blanc d'oeuf a la particularité de réussir à incorporer beaucoup d'air (je suis fascinée à chaque fois) jusqu'à 8 fois son volume (incroyable non ?). Et pour donner de la stabilité à ce phénomène le sucre entre en jeu. Toutefois, tout le charme de la meringue réside dans son côté léger, aérien, croustillant. C'est la raison pour laquelle il est important de permettre d'abord au blanc d'incorporer **uniquement de l'air**. Autrement la meringue sera trop dense. Je vous conseille donc de commencer à fouetter à vitesse moyenne (sans rien d'autre hein !) jusqu'à ce que les blancs augmentent d'un tiers de volume environ, avant d'ajouter un peu de sucre."},{"@type":"HowToStep","text":"**b. Ajoutez le sucre petit à petit**"},{"@type":"HowToStep","text":"L'autre secret lié au premier est d'incorporer graduellement le sucre. Plus vous procèderez par petites quantités plus le sucre sera correctement absorbé par le blanc qui en même temps va incorporer de l'air. Je vous conseille de commencer par une càs à la fois et attendre qu'elle soit bien fondue dans le blanc avant d'ajouter la suivante. Après on peut augmenter les quantité, car la meringue sera plus stable. En moyenne, incorporez le sucre en 5 fois."},{"@type":"HowToStep","text":"**c. Dernier geste et formation des meringues**"},{"@type":"HowToStep","text":"Selon les recettes, des fois on ajoute le reste de sucre sous forme de sucre glace au dernier moment (il fond très vite) à l'aide d'une maryse. En tous cas ce qui est important c'est de manipuler **délicatement** les blancs sont bien montés avec le sucre (vu qu'il y a de l'air dedans)."},{"@type":"HowToStep","text":"Vous pouvez former des meringues avec une simple cuillère, une cuillère à glace, une poche à douille avec douille lisse ou pas... Ou même l'étalier finement sur une plaque si l'on souhaite des sortes de tuiles. La meringue se prête à toutes les formes."},{"@type":"HowToStep","text":"**4. CUISSON TOUT EN DOUCEUR**"},{"@type":"HowToStep","text":"**a. Plaque**"},{"@type":"HowToStep","text":"Posez la meringue sur une plaque recouverte de papier cuisson fixé à la base avec un peu de meringue pour éviter que le papier ne bouge (c'est ce que j'ai appris lors du CAP de pâtisserie et je dois dire que c'est une super astuce toute bête). Vous pouvez aussi utiliser une plaque perforée (voir cet article sur **[comment cuire les biscuits](http://www.undejeunerdesoleil.com/2016/04/comment-cuire-biscuits-astuces-temperatures.html)**), cela va cuire encore mieux. Très utile surtout si la meringue est grande."},{"@type":"HowToStep","text":"**b. Temps et température**"},{"@type":"HowToStep","text":"Le clou de la réussite (à part ce que je ai dit avant) est bien sûr aussi la cuisson ! Comme toujours le temps et la température dépendent d'une part des dimensions et notamment de l'épaisseur de la meringue (mas c'est intuitif) et, d'autre part, de votre four plus ou moins précis, performant... (je vous rassure, je n'ai pas un super four et ça marche très bien)."},{"@type":"HowToStep","text":"Pour ce qui est de la température, pour que la meringue **sèche bien** et croustille il faut au moins une température de 85°C et on peut aller jusqu'à 110-120°C. Sachant dans ce dernier cas, que la température réelle doit être autour de 100°C (et pas 120°C autrement le sucre va trop cuire et les meringues seront colorées et trop dures, pas fondantes). Personnellement, je cuis entre 90°C et 110°-120°C, je commence par cette dernière température et je baisse après 30 minutes. Je vous conseille d'utiliser la **chaleur tournante** (les meringues sèchent mieux) et d'ouvrir après 50 min voire 1 h pour faire ressortir l'humidité."},{"@type":"HowToStep","text":"Si vous ne voulez pas prendre de risques, faites cuire à **90°-100°C** maximum (selon que votre four chauffe plus ou moins) ainsi vous serez sûrs que la meringue va cuire sans trop colorer."},{"@type":"HowToStep","text":"Pour ce qui est des temps, plus les meringues sont petites (individuelles) plus c'est court. Selon la température comptez au moins **1h-1h30** **et 2** **à 3 h** pour des grandes meringues. Vous avez en tous cas toutes les précisions dans les recettes spécifiques."},{"@type":"HowToStep","text":"**c. Quand est-ce les meringues son cuites ?**"},{"@type":"HowToStep","text":"Les meringues sont cuites quand il s'est formé une belle croûte brillante sur le dessus, elles se détachent facilement de la plaque et sont légères. En cas de doute (surtout à coeur) prolongez encore un peu la cuisson douce. Ls grandes meringues épaisses seront toujours un peu moins cuites (voire chewy) à coeur."},{"@type":"HowToStep","text":"**d. Repos**"},{"@type":"HowToStep","text":"Toujours pour mettre toutes les chances de notre côté (après vous verrez, vous le ferez automatiquement sans même y penser), faites encore sécher les meringues dans le four éteint de 1 h à toute une nuit."},{"@type":"HowToStep","text":"**5. LES PLUS QUI AIDENT LES MERINGUES**"},{"@type":"HowToStep","text":"**a. L'acide !**"},{"@type":"HowToStep","text":"Si la meringue n'aime pas le sel ou le gras, elle aime l'acidité (encore la chimie !). En effet vous pouvez aider le montage des blancs avec un peu de jus de citron (1 càc pour 100 g de blancs) de la crème de tarte (une pointe d'un couteau pour 100 g de blancs) ou du vinaigre blanc (là aussi 1 càc)."},{"@type":"HowToStep","text":"C'est un plus qui est utile surtout si on doit faire de grosses meringues ou on a beaucoup de blancs à monter."},{"@type":"HowToStep","text":"**b. L'amidon**"},{"@type":"HowToStep","text":"Là aussi l'amidon (comme l'amidon de maïs type Maïzena) permet de stabiliser les meringues car il absorbe un peu d'eau. Je l'utilise surtout quand je prépare des pavlova, dans la mesure de 1 càs rase pour 120 g de blancs."},{"@type":"HowToStep","text":"**c. La fraîcheur**"},{"@type":"HowToStep","text":"Autant mieux vaut utiliser des blancs qui ont été séparés des jaunes depuis un ou deux jours, autant mieux vaut ne pas utiliser des oeufs trop vieux : ils montent moins bien. Dans l'idéal les oeufs doivent avoir une à deux semaines."},{"@type":"HowToStep","text":"**d. Le beau temps**"},{"@type":"HowToStep","text":"Et oui, quand il pleut, fait très humide et froid ça marche moins bien (surtout quand il fait très humide) car les meringues absorbent aussi l'humidité ambiante. Donc si vous avez une belle journée sèche et ensoleillée, c'est l'idéal pour se lancer (bon, vous me direz que dans ce cas, vous préférez aller vous balader au parc... je comprends parfaitement ;-)"},{"@type":"HowToStep","text":"**CONSERVATION ET VARIANTES**"},{"@type":"HowToStep","text":"**a. Comment conserver les meringues**"},{"@type":"HowToStep","text":"Bonne nouvelle : les meringues se conservent très bien. Après un ou deux jours, c'est encore mieux car elles auront encore séché. Les meringues se conservent dans une boîte hermétique ou en carton (c'est mieux) et à température ambiante 5 à 7 jours, voire plus, tranquillement. Il est très important de les mettre dans un endroit sec (pas de frigo !). Elles vous attendront sagement."},{"@type":"HowToStep","text":"**b. Aromatiser les meringues**"},{"@type":"HowToStep","text":"Les meringues peuvent bien sûr être colorées (mieux vaut des colorant en poudre de qualité) et surtout aromatisées : avec des **zestes** d'agrumes, du café, du cacao, des **épices** comme la vanille ou la cannelle. Je vous conseille de les ajouter en dernier."},{"@type":"HowToStep","text":"On peut aussi ajouter un élément liquide comme du **jus** de fraise, de citron etc mais, dans la même lignée du discours 'diminution de la quantité de sucre', mieux vaut ne pas dépasser 10 à 20% du poids (au risque de les rater et de ne pas réussir à les faire sécher). Dans le cas d'ajout de jus, elles contiendront plus d'eau, auront besoin de cuisson plus longue et seront moins stables. En général elles sont plus fondantes mais moins fermes/croustillantes"}]}</script>
+<div>
+    <nav class="mb-4 breadcrumb print:hidden">
+        <ol class="flex items-center space-x-2 text-sm text-muted">
+            <li><a href="/Food/index.html" class="hover:text-text">Recipes</a></li>
+            
+            <li class="flex items-center">
+                <span class="mx-2 text-faint">/</span>
+                
+                    <a href="/Food/directory/Recettes Sucrées.html" class="hover:text-text">Recettes Sucrées</a>
+                
+            </li>
+            
+            <li class="flex items-center">
+                <span class="mx-2 text-faint">/</span>
+                
+                    <span class="text-text">Meringues ultra simples</span>
+                
+            </li>
+            
+        </ol>
+    </nav>
+
+    <div class="mb-8">
+        <!-- Recipe image if available -->
+        
+        <div class="mb-6 max-w-4xl mx-auto flex justify-center">
+            <img src="/Food/api/static/Recettes%20Sucr%C3%A9es/Meringues%20ultra%20simples.jpeg" alt="Meringues ultra simples" class="rounded-xl shadow-[var(--shadow-card)] max-w-full h-auto max-h-[500px]">
+        </div>
+        
+
+        <!-- Title bar with scale and shopping list button -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 print:flex-row print:items-center">
+            <h1 class="text-display font-bold text-text print:text-2xl">
+                Meringues ultra simples
+            </h1>
+            
+            <div class="flex flex-wrap items-center gap-2 lg:gap-3 print:hidden">
+                
+                <button id="start-cooking-btn" onclick="startCookingMode()" class="btn btn-primary" title="Start Cooking">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span class="hidden lg:inline">Cook</span>
+                </button>
+                
+                <a href="/Food/recipe/Recettes Sucrées/Meringues ultra simples.cook" download class="btn" title="Download .cook source">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"></path>
+                    </svg>
+                    <span class="hidden lg:inline">.cook</span>
+                </a>
+                
+            </div>
+        </div>
+
+        <!-- Recipe info section -->
+        <div class="space-y-4">
+            <!-- Tags row -->
+            
+            <div class="flex flex-wrap gap-2">
+                
+                <span class="tag">#Classique</span>
+                
+                <span class="tag">#dessert</span>
+                
+                <span class="tag">#recette</span>
+                
+            </div>
+            
+
+            
+
+            <!-- Description if present -->
+            
+            
+
+            <!-- Metadata row -->
+            <div id="metadata-container" class="flex flex-wrap gap-3">
+                
+                
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                
+                
+
+                <!-- Custom metadata -->
+                
+                
+                <span class="metadata-pill metadata-custom">Created at: 2013-05-20</span>
+                
+                
+                
+                <span class="metadata-pill metadata-custom">Last updated at: 2016-05-05</span>
+                
+                
+                
+                <span class="metadata-pill metadata-custom">Source URL: <a href="http://www.marmiton.org/recettes/recette_meringues-ultra-simples_36561.aspx" class="text-info hover:underline ml-1" target="_blank" rel="noopener noreferrer">www.marmiton.org</a></span>
+                
+                
+            </div>
+
+            
+        </div>
+    </div>
+
+    <div id="recipe-body" class="grid md:grid-cols-3 gap-8 mb-8">
+        <div class="md:col-span-1">
+            <div class="card p-6">
+                <h2 class="text-title font-bold mb-4 text-accent-text">🥘 Ingredients</h2>
+                
+                <!-- Fallback to original flat list for recipes without sections -->
+                <ul class="ingredient-list space-y-3">
+                    
+                </ul>
+                
+
+                
+            </div>
+        </div>
+
+        <div class="md:col-span-2">
+            <div class="card p-6" data-recipe-path="Recettes Sucrées/Meringues ultra simples">
+                
+                
+                
+                <ol class="step-list space-y-4 ">
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">1</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        # Meringues ultra simples
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">2</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Meringues ultra simples
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">3</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        [![](../_resources/unknown_filename.263.jpeg)](http://www.marmiton.org/recettes/recette-photo_meringues-ultra-simples_36561.aspx) **Temps de préparation :** **20** **minutes** **Temps de cuisson :** **50** **minutes** **Ingrédients (pour 6 personnes) :**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">4</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        - 2 blancs d&#x27;[oeufs](http://www.marmiton.org/Magazine/Tendances-Gourmandes_oeufs_1.aspx) - 70 
+                                        ~ 90 g de [sucre](http://www.marmiton.org/Magazine/Tendances-Gourmandes_le-gout-des-sucres_1.aspx) glace - 1 robot
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">5</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **Préparation de la recette :**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">6</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Mettre les blancs d&#x27;oeufs dans le robot, le faire tourner à moyenne puissance pendant 10 minutes.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">7</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Ajouter progressivement le sucre glace dans le robot en le faisant tourner encore 10 minutes.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">8</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Mettre la [meringue](http://www.marmiton.org/Recettes/Recettes-Incontournables-Detail_meringue_r_12.aspx) dans une poche à douille et faire des petits tas de 2 à 3 cm de diamètre (pas plus) sur une hauteur de 2,5 cm environ sur une plaque beurrée et sucrée.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">9</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Pour garder une meilleure tenue, il faut les saupoudrer de sucre glace avant cuisson.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">10</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Enfourner à four préchauffé à 130°C, la porte du four légèrement entre-ouverte (coincer une manique pliée en 4 ou en 2 si elle est trop épaisse, sur le côté haut de la porte) pendant 50 minutes.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">11</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Eteindre votre four et laisser les [meringues](http://www.marmiton.org/Recettes/Recettes-Incontournables-Detail_meringue_r_12.aspx) dedans jusqu&#x27;à complet refroidissement, en laissant la porte du four toujours entre-ouverte.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">12</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Vos meringues doivent rester toujours blanches.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">13</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        commentaires: - très bonnes - les conserver dans une boite en fer au frais
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">14</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        [![](../_resources/unknown_filename.264.jpeg)](https://4.bp.blogspot.com/-DLCW_dJINIU/VlRdK7npKHI/AAAAAAAAHN8/N1Ks2DNqcxAwf29mDIHe7gAtjF_XgoaGQCKgB/s1600/Couronne_Noel_meringues.jpg)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">15</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **1. PRÉCAUTIONS : PAS DE GRAS, PAS DE SEL ET PAS DE FROID !**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">16</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **a. Bien séparer les blancs des jaunes**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">17</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Le seul élément que la meringue n&#x27;aime vraiment pas est le gras ;-). C&#x27;est la raison pour laquelle il est important de séparer parfaitement les blancs des jaunes. S&#x27;il reste des traces de ce dernier dans le blanc (donc des traces de gras) il ne va jamais monter comme il faut pour obtenir une meringue.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">18</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **b. Récipient**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">19</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Il est impératif d&#x27;utiliser un saladier ou la cuve d&#x27;une robot parfaitement propre, sans aucune trace de gras. La meilleure solution est un récipient en inox (pas de fer blanc qui va colorer sur la meringue). Le plastique est déconseillé car à tendance à &quot;retenir&#x27; des traces de gras.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">20</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **c. Pas de sel !**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">21</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Contrairement à ce qui est souvent indiqué (un peu par réflexe car tout le monde le dit, un peu le remède de grand-mère non vérifié ;-), il ne faut absolument pas de sel ! Tous les scientifiques et même les profanes (suffit de faire un essai) le disent : le sel va faire ressortir l&#x27;eau, déstabiliser la meringue qui sera ainsi moins homogène et va moins tenir. Le conseils est né il y a plus d&#x27;un siècle quand tout se faisait à la main, souvent dans des pièces froides : en effet le sel au début donne l&#x27;illusion que les blancs prennent mieux (il se crée plus de mousse). Mais c&#x27;est ensuite qu&#x27;il va faire son mauvais effet.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">22</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **d. Travaillez à température ambiante**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">23</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Si vous devez séparer les blancs des jaunes, faites-les quand les oeufs sont froids, c&#x27;est beaucoup plus simple. Par contre, utilisez les blancs à température ambiante (jusqu&#x27;à autour de 35°C) il montent vraiment mieux. En général, je les sors, fais autre chose puis m&#x27;occupe des meringues quand ils sont tièdes.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">24</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Si les blancs sont congelés (voir mon article sur [que faire des blancs d&#x27;oeufs](http://www.undejeunerdesoleil.com/2014/07/blancs-oeuf-recettes-conseils-conservation.html)), faites-les décongeler une nuit au frais puis sortez-les 20 à 30 minutes avant de les fouetter.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">25</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **2. LES PROPORTIONS MAGIQUES**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">26</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **a. 1-2**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">27</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Le proportions sont très très simples à retenir : il faut le **double de sucre par rapport au poids de blancs** (c&#x27;est pourquoi il est très important de peser les oeufs, mais ceci vaut en général en pâtisserie). Par ex. &lt;u&gt;100 g de blanc d&#x27;oeuf et 200 g de sucre semoule&lt;/u&gt;.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">28</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Ici les proportions sont celles idéales pour obtenir une meringue très stable et croustillante, zéro risques quoi, même en cuisson. Sachant que la meringue est sucrée par définition, on n&#x27;y échappe pas... et cela fait son charme unique.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">29</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **b. Peut-on diminuer ?**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">30</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Selon l&#x27;usage et la texture souhaitée, on peut un peu &lt;u&gt;diminuer le sucre, jusqu&#x27;à 10 à 20 %&lt;/u&gt;. Pas plus car autrement il y aura trop d&#x27;eau en proportion, elles auront du mal à sécher et ne seront pas croustillantes. Ce qui signifie par exemple que pour 100 g de blancs on peut utiliser 160 à 180 g de sucre.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">31</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **c. Quel sucre ?**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">32</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Le sucre classique est le **sucre semoule**, sachant quand même que, plus il sera fin plus la meringue prendra et le blanc absorbera facilement le sucre. Donc, utilisez un sucre semoule fin ou mixez-le avant usage pour le réduire en poudre subtile.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">33</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        On peut aussi panacher (je le fais très souvent) le sucre classique et le **sucre glace**, ce dernier est ajouté en dernier car fond plus rapidement. Pour une meringue plus fondante et encore plus facile à travailler, utilisez uniquement du sucre glace. Le résultat sera parfait !
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">34</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Pour ce qui est d&#x27;autres sucres, on peut remplacer le sucre semoule par du **sucre de canne blond** et les meringues seront légèrement plus colorées. Par contre (déjà testé), je vous déconseille tous les sucres de canne complet (genre rapadura, muscovado, panela... ou même du sucre de palme, que j&#x27;aime beaucoup mais dans d&#x27;autres préparations) car le meringue sera un peu moins croustillante, pas blanche du tout (mais ça on le sait) mais surtout aura un petit arrière-goût désagréable je trouve. Du moins c&#x27;est mon expérience négative.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">35</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **3. PRÉPARATION PAR PETITES TOUCHES**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">36</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **a. Fouettez au début sans sucre**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">37</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Le blanc d&#x27;oeuf a la particularité de réussir à incorporer beaucoup d&#x27;air (je suis fascinée à chaque fois) jusqu&#x27;à 8 fois son volume (incroyable non ?). Et pour donner de la stabilité à ce phénomène le sucre entre en jeu. Toutefois, tout le charme de la meringue réside dans son côté léger, aérien, croustillant. C&#x27;est la raison pour laquelle il est important de permettre d&#x27;abord au blanc d&#x27;incorporer **uniquement de l&#x27;air**. Autrement la meringue sera trop dense. Je vous conseille donc de commencer à fouetter à vitesse moyenne (sans rien d&#x27;autre hein !) jusqu&#x27;à ce que les blancs augmentent d&#x27;un tiers de volume environ, avant d&#x27;ajouter un peu de sucre.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">38</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **b. Ajoutez le sucre petit à petit**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">39</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        L&#x27;autre secret lié au premier est d&#x27;incorporer graduellement le sucre. Plus vous procèderez par petites quantités plus le sucre sera correctement absorbé par le blanc qui en même temps va incorporer de l&#x27;air. Je vous conseille de commencer par une càs à la fois et attendre qu&#x27;elle soit bien fondue dans le blanc avant d&#x27;ajouter la suivante. Après on peut augmenter les quantité, car la meringue sera plus stable. En moyenne, incorporez le sucre en 5 fois.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">40</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **c. Dernier geste et formation des meringues**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">41</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Selon les recettes, des fois on ajoute le reste de sucre sous forme de sucre glace au dernier moment (il fond très vite) à l&#x27;aide d&#x27;une maryse. En tous cas ce qui est important c&#x27;est de manipuler **délicatement** les blancs sont bien montés avec le sucre (vu qu&#x27;il y a de l&#x27;air dedans).
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">42</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Vous pouvez former des meringues avec une simple cuillère, une cuillère à glace, une poche à douille avec douille lisse ou pas... Ou même l&#x27;étalier finement sur une plaque si l&#x27;on souhaite des sortes de tuiles. La meringue se prête à toutes les formes.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">43</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **4. CUISSON TOUT EN DOUCEUR**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">44</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **a. Plaque**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">45</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Posez la meringue sur une plaque recouverte de papier cuisson fixé à la base avec un peu de meringue pour éviter que le papier ne bouge (c&#x27;est ce que j&#x27;ai appris lors du CAP de pâtisserie et je dois dire que c&#x27;est une super astuce toute bête). Vous pouvez aussi utiliser une plaque perforée (voir cet article sur **[comment cuire les biscuits](http://www.undejeunerdesoleil.com/2016/04/comment-cuire-biscuits-astuces-temperatures.html)**), cela va cuire encore mieux. Très utile surtout si la meringue est grande.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">46</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **b. Temps et température**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">47</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Le clou de la réussite (à part ce que je ai dit avant) est bien sûr aussi la cuisson ! Comme toujours le temps et la température dépendent d&#x27;une part des dimensions et notamment de l&#x27;épaisseur de la meringue (mas c&#x27;est intuitif) et, d&#x27;autre part, de votre four plus ou moins précis, performant... (je vous rassure, je n&#x27;ai pas un super four et ça marche très bien).
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">48</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Pour ce qui est de la température, pour que la meringue **sèche bien** et croustille il faut au moins une température de 85°C et on peut aller jusqu&#x27;à 110-120°C. Sachant dans ce dernier cas, que la température réelle doit être autour de 100°C (et pas 120°C autrement le sucre va trop cuire et les meringues seront colorées et trop dures, pas fondantes). Personnellement, je cuis entre 90°C et 110°-120°C, je commence par cette dernière température et je baisse après 30 minutes. Je vous conseille d&#x27;utiliser la **chaleur tournante** (les meringues sèchent mieux) et d&#x27;ouvrir après 50 min voire 1 h pour faire ressortir l&#x27;humidité.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">49</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Si vous ne voulez pas prendre de risques, faites cuire à **90°-100°C** maximum (selon que votre four chauffe plus ou moins) ainsi vous serez sûrs que la meringue va cuire sans trop colorer.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">50</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Pour ce qui est des temps, plus les meringues sont petites (individuelles) plus c&#x27;est court. Selon la température comptez au moins **1h-1h30** **et 2** **à 3 h** pour des grandes meringues. Vous avez en tous cas toutes les précisions dans les recettes spécifiques.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">51</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **c. Quand est-ce les meringues son cuites ?**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">52</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Les meringues sont cuites quand il s&#x27;est formé une belle croûte brillante sur le dessus, elles se détachent facilement de la plaque et sont légères. En cas de doute (surtout à coeur) prolongez encore un peu la cuisson douce. Ls grandes meringues épaisses seront toujours un peu moins cuites (voire chewy) à coeur.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">53</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **d. Repos**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">54</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Toujours pour mettre toutes les chances de notre côté (après vous verrez, vous le ferez automatiquement sans même y penser), faites encore sécher les meringues dans le four éteint de 1 h à toute une nuit.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">55</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **5. LES PLUS QUI AIDENT LES MERINGUES**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">56</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **a. L&#x27;acide !**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">57</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Si la meringue n&#x27;aime pas le sel ou le gras, elle aime l&#x27;acidité (encore la chimie !). En effet vous pouvez aider le montage des blancs avec un peu de jus de citron (1 càc pour 100 g de blancs) de la crème de tarte (une pointe d&#x27;un couteau pour 100 g de blancs) ou du vinaigre blanc (là aussi 1 càc).
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">58</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        C&#x27;est un plus qui est utile surtout si on doit faire de grosses meringues ou on a beaucoup de blancs à monter.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">59</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **b. L&#x27;amidon**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">60</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Là aussi l&#x27;amidon (comme l&#x27;amidon de maïs type Maïzena) permet de stabiliser les meringues car il absorbe un peu d&#x27;eau. Je l&#x27;utilise surtout quand je prépare des pavlova, dans la mesure de 1 càs rase pour 120 g de blancs.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">61</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **c. La fraîcheur**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">62</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Autant mieux vaut utiliser des blancs qui ont été séparés des jaunes depuis un ou deux jours, autant mieux vaut ne pas utiliser des oeufs trop vieux : ils montent moins bien. Dans l&#x27;idéal les oeufs doivent avoir une à deux semaines.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">63</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **d. Le beau temps**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">64</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Et oui, quand il pleut, fait très humide et froid ça marche moins bien (surtout quand il fait très humide) car les meringues absorbent aussi l&#x27;humidité ambiante. Donc si vous avez une belle journée sèche et ensoleillée, c&#x27;est l&#x27;idéal pour se lancer (bon, vous me direz que dans ce cas, vous préférez aller vous balader au parc... je comprends parfaitement ;-)
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">65</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **CONSERVATION ET VARIANTES**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">66</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **a. Comment conserver les meringues**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">67</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Bonne nouvelle : les meringues se conservent très bien. Après un ou deux jours, c&#x27;est encore mieux car elles auront encore séché. Les meringues se conservent dans une boîte hermétique ou en carton (c&#x27;est mieux) et à température ambiante 5 à 7 jours, voire plus, tranquillement. Il est très important de les mettre dans un endroit sec (pas de frigo !). Elles vous attendront sagement.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">68</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        **b. Aromatiser les meringues**
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">69</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        Les meringues peuvent bien sûr être colorées (mieux vaut des colorant en poudre de qualité) et surtout aromatisées : avec des **zestes** d&#x27;agrumes, du café, du cacao, des **épices** comme la vanille ou la cannelle. Je vous conseille de les ajouter en dernier.
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    
+                    <li class="step-box">
+                        <div class="flex flex-col gap-4">
+                            
+                            
+                            <div class="flex gap-4">
+                                <div class="step-number">70</div>
+                                <div class="flex-1">
+                                    <div class="step-body mb-2">
+                                        
+                                        On peut aussi ajouter un élément liquide comme du **jus** de fraise, de citron etc mais, dans la même lignée du discours &#x27;diminution de la quantité de sucre&#x27;, mieux vaut ne pas dépasser 10 à 20% du poids (au risque de les rater et de ne pas réussir à les faire sécher). Dans le cas d&#x27;ajout de jus, elles contiendront plus d&#x27;eau, auront besoin de cuisson plus longue et seront moins stables. En général elles sont plus fondantes mais moins fermes/croustillantes
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                </ol>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<script id="cooking-mode-data" type="application/json">
+{"image":"/Food/api/static/Recettes%20Sucr%C3%A9es/Meringues%20ultra%20simples.jpeg","name":"Meringues ultra simples","scale":1.0,"sections":[{"ingredients":[],"name":null,"stepOffset":0,"steps":[{"globalNumber":1,"image":null,"ingredients":[],"number":1,"type":"step"},{"globalNumber":2,"image":null,"ingredients":[],"number":2,"type":"step"},{"globalNumber":3,"image":null,"ingredients":[],"number":3,"type":"step"},{"globalNumber":4,"image":null,"ingredients":[],"number":4,"type":"step"},{"globalNumber":5,"image":null,"ingredients":[],"number":5,"type":"step"},{"globalNumber":6,"image":null,"ingredients":[],"number":6,"type":"step"},{"globalNumber":7,"image":null,"ingredients":[],"number":7,"type":"step"},{"globalNumber":8,"image":null,"ingredients":[],"number":8,"type":"step"},{"globalNumber":9,"image":null,"ingredients":[],"number":9,"type":"step"},{"globalNumber":10,"image":null,"ingredients":[],"number":10,"type":"step"},{"globalNumber":11,"image":null,"ingredients":[],"number":11,"type":"step"},{"globalNumber":12,"image":null,"ingredients":[],"number":12,"type":"step"},{"globalNumber":13,"image":null,"ingredients":[],"number":13,"type":"step"},{"globalNumber":14,"image":null,"ingredients":[],"number":14,"type":"step"},{"globalNumber":15,"image":null,"ingredients":[],"number":15,"type":"step"},{"globalNumber":16,"image":null,"ingredients":[],"number":16,"type":"step"},{"globalNumber":17,"image":null,"ingredients":[],"number":17,"type":"step"},{"globalNumber":18,"image":null,"ingredients":[],"number":18,"type":"step"},{"globalNumber":19,"image":null,"ingredients":[],"number":19,"type":"step"},{"globalNumber":20,"image":null,"ingredients":[],"number":20,"type":"step"},{"globalNumber":21,"image":null,"ingredients":[],"number":21,"type":"step"},{"globalNumber":22,"image":null,"ingredients":[],"number":22,"type":"step"},{"globalNumber":23,"image":null,"ingredients":[],"number":23,"type":"step"},{"globalNumber":24,"image":null,"ingredients":[],"number":24,"type":"step"},{"globalNumber":25,"image":null,"ingredients":[],"number":25,"type":"step"},{"globalNumber":26,"image":null,"ingredients":[],"number":26,"type":"step"},{"globalNumber":27,"image":null,"ingredients":[],"number":27,"type":"step"},{"globalNumber":28,"image":null,"ingredients":[],"number":28,"type":"step"},{"globalNumber":29,"image":null,"ingredients":[],"number":29,"type":"step"},{"globalNumber":30,"image":null,"ingredients":[],"number":30,"type":"step"},{"globalNumber":31,"image":null,"ingredients":[],"number":31,"type":"step"},{"globalNumber":32,"image":null,"ingredients":[],"number":32,"type":"step"},{"globalNumber":33,"image":null,"ingredients":[],"number":33,"type":"step"},{"globalNumber":34,"image":null,"ingredients":[],"number":34,"type":"step"},{"globalNumber":35,"image":null,"ingredients":[],"number":35,"type":"step"},{"globalNumber":36,"image":null,"ingredients":[],"number":36,"type":"step"},{"globalNumber":37,"image":null,"ingredients":[],"number":37,"type":"step"},{"globalNumber":38,"image":null,"ingredients":[],"number":38,"type":"step"},{"globalNumber":39,"image":null,"ingredients":[],"number":39,"type":"step"},{"globalNumber":40,"image":null,"ingredients":[],"number":40,"type":"step"},{"globalNumber":41,"image":null,"ingredients":[],"number":41,"type":"step"},{"globalNumber":42,"image":null,"ingredients":[],"number":42,"type":"step"},{"globalNumber":43,"image":null,"ingredients":[],"number":43,"type":"step"},{"globalNumber":44,"image":null,"ingredients":[],"number":44,"type":"step"},{"globalNumber":45,"image":null,"ingredients":[],"number":45,"type":"step"},{"globalNumber":46,"image":null,"ingredients":[],"number":46,"type":"step"},{"globalNumber":47,"image":null,"ingredients":[],"number":47,"type":"step"},{"globalNumber":48,"image":null,"ingredients":[],"number":48,"type":"step"},{"globalNumber":49,"image":null,"ingredients":[],"number":49,"type":"step"},{"globalNumber":50,"image":null,"ingredients":[],"number":50,"type":"step"},{"globalNumber":51,"image":null,"ingredients":[],"number":51,"type":"step"},{"globalNumber":52,"image":null,"ingredients":[],"number":52,"type":"step"},{"globalNumber":53,"image":null,"ingredients":[],"number":53,"type":"step"},{"globalNumber":54,"image":null,"ingredients":[],"number":54,"type":"step"},{"globalNumber":55,"image":null,"ingredients":[],"number":55,"type":"step"},{"globalNumber":56,"image":null,"ingredients":[],"number":56,"type":"step"},{"globalNumber":57,"image":null,"ingredients":[],"number":57,"type":"step"},{"globalNumber":58,"image":null,"ingredients":[],"number":58,"type":"step"},{"globalNumber":59,"image":null,"ingredients":[],"number":59,"type":"step"},{"globalNumber":60,"image":null,"ingredients":[],"number":60,"type":"step"},{"globalNumber":61,"image":null,"ingredients":[],"number":61,"type":"step"},{"globalNumber":62,"image":null,"ingredients":[],"number":62,"type":"step"},{"globalNumber":63,"image":null,"ingredients":[],"number":63,"type":"step"},{"globalNumber":64,"image":null,"ingredients":[],"number":64,"type":"step"},{"globalNumber":65,"image":null,"ingredients":[],"number":65,"type":"step"},{"globalNumber":66,"image":null,"ingredients":[],"number":66,"type":"step"},{"globalNumber":67,"image":null,"ingredients":[],"number":67,"type":"step"},{"globalNumber":68,"image":null,"ingredients":[],"number":68,"type":"step"},{"globalNumber":69,"image":null,"ingredients":[],"number":69,"type":"step"},{"globalNumber":70,"image":null,"ingredients":[],"number":70,"type":"step"}]}]}
+</script>
+
+
+
+        </main>
+
+        
+        <footer class="mt-12 mb-6 text-center text-sm text-faint print:hidden">
+            Built with
+            <a href="https://cooklang.org/cli/" class="text-accent-text hover:underline" target="_blank" rel="noopener">CookCLI</a>
+            
+            &middot;
+            <a href="https://github.com/S3v3r1n3/Food" class="text-accent-text hover:underline" target="_blank" rel="noopener">View source</a>
+            
+        </footer>
+        
+    </div>
+
+    <script>
+        // Theme toggle function
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.classList.contains('dark') ? 'dark' : 'light';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+            html.classList.toggle('dark');
+            localStorage.setItem('theme', newTheme);
+        }
+    </script>
+
+    
+    <script>window.__PREFIX__ = "/Food";</script>
+    <script src="/Food/static/js/search.js"></script>
+    
+
+    <!-- URL prefix for JavaScript -->
+    <script>
+        window.__PREFIX__ = "/Food";
+        window.__STATIC_MODE__ = true;
+        window.__STRINGS__ = { close: "Close" };
+        // Bring the visitor back to this page after signing in.
+        document.querySelectorAll('[data-login-link]').forEach((link) => {
+            const prefix = window.__PREFIX__;
+            const path = location.pathname.startsWith(prefix)
+                ? location.pathname.slice(prefix.length)
+                : location.pathname;
+            if (path === '/login') return;
+            link.href = `${prefix}/login?next=${encodeURIComponent((path || '/') + location.search)}`;
+        });
+    </script>
+
+    <!-- Keyboard shortcuts -->
+    <script src="/Food/static/js/keyboard-shortcuts.js"></script>
+    <!-- Expose showShortcutsHelp globally for the help button -->
+    <script>
+        // showShortcutsHelp is defined in keyboard-shortcuts.js
+        // This ensures it's available for the onclick handler
+        if (typeof showShortcutsHelp === 'undefined') {
+            window.showShortcutsHelp = function() {
+                console.warn('Keyboard shortcuts not loaded');
+            };
+        }
+    </script>
+
+    
+<link rel="stylesheet" href="/Food/static/css/cooking-mode.css">
+<script src="/Food/static/js/cooking-mode.js"></script>
+<script src="/Food/static/js/timers.js"></script>
+
+</body>
+</html>
